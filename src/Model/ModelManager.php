@@ -123,26 +123,6 @@ final class ModelManager implements ModelManagerInterface, ProxyResolverInterfac
         return $this->getDocumentManager($class)->getRepository($class)->findOneBy($criteria);
     }
 
-    /**
-     * @param object|class-string<T> $class
-     *
-     * @throws \RuntimeException
-     */
-    private function getDocumentManager(object|string $class): DocumentManager
-    {
-        if (\is_object($class)) {
-            $class = $class::class;
-        }
-
-        $dm = $this->registry->getManagerForClass($class);
-
-        if (!$dm instanceof DocumentManager) {
-            throw new \RuntimeException(\sprintf('No document manager defined for class %s', $class));
-        }
-
-        return $dm;
-    }
-
     public function createQuery(string $class, string $alias = 'o'): BaseProxyQueryInterface
     {
         $repository = $this->getDocumentManager($class)->getRepository($class);
@@ -308,6 +288,26 @@ final class ModelManager implements ModelManagerInterface, ProxyResolverInterfac
         } catch (MappingException) {
             return $class;
         }
+    }
+
+    /**
+     * @param object|class-string<T> $class
+     *
+     * @throws \RuntimeException
+     */
+    private function getDocumentManager(object|string $class): DocumentManager
+    {
+        if (\is_object($class)) {
+            $class = $class::class;
+        }
+
+        $dm = $this->registry->getManagerForClass($class);
+
+        if (!$dm instanceof DocumentManager) {
+            throw new \RuntimeException(\sprintf('No document manager defined for class %s', $class));
+        }
+
+        return $dm;
     }
 
     /**

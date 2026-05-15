@@ -164,7 +164,7 @@ final class ModelManagerTest extends TestCase
             ->method('getManagerForClass')
             ->willReturn($dm);
 
-        (new ModelManager($this->registry, $this->propertyAccessor))->create($object);
+        new ModelManager($this->registry, $this->propertyAccessor)->create($object);
     }
 
     public function testCreateWrapsMongoExceptionInModelManagerException(): void
@@ -179,7 +179,7 @@ final class ModelManagerTest extends TestCase
         $this->expectException(ModelManagerException::class);
         $this->expectExceptionMessageMatches('/Failed to create object/');
 
-        (new ModelManager($this->registry, $this->propertyAccessor))->create(new TestDocument());
+        new ModelManager($this->registry, $this->propertyAccessor)->create(new TestDocument());
     }
 
     public function testUpdatePersistsAndFlushes(): void
@@ -194,7 +194,7 @@ final class ModelManagerTest extends TestCase
             ->method('getManagerForClass')
             ->willReturn($dm);
 
-        (new ModelManager($this->registry, $this->propertyAccessor))->update($object);
+        new ModelManager($this->registry, $this->propertyAccessor)->update($object);
     }
 
     public function testUpdateWrapsMongoExceptionInModelManagerException(): void
@@ -209,7 +209,7 @@ final class ModelManagerTest extends TestCase
         $this->expectException(ModelManagerException::class);
         $this->expectExceptionMessageMatches('/Failed to update object/');
 
-        (new ModelManager($this->registry, $this->propertyAccessor))->update(new TestDocument());
+        new ModelManager($this->registry, $this->propertyAccessor)->update(new TestDocument());
     }
 
     public function testDeleteRemovesAndFlushes(): void
@@ -224,7 +224,7 @@ final class ModelManagerTest extends TestCase
             ->method('getManagerForClass')
             ->willReturn($dm);
 
-        (new ModelManager($this->registry, $this->propertyAccessor))->delete($object);
+        new ModelManager($this->registry, $this->propertyAccessor)->delete($object);
     }
 
     public function testDeleteWrapsMongoExceptionInModelManagerException(): void
@@ -239,7 +239,7 @@ final class ModelManagerTest extends TestCase
         $this->expectException(ModelManagerException::class);
         $this->expectExceptionMessageMatches('/Failed to delete object/');
 
-        (new ModelManager($this->registry, $this->propertyAccessor))->delete(new TestDocument());
+        new ModelManager($this->registry, $this->propertyAccessor)->delete(new TestDocument());
     }
 
     public function testGetDocumentManagerThrowsWhenNoneRegisteredForClass(): void

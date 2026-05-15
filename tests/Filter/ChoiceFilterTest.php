@@ -139,13 +139,13 @@ final class ChoiceFilterTest extends FilterWithQueryBuilderTestCase
     /**
      * @phpstan-return iterable<array{mixed}>
      */
-    public static function provideFalsyScalarCases(): iterable
+    public static function provideFilterIsInactiveForFalsyScalarCases(): iterable
     {
         yield 'empty string' => [''];
         yield 'false' => [false];
     }
 
-    #[\PHPUnit\Framework\Attributes\DataProvider('provideFalsyScalarCases')]
+    #[\PHPUnit\Framework\Attributes\DataProvider('provideFilterIsInactiveForFalsyScalarCases')]
     public function testFilterIsInactiveForFalsyScalar(mixed $value): void
     {
         $filter = $this->createFilter();
@@ -175,7 +175,7 @@ final class ChoiceFilterTest extends FilterWithQueryBuilderTestCase
                 'operator_type' => EqualOperatorType::class,
                 'operator_options' => [],
             ],
-            (new ChoiceFilter())->getDefaultOptions(),
+            new ChoiceFilter()->getDefaultOptions(),
         );
     }
 

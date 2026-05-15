@@ -438,7 +438,7 @@ final class ModelFilterTest extends TestCase
     /**
      * @phpstan-param mixed $id
      */
-    #[DataProvider('provideInvalidFixIdentifierCases')]
+    #[DataProvider('provideFixIdentifierRejectsInvalidShapesCases')]
     public function testFixIdentifierRejectsInvalidShapes(mixed $id): void
     {
         $this->expectException(\InvalidArgumentException::class);
@@ -446,18 +446,10 @@ final class ModelFilterTest extends TestCase
         $this->callFixIdentifier($id);
     }
 
-    private function callFixIdentifier(mixed $id): mixed
-    {
-        // ModelFilter is final, so reach the protected static via reflection.
-        $reflection = new \ReflectionMethod(ModelFilter::class, 'fixIdentifier');
-
-        return $reflection->invoke(null, $id);
-    }
-
     /**
      * @phpstan-return iterable<array{mixed}>
      */
-    public static function provideInvalidFixIdentifierCases(): iterable
+    public static function provideFixIdentifierRejectsInvalidShapesCases(): iterable
     {
         yield 'null' => [null];
         yield 'empty string' => [''];
@@ -468,7 +460,7 @@ final class ModelFilterTest extends TestCase
     /**
      * @phpstan-return iterable<array{string, string}>
      */
-    public static function provideGetIdentifierFieldStoreAsCases(): iterable
+    public static function provideGetIdentifierFieldFollowsStoreAsForEachReferenceShapeCases(): iterable
     {
         yield 'REFERENCE_STORE_AS_REF' => [ClassMetadata::REFERENCE_STORE_AS_REF, 'field_name.id'];
         yield 'REFERENCE_STORE_AS_ID' => [ClassMetadata::REFERENCE_STORE_AS_ID, 'field_name'];
@@ -476,7 +468,7 @@ final class ModelFilterTest extends TestCase
         yield 'REFERENCE_STORE_AS_DB_REF_WITH_DB' => [ClassMetadata::REFERENCE_STORE_AS_DB_REF_WITH_DB, 'field_name.$id'];
     }
 
-    #[DataProvider('provideGetIdentifierFieldStoreAsCases')]
+    #[DataProvider('provideGetIdentifierFieldFollowsStoreAsForEachReferenceShapeCases')]
     public function testGetIdentifierFieldFollowsStoreAsForEachReferenceShape(
         string $storeAs,
         string $expectedField,
@@ -501,5 +493,13 @@ final class ModelFilterTest extends TestCase
         ]));
 
         static::assertTrue($filter->isActive());
+    }
+
+    private function callFixIdentifier(mixed $id): mixed
+    {
+        // ModelFilter is final, so reach the protected static via reflection.
+        $reflection = new \ReflectionMethod(ModelFilter::class, 'fixIdentifier');
+
+        return $reflection->invoke(null, $id);
     }
 }

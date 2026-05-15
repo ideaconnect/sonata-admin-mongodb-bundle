@@ -14,7 +14,6 @@ declare(strict_types=1);
 namespace Sonata\DoctrineMongoDBAdminBundle\Tests\Builder;
 
 use PHPUnit\Framework\Attributes\DataProvider;
-use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\MockObject\Stub;
 use PHPUnit\Framework\TestCase;
 use Sonata\AdminBundle\Admin\AdminInterface;
@@ -276,7 +275,7 @@ final class DatagridBuilderTest extends TestCase
         );
         $this->formFactory
             ->method('createNamedBuilder')
-            ->willReturn(static::createStub(\Symfony\Component\Form\FormBuilderInterface::class));
+            ->willReturn(static::createStub(FormBuilderInterface::class));
 
         $this->expectException(\TypeError::class);
         $this->expectExceptionMessage('MUST implement');
