@@ -2,6 +2,139 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## [5.0.0](https://github.com/ideaconnect/sonata-admin-mongodb-bundle/releases/tag/5.0.0) - 2026-05-15
+
+This is the first release of `idct/sonata-admin-mongodb-bundle`, a friendly
+fork of `sonata-project/doctrine-mongodb-admin-bundle` (last upstream
+release: 4.12.0). The 5.0 line will continue to diverge from upstream and
+will **not** stay backwards-compatible with it; see
+[BEST_VERSION.md](BEST_VERSION.md) for the roadmap behind these changes.
+
+### Added
+- New package name `idct/sonata-admin-mongodb-bundle`; upstream
+  `sonata-project/doctrine-mongodb-admin-bundle` remains untouched.
+- 74 contributors enumerated in `composer.json`, including every distinct
+  author from upstream's git history (deduplicated by canonical name) plus
+  the new fork maintainer at the top of the list.
+- `docker-compose.yml` for local dev: a `mongo` service and a
+  `selenium/standalone-firefox` grid so the Panther functional tests run
+  the same way on any host (no more snap-Firefox / marionette friction).
+- `BasePantherTestCase` auto-switches to the Selenium grid when
+  `PANTHER_SELENIUM_HOST` is set; CI keeps using the runner's bundled Firefox.
+- `tests/Datagrid/PagerTest.php` (new), plus exhaustive regression coverage
+  for every correctness fix listed below. Suite: 173 → 265 tests, 543 → 753
+  assertions; coverage: 80.92% → 97.64% lines, 60.50% → 90.76% methods.
+- `BEST_VERSION.md` capturing the full review, severity-classified findings,
+  and the phased roadmap to 5.x / 6.x.
+- [`codecov.yml`](codecov.yml) (auto target with 1% project / 0% patch
+  thresholds, tests/ and src/Resources/ ignored). Coverage uploads now run
+  through `codecov/codecov-action@v5` with `CODECOV_TOKEN` (required for the
+  fork), per-matrix flags and verbose output.
+
+### Changed
+- **Platform floor**: PHP `^8.2` → `^8.4`. Unlocks readonly + `__clone` rewrite,
+  `#[\Override]`, typed class constants, asymmetric visibility, property hooks.
+- **Symfony floor**: `^6.4 || ^7.3 || ^8.0` → `^7.4 || ^8.0` across every
+  symfony/* constraint (config, dependency-injection, doctrine-bridge, form,
+  http-kernel, property-access, browser-kit, css-selector, dom-crawler,
+  twig-bridge).
+- **Doctrine ODM bundle**: `^4.4 || ^5.0` → `^5.0`.
+- **Doctrine ODM**: `^2.3` → `^2.6` (matches odm-bundle 5 floor).
+- **Doctrine Collections**: `^1.6 || ^2.0` → `^2.0`.
+- **Doctrine Persistence**: `^3.0` → `^4.0` (3.x dropped entirely).
+- **Doctrine DataFixtures** (dev): `^1.6` → `^2.0` (1.x caps at persistence 3).
+- **PHPUnit**: now testing on 11/12; full suite green on PHPUnit 12 + PHP 8.5.
+- `ModelManager::getDocumentManager()` is now `private` (was `public` with a
+  `NEXT_MAJOR: Change visibility to private` TODO) and takes `object|string`
+  instead of an untyped argument.
+- `ProxyQuery::setSortBy()` validates the composed sort path against
+  `/^[A-Za-z_][A-Za-z0-9_]*(?:\.[A-Za-z_][A-Za-z0-9_]*)*$/` and throws
+  `InvalidArgumentException` on anything else — closes the long-standing
+  "potential SQL injection" TODO in `execute()`.
+- `ProxyQuery::setSortOrder()` validates against `['asc', 'desc']`
+  (case-insensitive) and normalises to lower-case; unknown values throw.
+- `final readonly class` applied to `DatagridBuilder`, `ListBuilder`,
+  `ShowBuilder`, `FieldDescriptionFactory`, `ModelManager` (Rector
+  `ReadOnlyClassRector`).
+- Class constants typed with PHP 8.3+ syntax across `ProxyQuery`,
+  `ObjectAclManipulator`, `NumberFilter`, `ModelManager`.
+- `tests/App/AppKernel`: `#[\Override]` on overriden Kernel methods.
+- Date filters (`AbstractDateFilter` + 4 concretes) now use native typed
+  `bool` properties instead of `@var bool` docblocks.
+- `DatagridBuilder::fixFieldDescription()` simplified — the
+  `setOption('x', getOption('x', getter()))` no-op chains are now explicit
+  `if (null === getOption('x'))` guards.
+- README rewritten to point at
+  `github.com/ideaconnect/sonata-admin-mongodb-bundle` with a heads-up that
+  the fork will diverge from upstream. PUGX badges replaced with the fork's
+  GitHub Actions + Codecov badges.
+- `tools/dev-kit`-generated workflow files de-tagged; CI now runs on `5.x`
+  only.
+- PHP CS Fixer upgraded to ^3.95 with the new migration set names
+  (`@PHP8x4Migration`, `@PHPUnit9x1Migration:risky`); deprecated
+  `PHP_CS_FIXER_IGNORE_ENV=1` env replaced by
+  `setUnsupportedPhpVersionAllowed(true)`.
+- Rector upgraded to track `UP_TO_PHP_84` + `PHPUNIT_120`.
+- LICENSE adds a 2026 IDCT copyright line plus a dated note explaining the
+  fork relationship with upstream; the original Thomas Rabaix copyright and
+  every contributor's attribution are preserved.
+
+### Removed
+- Support for PHP 8.2 and 8.3 (PHP 8.4+ only).
+- Support for Symfony 6.4 (LTS) and Symfony 7.3.
+- Support for Doctrine Persistence 3.
+- Support for Doctrine ODM Bundle 4.
+- `ProxyQuery::__call()` magic delegation (unused; blocked static analysis,
+  invited accidental coupling).
+- `ProxyQuery::setOptions()` write-only setter and `$options` field — never
+  read anywhere in the codebase.
+- Dead `class_exists(IsGranted::class)` Symfony 5 fallback in
+  `tests/App/AppKernel`; the now-unreachable `config_symfony_v5.yaml` is
+  gone, `config_symfony_v6.yaml` renamed to `config_symfony.yaml`.
+- Auto-generated `auto-merge-dev-kit` workflow (the fork is no longer
+  dev-kit-managed; `SonataCI`-authored PRs will never land here).
+- `4.x` branch from every workflow's push triggers.
+- The "auto-generated by sonata-project/dev-kit" banners on every config
+  file the fork now owns.
+
+### Fixed
+- `ProxyQuery::setFirstResult()` and `setMaxResults()` no longer mutate the
+  shared `QueryBuilder`. Pagination is applied inside `execute()` on the
+  clone — the underlying builder reference the caller still holds stays
+  untouched. Two regression tests added (`ProxyQueryTest`).
+- `ModelFilter::handleScalar()` now type-guards its input — non-object
+  values (`null`, scalars, objects without `getId()`) are ignored instead
+  of triggering a fatal `Call to a member function getId() on null/string`.
+- `ModelFilter::handleMultiple()` mirrors the same guard and skips
+  collection entries that aren't objects with `getId()`.
+- `ModelFilter::fixIdentifier()` rejects non-string-or-int input with
+  `InvalidArgumentException` (return type tightened to
+  `string|int|ObjectId`); the previous fallback silently passed bogus
+  shapes into MongoDB queries.
+- `ObjectAclManipulator::batchConfigureAcls()` no longer rebuilds an
+  `\ArrayIterator` on every source-collection document (was quadratic
+  memory). Iterator is built once per batch right before `configureAcls()`
+  is called. The two magic numbers are now named constants
+  (`BATCH_SIZE = 20`, `PROGRESS_REPORT_INTERVAL = 200`).
+- `Pager::countResults()` throws `LogicException` when called before
+  `init()` instead of silently returning 0 (previously the
+  "count-not-computed" and "count-is-0" states were indistinguishable).
+- `Pager::computeResultsCount()` no longer clones the entire `ProxyQuery`
+  wrapper — it clones only the underlying `Builder`. The `clone` is still
+  needed because `Builder::count()` mutates the query type.
+- `ModelManager::batchDelete()` stops calling `DocumentManager::clear()`,
+  which wiped *all* tracked entities, not just the batched ones. The
+  scoped-clear option (`clear($className)`) the original `4.x` plan
+  suggested is deprecated since ODM 2.4 and removed in 3.0; after `flush()`
+  the UoW already cleans up the entities we just removed.
+- `StringFilter::isSearchEnabled()` returns `true === getOption(...)` so
+  the strict-typed `bool` return is no longer at the mercy of YAML config
+  shape.
+- 85 PHPUnit 12 "no expectations were configured for the mock object"
+  notices eliminated by switching the right doubles to `createStub()` and
+  pulling shared mocks out of `setUp()` in tests where some methods didn't
+  use `expects()`.
+
 ## [4.12.0](https://github.com/sonata-project/SonataDoctrineMongoDBAdminBundle/compare/4.11.0...4.12.0) - 2025-12-18
 ### Added
 - [[#877](https://github.com/sonata-project/SonataDoctrineMongoDBAdminBundle/pull/877)] Support for Symfony 8 ([@dmaicher](https://github.com/dmaicher))
