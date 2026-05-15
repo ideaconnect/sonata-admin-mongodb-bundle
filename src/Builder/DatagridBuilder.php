@@ -130,11 +130,17 @@ final class DatagridBuilder implements DatagridBuilderInterface
      */
     private function getPager(string $pagerType): PagerInterface
     {
-        return match ($pagerType) {
-            AdminPager::TYPE_DEFAULT => new Pager(),
-            /** @var SimplePager<ProxyQueryInterface<object>> */
-            AdminPager::TYPE_SIMPLE => new SimplePager(),
-            default => throw new \RuntimeException(\sprintf('Unknown pager type "%s".', $pagerType)),
-        };
+        if (AdminPager::TYPE_DEFAULT === $pagerType) {
+            return new Pager();
+        }
+
+        if (AdminPager::TYPE_SIMPLE === $pagerType) {
+            /** @var SimplePager<ProxyQueryInterface<object>> $simplePager */
+            $simplePager = new SimplePager();
+
+            return $simplePager;
+        }
+
+        throw new \RuntimeException(\sprintf('Unknown pager type "%s".', $pagerType));
     }
 }

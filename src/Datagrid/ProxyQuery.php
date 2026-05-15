@@ -41,13 +41,16 @@ final class ProxyQuery implements ProxyQueryInterface
 
     private ?int $maxResults = null;
 
-    public function __construct(private readonly Builder $queryBuilder)
+    public function __construct(private Builder $queryBuilder)
     {
     }
 
     public function __clone()
     {
-        // Reassigning a readonly property is permitted inside __clone since PHP 8.3.
+        // Deep-clone the wrapped builder so two ProxyQuery clones don't share
+        // mutable state. The property isn't readonly because PHPStan's
+        // bleedingEdge rejects readonly reassignment in __clone even though
+        // PHP 8.3+ allows it.
         $this->queryBuilder = clone $this->queryBuilder;
     }
 

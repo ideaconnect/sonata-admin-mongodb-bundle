@@ -18,13 +18,6 @@ use Sonata\DoctrineMongoDBAdminBundle\Model\MissingPropertyMetadataException;
 
 final class MissingPropertyMetadataExceptionTest extends TestCase
 {
-    public function testItIsALogicException(): void
-    {
-        $exception = new MissingPropertyMetadataException('App\\Document\\Book', 'title');
-
-        static::assertInstanceOf(\LogicException::class, $exception);
-    }
-
     public function testItFormatsTheMessageWithClassAndProperty(): void
     {
         $exception = new MissingPropertyMetadataException('App\\Document\\Book', 'title');

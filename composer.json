@@ -29,76 +29,285 @@
             "email": "dunglas@gmail.com",
             "homepage": "http://dunglas.fr"
         },
-        { "name": "Alexandr Trigub", "email": "altr@ciklum.com" },
-        { "name": "Alexandr Zagorulya", "email": "Hast4656@gmail.com" },
-        { "name": "Andrej Hudec", "email": "pulzarraider2@gmail.com" },
-        { "name": "Andrew Mor-Yaroslavtsev", "email": "andrejs@gmail.com" },
-        { "name": "Andrey F. Mindubaev", "email": "covex.mobile@gmail.com" },
-        { "name": "Andriy Rakhnin", "email": "a@rakhnin.com" },
-        { "name": "Andriy Savchenko", "email": "andriy.savchenko@gmail.com" },
-        { "name": "Ben Lumley", "email": "ben@benlumley.co.uk" },
-        { "name": "Christian Gripp", "email": "mail@core23.de" },
-        { "name": "Daniel Ancuta", "email": "whisller@gmail.com" },
-        { "name": "Daniel Santana", "email": "github@danielsantana.net" },
-        { "name": "Danny Matthijs", "email": "danny.matthijs@uniweb.eu" },
-        { "name": "David Buchmann", "email": "david@liip.ch" },
-        { "name": "David Maicher", "email": "mail@dmaicher.de" },
-        { "name": "Dimitar Ilkov", "email": "dimitar@e-man.co.uk" },
-        { "name": "Dylan Oliver", "email": "dylan@sweepingdesign.com" },
-        { "name": "Emmanuel Vella", "email": "vella.emmanuel@gmail.com" },
-        { "name": "Eric Funk", "email": "psytraxx@users.noreply.github.com" },
-        { "name": "Erison Silva", "email": "erison.sdn@gmail.com" },
-        { "name": "Evert Harmeling", "email": "evert.harmeling@freshheads.com" },
-        { "name": "Evgeny Soynov", "email": "saboteur@i18.ru" },
-        { "name": "Excel Web Zone", "email": "excelwebzone@gmail.com" },
-        { "name": "Fran Moreno", "email": "franmomu@gmail.com" },
-        { "name": "Francisco Alvarez Alonso", "email": "sormes@gmail.com" },
-        { "name": "Francisco Facioni", "email": "fran6co@gmail.com" },
-        { "name": "Grégoire Paris", "email": "postmaster@greg0ire.fr" },
-        { "name": "Jaime Suez", "email": "jaimesuez@gmail.com" },
-        { "name": "Jark Tonnätt", "email": "j.tonnaett@snap-agentur.de" },
-        { "name": "Javier Spagnoletti", "email": "phansys@gmail.com" },
-        { "name": "Jean Tristan", "email": "chanegue@gmail.com" },
-        { "name": "Joost Farla", "email": "joost.farla@freshheads.com" },
-        { "name": "Jordi Sala Morales", "email": "jordism91@gmail.com" },
-        { "name": "Joris van de Sande", "email": "joris.van.de.sande@freshheads.com" },
-        { "name": "Jose Lopes", "email": "josluis.lopes@gmail.com" },
-        { "name": "Jules Bernable", "email": "jules.bernable@laposte.net" },
-        { "name": "Karol Sójko", "email": "karolsojko@gmail.com" },
-        { "name": "Kevin Scheffelmeier", "email": "ksch@at-world.net" },
-        { "name": "Lucas Filippi", "email": "loucas@gmail.com" },
-        { "name": "Marko Kunic", "email": "kunicmarko20@gmail.com" },
-        { "name": "Mateusz Derks", "email": "mateusz.derks@gmail.com" },
-        { "name": "Matteo Giachino", "email": "matteog@gmail.com" },
-        { "name": "Oleg Andreyev", "email": "mrdezzo@gmail.com" },
-        { "name": "Oskar Stark", "email": "oskarstark@googlemail.com" },
-        { "name": "Pascal Borreli", "email": "pascal@borreli.com" },
-        { "name": "Pascal Hofmann", "email": "mail@pascalhofmann.de" },
-        { "name": "Peter Kokot", "email": "peterkokot@gmail.com" },
-        { "name": "Romain Geissler", "email": "romain.geissler@gmail.com" },
-        { "name": "Romain Norberg", "email": "7681951+romainnorberg@users.noreply.github.com" },
-        { "name": "Rommel M. Zamora", "email": "rzamora@netbooster.com" },
-        { "name": "Sebastian Krebs", "email": "krebs.seb@gmail.com" },
-        { "name": "Sergey Polischook", "email": "spolischook@gmail.com" },
-        { "name": "Sergey Zolotov", "email": "Enleury@gmail.com" },
-        { "name": "Simon Chrzanowski", "email": "simon@hipaway.com" },
-        { "name": "Stepan Tanasiychuk", "email": "stepan.tanasiychuk@gmail.com" },
-        { "name": "Stéphane HULARD", "email": "stephane@hlrd.me" },
-        { "name": "Sujay Jaju", "email": "sjaju@indivision.net" },
-        { "name": "Sullivan SENECHAL", "email": "soullivaneuh@gmail.com" },
-        { "name": "Sven Loth", "email": "sven.loth@gmail.com" },
-        { "name": "Tiago Garcia", "email": "tiagojsag@gmail.com" },
-        { "name": "Vadim Borodavko", "email": "vadim@swivl.com" },
-        { "name": "Vincent Langlet", "email": "vincentlanglet@hotmail.fr" },
-        { "name": "Wesley van Opdorp", "email": "wesley.van.opdorp@freshheads.com" },
-        { "name": "Yorkie Chadwick", "email": "y.chadwick@networking.ch" },
-        { "name": "antonymous", "email": "nofun69@ymail.com" },
-        { "name": "beavis", "email": "gregbiv@gmail.com" },
-        { "name": "dizda", "email": "dizzda@gmail.com" },
-        { "name": "mirovskyi", "email": "mirovskyi@gmail.com" },
-        { "name": "piotr" },
-        { "name": "piron4o", "email": "piron4o@gmail.com" },
-        { "name": "todwardus", "email": "omg.laci@gmail.com" }
+        {
+            "name": "Alexandr Trigub",
+            "email": "altr@ciklum.com"
+        },
+        {
+            "name": "Alexandr Zagorulya",
+            "email": "Hast4656@gmail.com"
+        },
+        {
+            "name": "Andrej Hudec",
+            "email": "pulzarraider2@gmail.com"
+        },
+        {
+            "name": "Andrew Mor-Yaroslavtsev",
+            "email": "andrejs@gmail.com"
+        },
+        {
+            "name": "Andrey F. Mindubaev",
+            "email": "covex.mobile@gmail.com"
+        },
+        {
+            "name": "Andriy Rakhnin",
+            "email": "a@rakhnin.com"
+        },
+        {
+            "name": "Andriy Savchenko",
+            "email": "andriy.savchenko@gmail.com"
+        },
+        {
+            "name": "Ben Lumley",
+            "email": "ben@benlumley.co.uk"
+        },
+        {
+            "name": "Christian Gripp",
+            "email": "mail@core23.de"
+        },
+        {
+            "name": "Daniel Ancuta",
+            "email": "whisller@gmail.com"
+        },
+        {
+            "name": "Daniel Santana",
+            "email": "github@danielsantana.net"
+        },
+        {
+            "name": "Danny Matthijs",
+            "email": "danny.matthijs@uniweb.eu"
+        },
+        {
+            "name": "David Buchmann",
+            "email": "david@liip.ch"
+        },
+        {
+            "name": "David Maicher",
+            "email": "mail@dmaicher.de"
+        },
+        {
+            "name": "Dimitar Ilkov",
+            "email": "dimitar@e-man.co.uk"
+        },
+        {
+            "name": "Dylan Oliver",
+            "email": "dylan@sweepingdesign.com"
+        },
+        {
+            "name": "Emmanuel Vella",
+            "email": "vella.emmanuel@gmail.com"
+        },
+        {
+            "name": "Eric Funk",
+            "email": "psytraxx@users.noreply.github.com"
+        },
+        {
+            "name": "Erison Silva",
+            "email": "erison.sdn@gmail.com"
+        },
+        {
+            "name": "Evert Harmeling",
+            "email": "evert.harmeling@freshheads.com"
+        },
+        {
+            "name": "Evgeny Soynov",
+            "email": "saboteur@i18.ru"
+        },
+        {
+            "name": "Excel Web Zone",
+            "email": "excelwebzone@gmail.com"
+        },
+        {
+            "name": "Fran Moreno",
+            "email": "franmomu@gmail.com"
+        },
+        {
+            "name": "Francisco Alvarez Alonso",
+            "email": "sormes@gmail.com"
+        },
+        {
+            "name": "Francisco Facioni",
+            "email": "fran6co@gmail.com"
+        },
+        {
+            "name": "Grégoire Paris",
+            "email": "postmaster@greg0ire.fr"
+        },
+        {
+            "name": "Jaime Suez",
+            "email": "jaimesuez@gmail.com"
+        },
+        {
+            "name": "Jark Tonnätt",
+            "email": "j.tonnaett@snap-agentur.de"
+        },
+        {
+            "name": "Javier Spagnoletti",
+            "email": "phansys@gmail.com"
+        },
+        {
+            "name": "Jean Tristan",
+            "email": "chanegue@gmail.com"
+        },
+        {
+            "name": "Joost Farla",
+            "email": "joost.farla@freshheads.com"
+        },
+        {
+            "name": "Jordi Sala Morales",
+            "email": "jordism91@gmail.com"
+        },
+        {
+            "name": "Joris van de Sande",
+            "email": "joris.van.de.sande@freshheads.com"
+        },
+        {
+            "name": "Jose Lopes",
+            "email": "josluis.lopes@gmail.com"
+        },
+        {
+            "name": "Jules Bernable",
+            "email": "jules.bernable@laposte.net"
+        },
+        {
+            "name": "Karol Sójko",
+            "email": "karolsojko@gmail.com"
+        },
+        {
+            "name": "Kevin Scheffelmeier",
+            "email": "ksch@at-world.net"
+        },
+        {
+            "name": "Lucas Filippi",
+            "email": "loucas@gmail.com"
+        },
+        {
+            "name": "Marko Kunic",
+            "email": "kunicmarko20@gmail.com"
+        },
+        {
+            "name": "Mateusz Derks",
+            "email": "mateusz.derks@gmail.com"
+        },
+        {
+            "name": "Matteo Giachino",
+            "email": "matteog@gmail.com"
+        },
+        {
+            "name": "Oleg Andreyev",
+            "email": "mrdezzo@gmail.com"
+        },
+        {
+            "name": "Oskar Stark",
+            "email": "oskarstark@googlemail.com"
+        },
+        {
+            "name": "Pascal Borreli",
+            "email": "pascal@borreli.com"
+        },
+        {
+            "name": "Pascal Hofmann",
+            "email": "mail@pascalhofmann.de"
+        },
+        {
+            "name": "Peter Kokot",
+            "email": "peterkokot@gmail.com"
+        },
+        {
+            "name": "Romain Geissler",
+            "email": "romain.geissler@gmail.com"
+        },
+        {
+            "name": "Romain Norberg",
+            "email": "7681951+romainnorberg@users.noreply.github.com"
+        },
+        {
+            "name": "Rommel M. Zamora",
+            "email": "rzamora@netbooster.com"
+        },
+        {
+            "name": "Sebastian Krebs",
+            "email": "krebs.seb@gmail.com"
+        },
+        {
+            "name": "Sergey Polischook",
+            "email": "spolischook@gmail.com"
+        },
+        {
+            "name": "Sergey Zolotov",
+            "email": "Enleury@gmail.com"
+        },
+        {
+            "name": "Simon Chrzanowski",
+            "email": "simon@hipaway.com"
+        },
+        {
+            "name": "Stepan Tanasiychuk",
+            "email": "stepan.tanasiychuk@gmail.com"
+        },
+        {
+            "name": "Stéphane HULARD",
+            "email": "stephane@hlrd.me"
+        },
+        {
+            "name": "Sujay Jaju",
+            "email": "sjaju@indivision.net"
+        },
+        {
+            "name": "Sullivan SENECHAL",
+            "email": "soullivaneuh@gmail.com"
+        },
+        {
+            "name": "Sven Loth",
+            "email": "sven.loth@gmail.com"
+        },
+        {
+            "name": "Tiago Garcia",
+            "email": "tiagojsag@gmail.com"
+        },
+        {
+            "name": "Vadim Borodavko",
+            "email": "vadim@swivl.com"
+        },
+        {
+            "name": "Vincent Langlet",
+            "email": "vincentlanglet@hotmail.fr"
+        },
+        {
+            "name": "Wesley van Opdorp",
+            "email": "wesley.van.opdorp@freshheads.com"
+        },
+        {
+            "name": "Yorkie Chadwick",
+            "email": "y.chadwick@networking.ch"
+        },
+        {
+            "name": "antonymous",
+            "email": "nofun69@ymail.com"
+        },
+        {
+            "name": "beavis",
+            "email": "gregbiv@gmail.com"
+        },
+        {
+            "name": "dizda",
+            "email": "dizzda@gmail.com"
+        },
+        {
+            "name": "mirovskyi",
+            "email": "mirovskyi@gmail.com"
+        },
+        {
+            "name": "piotr"
+        },
+        {
+            "name": "piron4o",
+            "email": "piron4o@gmail.com"
+        },
+        {
+            "name": "todwardus",
+            "email": "omg.laci@gmail.com"
+        }
     ],
     "homepage": "https://github.com/ideaconnect/sonata-admin-mongodb-bundle",
     "require": {

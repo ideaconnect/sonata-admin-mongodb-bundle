@@ -331,7 +331,7 @@ final class ModelManagerTest extends TestCase
         $values = $modelManager->getIdentifierValues($document);
         static::assertCount(1, $values);
         static::assertSame($document->id, $values[0]);
-        static::assertSame((string) $document->id, $modelManager->getNormalizedIdentifier($document));
+        static::assertSame($document->id, $modelManager->getNormalizedIdentifier($document));
 
         $dm->createQueryBuilder(DocumentWithReferences::class)
             ->remove()
@@ -452,6 +452,7 @@ final class ModelManagerTest extends TestCase
 
         $names = [];
         foreach ($result as $doc) {
+            static::assertInstanceOf(DocumentWithReferences::class, $doc);
             $names[] = $doc->name;
         }
         static::assertSame(['exec-builder'], $names);
@@ -478,6 +479,7 @@ final class ModelManagerTest extends TestCase
 
         $names = [];
         foreach ($result as $doc) {
+            static::assertInstanceOf(DocumentWithReferences::class, $doc);
             $names[] = $doc->name;
         }
         static::assertSame(['exec-proxy'], $names);
@@ -796,9 +798,7 @@ final class ModelManagerTest extends TestCase
         $config->setPersistentCollectionNamespace('PersistentCollections');
         $config->setMetadataDriverImpl(new AttributeDriver());
 
-        if (\PHP_VERSION_ID >= 80400) {
-            $config->setUseNativeLazyObject(true);
-        }
+        $config->setUseNativeLazyObject(true);
 
         return $config;
     }

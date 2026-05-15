@@ -134,8 +134,10 @@ final class ShowBuilderTest extends TestCase
         );
     }
 
-    public function testGetBaseListReturnsAFieldDescriptionCollection(): void
+    public function testGetBaseListReturnsAnEmptyFieldDescriptionCollection(): void
     {
-        static::assertInstanceOf(FieldDescriptionCollection::class, $this->showBuilder->getBaseList());
+        // Return type already enforces FieldDescriptionCollection; assert
+        // shape (empty by default) so the test exercises observable behavior.
+        static::assertCount(0, $this->showBuilder->getBaseList()->getElements());
     }
 }

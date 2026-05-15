@@ -21,8 +21,17 @@ jobs:
 
         env:
             SYMFONY_REQUIRE: ${{ matrix.symfony-require }}
-            PANTHER_SELENIUM_HOST: http://127.0.0.1:4444/wd/hub
 
+        # We deliberately do NOT run Selenium as a service here:
+        # service containers can't reach the runner's loopback where Panther
+        # starts its built-in PHP web server (Firefox-in-container looking up
+        # 127.0.0.1:9080 looks inside itself, not at the host).
+        # Instead we use the Firefox + geckodriver preinstalled on
+        # ubuntu-latest — Panther's FirefoxManager finds both on PATH and
+        # drives Firefox locally, where 127.0.0.1:9080 resolves correctly.
+        # PANTHER_SELENIUM_HOST is therefore left unset in CI; the local
+        # docker-compose dev path (where the host has no usable Firefox)
+        # still uses the Selenium grid.
         services:
             mongo:
                 image: mongo:latest
@@ -30,17 +39,6 @@ jobs:
                     - 27017:27017
                 options: >-
                     --health-cmd "mongosh --quiet --eval 'db.runCommand({ping:1}).ok' | grep -q ^1$"
-                    --health-interval 5s
-                    --health-timeout 3s
-                    --health-retries 20
-
-            selenium:
-                image: selenium/standalone-firefox:latest
-                ports:
-                    - 4444:4444
-                options: >-
-                    --shm-size=2g
-                    --health-cmd "curl -fsS http://localhost:4444/status | grep -q '\"ready\": true'"
                     --health-interval 5s
                     --health-timeout 3s
                     --health-retries 20
