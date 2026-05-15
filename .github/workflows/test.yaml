@@ -20,13 +20,30 @@ jobs:
         continue-on-error: ${{ matrix.allowed-to-fail }}
 
         env:
-            SYMFONY_REQUIRE: ${{matrix.symfony-require}}
+            SYMFONY_REQUIRE: ${{ matrix.symfony-require }}
+            PANTHER_SELENIUM_HOST: http://127.0.0.1:4444/wd/hub
 
         services:
             mongo:
-                image: mongo
+                image: mongo:latest
                 ports:
                     - 27017:27017
+                options: >-
+                    --health-cmd "mongosh --quiet --eval 'db.runCommand({ping:1}).ok' | grep -q ^1$"
+                    --health-interval 5s
+                    --health-timeout 3s
+                    --health-retries 20
+
+            selenium:
+                image: selenium/standalone-firefox:latest
+                ports:
+                    - 4444:4444
+                options: >-
+                    --shm-size=2g
+                    --health-cmd "curl -fsS http://localhost:4444/status | grep -q '\"ready\": true'"
+                    --health-interval 5s
+                    --health-timeout 3s
+                    --health-retries 20
 
         strategy:
             fail-fast: false
@@ -61,7 +78,7 @@ jobs:
 
         steps:
             - name: Checkout
-              uses: actions/checkout@v4
+              uses: actions/checkout@v5
 
             - name: Install PHP with extensions
               uses: shivammathur/setup-php@v2
