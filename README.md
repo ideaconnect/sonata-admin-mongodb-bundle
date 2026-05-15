@@ -36,18 +36,6 @@ Upstream Sonata documentation still applies for the public API and configuration
 Fork-specific changes (modernisation, performance and correctness fixes, BC notes for the 5.x
 cut) are tracked in [BEST_VERSION.md](BEST_VERSION.md) and [CHANGELOG.md](CHANGELOG.md).
 
-## Continuous integration
-
-Pushes and pull requests run the full PHPUnit suite on the [5.x test workflow][test_link]
-across the supported PHP × Symfony matrix and upload coverage to
-[Codecov][coverage_link]. Coverage thresholds and ignored paths live in
-[`codecov.yml`](codecov.yml).
-
-**One-time setup for maintainers:** Codecov requires a project token for uploads from forks.
-Create one at [codecov.io](https://app.codecov.io/) and add it to the GitHub repo under
-`Settings → Secrets and variables → Actions` as `CODECOV_TOKEN`. The workflow already wires
-it into the upload step.
-
 ## Running the tests locally
 
 The test suite needs MongoDB and (for the Panther functional tests) a Firefox WebDriver.
