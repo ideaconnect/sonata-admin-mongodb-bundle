@@ -13,6 +13,7 @@ declare(strict_types=1);
 
 namespace Sonata\DoctrineMongoDBAdminBundle\Tests\Filter;
 
+use PHPUnit\Framework\Attributes\DataProvider;
 use Sonata\AdminBundle\Filter\Model\FilterData;
 use Sonata\AdminBundle\Form\Type\Operator\ContainsOperatorType;
 use Sonata\AdminBundle\Form\Type\Operator\EqualOperatorType;
@@ -145,7 +146,7 @@ final class ChoiceFilterTest extends FilterWithQueryBuilderTestCase
         yield 'false' => [false];
     }
 
-    #[\PHPUnit\Framework\Attributes\DataProvider('provideFilterIsInactiveForFalsyScalarCases')]
+    #[DataProvider('provideFilterIsInactiveForFalsyScalarCases')]
     public function testFilterIsInactiveForFalsyScalar(mixed $value): void
     {
         $filter = $this->createFilter();

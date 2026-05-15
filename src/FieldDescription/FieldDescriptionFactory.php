@@ -19,9 +19,9 @@ use Doctrine\Persistence\ManagerRegistry;
 use Sonata\AdminBundle\FieldDescription\FieldDescriptionFactoryInterface;
 use Sonata\AdminBundle\FieldDescription\FieldDescriptionInterface;
 
-final class FieldDescriptionFactory implements FieldDescriptionFactoryInterface
+final readonly class FieldDescriptionFactory implements FieldDescriptionFactoryInterface
 {
-    public function __construct(private readonly ManagerRegistry $registry)
+    public function __construct(private ManagerRegistry $registry)
     {
     }
 

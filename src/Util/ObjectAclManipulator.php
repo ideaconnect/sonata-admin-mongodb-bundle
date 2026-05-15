@@ -25,9 +25,9 @@ use Symfony\Component\Security\Acl\Domain\UserSecurityIdentity;
 
 final class ObjectAclManipulator extends BaseObjectAclManipulator
 {
-    private const BATCH_SIZE = 20;
+    private const int BATCH_SIZE = 20;
 
-    private const PROGRESS_REPORT_INTERVAL = 200;
+    private const int PROGRESS_REPORT_INTERVAL = 200;
 
     public function __construct(private readonly ManagerRegistry $registry)
     {

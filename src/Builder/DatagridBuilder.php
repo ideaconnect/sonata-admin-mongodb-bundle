@@ -31,13 +31,13 @@ use Symfony\Component\Form\FormFactoryInterface;
 /**
  * @phpstan-implements DatagridBuilderInterface<ProxyQueryInterface<object>>
  */
-final class DatagridBuilder implements DatagridBuilderInterface
+final readonly class DatagridBuilder implements DatagridBuilderInterface
 {
     public function __construct(
-        private readonly FormFactoryInterface $formFactory,
-        private readonly FilterFactoryInterface $filterFactory,
-        private readonly TypeGuesserInterface $guesser,
-        private readonly bool $csrfTokenEnabled = true,
+        private FormFactoryInterface $formFactory,
+        private FilterFactoryInterface $filterFactory,
+        private TypeGuesserInterface $guesser,
+        private bool $csrfTokenEnabled = true,
     ) {
     }
 

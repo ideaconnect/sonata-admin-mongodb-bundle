@@ -30,6 +30,7 @@ use MongoDB\Driver\Exception\RuntimeException;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\MockObject\Stub;
 use PHPUnit\Framework\TestCase;
+use Sonata\AdminBundle\Datagrid\ProxyQueryInterface;
 use Sonata\AdminBundle\Exception\ModelManagerException;
 use Sonata\DoctrineMongoDBAdminBundle\Datagrid\ProxyQuery;
 use Sonata\DoctrineMongoDBAdminBundle\Model\ModelManager;
@@ -391,7 +392,7 @@ final class ModelManagerTest extends TestCase
 
         $modelManager->addIdentifiersToQuery(
             TestDocument::class,
-            static::createStub(\Sonata\AdminBundle\Datagrid\ProxyQueryInterface::class),
+            static::createStub(ProxyQueryInterface::class),
             ['1'],
         );
     }
@@ -404,7 +405,7 @@ final class ModelManagerTest extends TestCase
 
         $modelManager->batchDelete(
             TestDocument::class,
-            static::createStub(\Sonata\AdminBundle\Datagrid\ProxyQueryInterface::class),
+            static::createStub(ProxyQueryInterface::class),
         );
     }
 
@@ -750,13 +751,13 @@ final class ModelManagerTest extends TestCase
         $dm
             ->expects(static::exactly([] === $result ? 1 : (int) ceil(\count($result) / $batchSize)))
             ->method('flush')
-            ->willReturnCallback(static function () use (&$onConsecutiveFlush) {
+            ->willReturnCallback(static function () use (&$onConsecutiveFlush): void {
                 $e = array_shift($onConsecutiveFlush);
                 if ($e instanceof \Exception) {
                     throw $e;
                 }
-
-                return $e;
+                // Non-exception values in the stub queue are inert: flush()
+                // returns void, so the callback returns void to match.
             });
 
         $eventManager = new EventManager();

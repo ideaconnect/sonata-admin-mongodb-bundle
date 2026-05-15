@@ -25,6 +25,7 @@ use Sonata\DoctrineMongoDBAdminBundle\Tests\Fixtures\Document\DocumentForAcl;
 use Sonata\DoctrineMongoDBAdminBundle\Util\ObjectAclManipulator;
 use Symfony\Bridge\Doctrine\ManagerRegistry;
 use Symfony\Component\Console\Output\BufferedOutput;
+use Symfony\Component\Security\Acl\Domain\UserSecurityIdentity;
 use Symfony\Component\Security\Acl\Model\MutableAclInterface;
 
 final class ObjectAclManipulatorTest extends TestCase
@@ -122,7 +123,7 @@ final class ObjectAclManipulatorTest extends TestCase
         $this->dm->flush();
 
         $output = $this->runBatchConfigureAcls(
-            new \Symfony\Component\Security\Acl\Domain\UserSecurityIdentity('user', 'App\\Entity\\User'),
+            new UserSecurityIdentity('user', 'App\\Entity\\User'),
         );
 
         static::assertStringContainsString('and set the object owner', $output);
@@ -131,7 +132,7 @@ final class ObjectAclManipulatorTest extends TestCase
     }
 
     private function runBatchConfigureAcls(
-        ?\Symfony\Component\Security\Acl\Domain\UserSecurityIdentity $identity = null,
+        ?UserSecurityIdentity $identity = null,
     ): string {
         $aclSecurityHandler = static::createStub(AclSecurityHandlerInterface::class);
         $aclSecurityHandler->method('findObjectAcls')->willReturn(new \SplObjectStorage());

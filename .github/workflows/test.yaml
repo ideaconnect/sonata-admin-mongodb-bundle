@@ -54,15 +54,9 @@ jobs:
                 symfony-require: ['']
                 variant: [normal]
                 include:
-                    - php-version: '8.4'
-                      dependencies: lowest
-                      allowed-to-fail: false
-                      variant: normal
-                    - php-version: '8.5'
-                      dependencies: highest
-                      allowed-to-fail: false
-                      symfony-require: 7.3.*
-                      variant: symfony/symfony:"7.3.*"
+                    # Pin Symfony 7.4 (latest LTS-ish) and 8.0 to make sure both
+                    # supported lines stay green; the PHP 8.4 + lowest row was
+                    # dropped together with Symfony 7.3 / persistence 3 support.
                     - php-version: '8.5'
                       dependencies: highest
                       allowed-to-fail: false

@@ -21,7 +21,7 @@ use Sonata\DoctrineMongoDBAdminBundle\Tests\App\Document\PhoneNumber;
 
 final class AuthorFixtures extends Fixture
 {
-    public const AUTHOR = 'author';
+    public const string AUTHOR = 'author';
 
     public function load(ObjectManager $manager): void
     {

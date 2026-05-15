@@ -35,15 +35,15 @@ use Symfony\Component\PropertyAccess\PropertyAccessorInterface;
  *
  * @template-implements ModelManagerInterface<T>
  */
-final class ModelManager implements ModelManagerInterface, ProxyResolverInterface
+final readonly class ModelManager implements ModelManagerInterface, ProxyResolverInterface
 {
-    public const ID_SEPARATOR = '-';
+    public const string ID_SEPARATOR = '-';
 
-    private const BATCH_SIZE = 20;
+    private const int BATCH_SIZE = 20;
 
     public function __construct(
-        private readonly ManagerRegistry $registry,
-        private readonly PropertyAccessorInterface $propertyAccessor,
+        private ManagerRegistry $registry,
+        private PropertyAccessorInterface $propertyAccessor,
     ) {
     }
 

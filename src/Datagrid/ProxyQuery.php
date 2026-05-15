@@ -29,9 +29,9 @@ use Sonata\AdminBundle\Datagrid\ProxyQueryInterface as BaseProxyQueryInterface;
  */
 final class ProxyQuery implements ProxyQueryInterface
 {
-    private const SORT_FIELD_PATTERN = '/^[A-Za-z_][A-Za-z0-9_]*(?:\.[A-Za-z_][A-Za-z0-9_]*)*$/';
+    private const string SORT_FIELD_PATTERN = '/^[A-Za-z_][A-Za-z0-9_]*(?:\.[A-Za-z_][A-Za-z0-9_]*)*$/';
 
-    private const SORT_ORDERS = ['asc', 'desc'];
+    private const array SORT_ORDERS = ['asc', 'desc'];
 
     private ?string $sortBy = null;
 

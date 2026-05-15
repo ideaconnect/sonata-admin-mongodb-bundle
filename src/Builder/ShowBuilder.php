@@ -18,14 +18,14 @@ use Sonata\AdminBundle\FieldDescription\FieldDescriptionCollection;
 use Sonata\AdminBundle\FieldDescription\FieldDescriptionInterface;
 use Sonata\AdminBundle\FieldDescription\TypeGuesserInterface;
 
-final class ShowBuilder implements ShowBuilderInterface
+final readonly class ShowBuilder implements ShowBuilderInterface
 {
     /**
      * @param string[] $templates
      */
     public function __construct(
-        private readonly TypeGuesserInterface $guesser,
-        private readonly array $templates,
+        private TypeGuesserInterface $guesser,
+        private array $templates,
     ) {
     }
 
