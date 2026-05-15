@@ -46,7 +46,7 @@ final class StringFilter extends Filter implements SearchableFilterInterface
 
     public function isSearchEnabled(): bool
     {
-        return $this->getOption('global_search');
+        return true === $this->getOption('global_search');
     }
 
     protected function filter(ProxyQueryInterface $query, string $field, FilterData $data): void

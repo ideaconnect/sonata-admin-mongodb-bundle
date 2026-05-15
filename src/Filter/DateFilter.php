@@ -17,19 +17,9 @@ use Symfony\Component\Form\Extension\Core\Type\DateType;
 
 final class DateFilter extends AbstractDateFilter
 {
-    /**
-     * This filter has no range.
-     *
-     * @var bool
-     */
-    protected $range = false;
+    protected bool $range = false;
 
-    /**
-     * This filter does not allow filtering by time.
-     *
-     * @var bool
-     */
-    protected $time = false;
+    protected bool $time = false;
 
     protected function getDateFieldType(): string
     {

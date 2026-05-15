@@ -25,10 +25,14 @@ use Sonata\AdminBundle\Datagrid\Pager as BasePager;
  */
 final class Pager extends BasePager
 {
-    private int $resultsCount = 0;
+    private ?int $resultsCount = null;
 
     public function countResults(): int
     {
+        if (null === $this->resultsCount) {
+            throw new \LogicException('Pager has not been initialized. Call init() before countResults().');
+        }
+
         return $this->resultsCount;
     }
 
@@ -75,9 +79,11 @@ final class Pager extends BasePager
      */
     private function computeResultsCount(ProxyQueryInterface $query): int
     {
-        $countQuery = clone $query;
-
-        $result = $countQuery->getQueryBuilder()->count()->getQuery()->execute();
+        // Clone the underlying Builder directly: $queryBuilder->count() flips
+        // the builder into TYPE_COUNT, so we need an isolated copy, but we
+        // don't need a second ProxyQuery wrapper around it.
+        $countBuilder = clone $query->getQueryBuilder();
+        $result = $countBuilder->count()->getQuery()->execute();
 
         \assert(\is_int($result));
 

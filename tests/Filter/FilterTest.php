@@ -79,6 +79,20 @@ final class FilterTest extends TestCase
         static::assertFalse($filter->isActive());
     }
 
+    public function testApplyThrowsWhenProxyQueryIsNotOurInterface(): void
+    {
+        $filter = new TestFilter();
+        $filter->initialize('field_name', []);
+
+        $this->expectException(\TypeError::class);
+        $this->expectExceptionMessage('MUST implement');
+
+        $filter->apply(
+            static::createStub(\Sonata\AdminBundle\Datagrid\ProxyQueryInterface::class),
+            FilterData::fromArray(['value' => 'x']),
+        );
+    }
+
     public function testUseNameWithParentAssociationMappings(): void
     {
         $filter = new TestFilter();

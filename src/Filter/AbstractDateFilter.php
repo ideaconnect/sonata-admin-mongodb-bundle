@@ -22,17 +22,13 @@ abstract class AbstractDateFilter extends Filter
 {
     /**
      * Flag indicating that filter will have range.
-     *
-     * @var bool
      */
-    protected $range = false;
+    protected bool $range = false;
 
     /**
      * Flag indicating that filter will filter by datetime instead by date.
-     *
-     * @var bool
      */
-    protected $time = false;
+    protected bool $time = false;
 
     final public function getDefaultOptions(): array
     {

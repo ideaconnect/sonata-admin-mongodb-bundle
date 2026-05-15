@@ -25,7 +25,11 @@ use Symfony\Component\Security\Acl\Domain\UserSecurityIdentity;
 
 final class ObjectAclManipulator extends BaseObjectAclManipulator
 {
-    public function __construct(private ManagerRegistry $registry)
+    private const BATCH_SIZE = 20;
+
+    private const PROGRESS_REPORT_INTERVAL = 200;
+
+    public function __construct(private readonly ManagerRegistry $registry)
     {
     }
 
@@ -51,30 +55,31 @@ final class ObjectAclManipulator extends BaseObjectAclManipulator
         $countAdded = 0;
 
         try {
-            $batchSize = 20;
-            $batchSizeOutput = 200;
             $objectIds = [];
-            $objectIdIterator = new \ArrayIterator();
 
             foreach ($qb->getQuery()->getIterator() as $row) {
                 \assert(null !== $row);
 
                 $objectIds[] = ObjectIdentity::fromDomainObject($row);
-                $objectIdIterator = new \ArrayIterator($objectIds);
 
                 // detach from Doctrine, so that it can be Garbage-Collected immediately
                 $om->detach($row);
 
                 ++$count;
 
-                if (0 === ($count % $batchSize)) {
-                    [$batchAdded, $batchUpdated] = $this->configureAcls($output, $admin, $objectIdIterator, $securityIdentity);
+                if (0 === ($count % self::BATCH_SIZE)) {
+                    [$batchAdded, $batchUpdated] = $this->configureAcls(
+                        $output,
+                        $admin,
+                        new \ArrayIterator($objectIds),
+                        $securityIdentity,
+                    );
                     $countAdded += $batchAdded;
                     $countUpdated += $batchUpdated;
                     $objectIds = [];
                 }
 
-                if (0 === ($count % $batchSizeOutput)) {
+                if (0 === ($count % self::PROGRESS_REPORT_INTERVAL)) {
                     $output->writeln(\sprintf(
                         '   - generated class ACEs%s for %s objects (added %s, updated %s)',
                         $objectOwnersMsg,
@@ -85,8 +90,13 @@ final class ObjectAclManipulator extends BaseObjectAclManipulator
                 }
             }
 
-            if (\count($objectIds) > 0) {
-                [$batchAdded, $batchUpdated] = $this->configureAcls($output, $admin, $objectIdIterator, $securityIdentity);
+            if ([] !== $objectIds) {
+                [$batchAdded, $batchUpdated] = $this->configureAcls(
+                    $output,
+                    $admin,
+                    new \ArrayIterator($objectIds),
+                    $securityIdentity,
+                );
                 $countAdded += $batchAdded;
                 $countUpdated += $batchUpdated;
             }

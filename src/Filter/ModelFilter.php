@@ -81,7 +81,15 @@ final class ModelFilter extends Filter
 
         $ids = [];
         foreach ($data->getValue() as $value) {
+            if (!\is_object($value) || !method_exists($value, 'getId')) {
+                continue;
+            }
+
             $ids[] = self::fixIdentifier($value->getId());
+        }
+
+        if ([] === $ids) {
+            return;
         }
 
         if ($data->isType(EqualOperatorType::TYPE_NOT_EQUAL)) {
@@ -98,7 +106,16 @@ final class ModelFilter extends Filter
      */
     protected function handleScalar(ProxyQueryInterface $query, string $field, FilterData $data): void
     {
-        $id = self::fixIdentifier($data->getValue()->getId());
+        $value = $data->getValue();
+
+        // Ignore non-object values (e.g. submitted strings/null from malformed
+        // payloads) — the model filter only knows how to compare against a
+        // domain object exposing getId().
+        if (!\is_object($value) || !method_exists($value, 'getId')) {
+            return;
+        }
+
+        $id = self::fixIdentifier($value->getId());
 
         if ($data->isType(EqualOperatorType::TYPE_NOT_EQUAL)) {
             $query->getQueryBuilder()->field($field)->notEqual($id);
@@ -110,10 +127,25 @@ final class ModelFilter extends Filter
     }
 
     /**
-     * Return ObjectId if $id is ObjectId in string representation, otherwise custom string.
+     * Return an ObjectId when $id is the string form of one, otherwise return
+     * the identifier as-is (string or int). Empty / null / array / other
+     * shapes are rejected: previously, fixIdentifier would echo them back
+     * silently and the caller would push them into an `equals`/`in` query
+     * where they'd match nothing or match unrelated documents.
      */
-    protected static function fixIdentifier(mixed $id): string|ObjectId
+    protected static function fixIdentifier(mixed $id): string|int|ObjectId
     {
+        if (\is_int($id)) {
+            return $id;
+        }
+
+        if (!\is_string($id) || '' === $id) {
+            throw new \InvalidArgumentException(\sprintf(
+                'Expected identifier to be a non-empty string or int, got "%s".',
+                get_debug_type($id),
+            ));
+        }
+
         try {
             return new ObjectId($id);
         } catch (InvalidArgumentException) {
@@ -126,20 +158,14 @@ final class ModelFilter extends Filter
      */
     private function getIdentifierField(string $field): string
     {
-        $field_mapping = $this->getFieldMapping();
+        $fieldMapping = $this->getFieldMapping();
 
-        if (isset($field_mapping['storeAs'])) {
-            switch ($field_mapping['storeAs']) {
-                case ClassMetadata::REFERENCE_STORE_AS_REF:
-                    return $field.'.id';
-                case ClassMetadata::REFERENCE_STORE_AS_ID:
-                    return $field;
-                case ClassMetadata::REFERENCE_STORE_AS_DB_REF_WITH_DB:
-                case ClassMetadata::REFERENCE_STORE_AS_DB_REF:
-                    return $field.'.$id';
-            }
-        }
-
-        return $field.'._id';
+        return match ($fieldMapping['storeAs'] ?? null) {
+            ClassMetadata::REFERENCE_STORE_AS_REF => $field.'.id',
+            ClassMetadata::REFERENCE_STORE_AS_ID => $field,
+            ClassMetadata::REFERENCE_STORE_AS_DB_REF_WITH_DB,
+            ClassMetadata::REFERENCE_STORE_AS_DB_REF => $field.'.$id',
+            default => $field.'._id',
+        };
     }
 }

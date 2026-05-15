@@ -19,6 +19,7 @@ use Sonata\AdminBundle\Filter\Model\FilterData;
 use Sonata\AdminBundle\Form\Type\Operator\EqualOperatorType;
 use Sonata\DoctrineMongoDBAdminBundle\Datagrid\ProxyQuery;
 use Sonata\DoctrineMongoDBAdminBundle\Filter\IdFilter;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
 
 final class IdFilterTest extends FilterWithQueryBuilderTestCase
 {
@@ -106,5 +107,46 @@ final class IdFilterTest extends FilterWithQueryBuilderTestCase
             'type' => EqualOperatorType::TYPE_NOT_EQUAL,
         ]));
         static::assertTrue($filter->isActive());
+    }
+
+    public function testGetDefaultOptions(): void
+    {
+        $filter = new IdFilter();
+
+        static::assertSame(
+            [
+                'field_type' => TextType::class,
+                'operator_type' => EqualOperatorType::class,
+            ],
+            $filter->getDefaultOptions(),
+        );
+    }
+
+    public function testGetFormOptionsExposesFieldAndOperatorMetadata(): void
+    {
+        $filter = new IdFilter();
+        $filter->initialize('field_name', [
+            'field_name' => self::DEFAULT_FIELD_NAME,
+        ]);
+
+        $options = $filter->getFormOptions();
+
+        static::assertSame(TextType::class, $options['field_type']);
+        static::assertSame(EqualOperatorType::class, $options['operator_type']);
+    }
+
+    public function testItIgnoresValueThatIsOnlyWhitespace(): void
+    {
+        $filter = new IdFilter();
+        $filter->initialize('field_name', [
+            'field_name' => self::DEFAULT_FIELD_NAME,
+        ]);
+
+        $queryBuilder = $this->getQueryBuilder();
+        $queryBuilder->expects(static::never())->method('field');
+
+        $filter->apply(new ProxyQuery($queryBuilder), FilterData::fromArray(['value' => '   ']));
+
+        static::assertFalse($filter->isActive());
     }
 }

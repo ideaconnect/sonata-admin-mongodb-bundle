@@ -66,6 +66,57 @@ final class DateFilterTest extends FilterWithQueryBuilderTestCase
         static::assertTrue($filter->isActive());
     }
 
+    public function testFilterRecordsWholeDayWithImmutableDate(): void
+    {
+        $filter = $this->createFilter();
+
+        $date = new \DateTimeImmutable('2016-08-31 23:59:59.0-03:00');
+        $datePlusOneDay = $date->add(new \DateInterval('P1D'));
+
+        $queryBuilder = $this->getQueryBuilder();
+        $queryBuilder
+            ->expects(static::once())
+            ->method('gte')
+            ->with($date);
+
+        $queryBuilder
+            ->expects(static::once())
+            ->method('lt')
+            ->with($datePlusOneDay);
+
+        $filter->apply(new ProxyQuery($queryBuilder), FilterData::fromArray(['value' => $date]));
+
+        static::assertTrue($filter->isActive());
+    }
+
+    public function testFilterIsInactiveWhenValueIsNotADate(): void
+    {
+        $filter = $this->createFilter();
+
+        $queryBuilder = $this->getQueryBuilder();
+        $queryBuilder->expects(static::never())->method('field');
+
+        $filter->apply(new ProxyQuery($queryBuilder), FilterData::fromArray(['value' => 'not-a-date']));
+
+        static::assertFalse($filter->isActive());
+    }
+
+    public function testFilterThrowsForUnknownOperatorType(): void
+    {
+        $filter = $this->createFilter();
+
+        $this->expectException(\InvalidArgumentException::class);
+        $this->expectExceptionMessage('not valid');
+
+        $filter->apply(
+            new ProxyQuery($this->getQueryBuilder()),
+            FilterData::fromArray([
+                'type' => 9_999_999,
+                'value' => new \DateTime('2020-01-01'),
+            ]),
+        );
+    }
+
     private function createFilter(): DateFilter
     {
         $filter = new DateFilter();

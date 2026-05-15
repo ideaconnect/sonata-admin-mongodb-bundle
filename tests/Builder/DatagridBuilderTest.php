@@ -54,19 +54,19 @@ final class DatagridBuilderTest extends TestCase
     private FormFactoryInterface $formFactory;
 
     /**
-     * @var MockObject&FilterFactoryInterface
+     * @var Stub&FilterFactoryInterface
      */
     private FilterFactoryInterface $filterFactory;
 
     /**
-     * @var MockObject&AdminInterface<object>
+     * @var Stub&AdminInterface<object>
      */
     private AdminInterface $admin;
 
     protected function setUp(): void
     {
         $this->formFactory = static::createStub(FormFactoryInterface::class);
-        $this->filterFactory = $this->createMock(FilterFactoryInterface::class);
+        $this->filterFactory = static::createStub(FilterFactoryInterface::class);
         $this->typeGuesser = static::createStub(TypeGuesserInterface::class);
 
         $this->datagridBuilder = new DatagridBuilder(
@@ -75,7 +75,7 @@ final class DatagridBuilderTest extends TestCase
             $this->typeGuesser
         );
 
-        $this->admin = $this->createMock(AdminInterface::class);
+        $this->admin = static::createStub(AdminInterface::class);
     }
 
     /**
@@ -136,15 +136,17 @@ final class DatagridBuilderTest extends TestCase
         $documentClass = DocumentWithReferences::class;
         $classMetadata = $this->getMetadataForDocumentWithAttributes($documentClass);
 
+        $admin = $this->createMock(AdminInterface::class);
+
         $fieldDescription = new FieldDescription(
             'embeddedDocument',
             [],
             $classMetadata->fieldMappings['embeddedDocument'],
             $classMetadata->associationMappings['embeddedDocument']
         );
-        $fieldDescription->setAdmin($this->admin);
+        $fieldDescription->setAdmin($admin);
 
-        $this->admin
+        $admin
             ->expects(static::once())
             ->method('attachAdminClass');
 
@@ -155,7 +157,8 @@ final class DatagridBuilderTest extends TestCase
 
     public function testAddFilterNoType(): void
     {
-        $this->admin
+        $admin = $this->createMock(AdminInterface::class);
+        $admin
             ->expects(static::once())
             ->method('addFilterFieldDescription');
 
@@ -168,27 +171,34 @@ final class DatagridBuilderTest extends TestCase
         ], Guess::VERY_HIGH_CONFIDENCE);
 
         $fieldDescription = new FieldDescription('test');
-        $fieldDescription->setAdmin($this->admin);
+        $fieldDescription->setAdmin($admin);
 
         $this->typeGuesser->method('guess')->willReturn($guessType);
 
-        $this->admin->method('getCode')->willReturn('someFakeCode');
+        $admin->method('getCode')->willReturn('someFakeCode');
 
-        $this->filterFactory->method('create')->willReturn(new ModelFilter());
+        $filterFactory = $this->createMock(FilterFactoryInterface::class);
+        $filterFactory->method('create')->willReturn(new ModelFilter());
 
-        $this->admin->method('getLabelTranslatorStrategy')->willReturn(new FormLabelTranslatorStrategy());
+        $admin->method('getLabelTranslatorStrategy')->willReturn(new FormLabelTranslatorStrategy());
 
         $datagrid
             ->expects(static::once())
             ->method('addFilter')
             ->with(static::isInstanceOf(ModelFilter::class));
 
-        $this->filterFactory
+        $filterFactory
             ->expects(static::once())
             ->method('create')
             ->with('test', ModelFilter::class);
 
-        $this->datagridBuilder->addFilter(
+        $datagridBuilder = new DatagridBuilder(
+            $this->formFactory,
+            $filterFactory,
+            $this->typeGuesser,
+        );
+
+        $datagridBuilder->addFilter(
             $datagrid,
             null,
             $fieldDescription
@@ -200,18 +210,19 @@ final class DatagridBuilderTest extends TestCase
 
     public function testAddFilterWithType(): void
     {
-        $this->admin
+        $admin = $this->createMock(AdminInterface::class);
+        $admin
             ->expects(static::once())
             ->method('addFilterFieldDescription');
 
         $datagrid = $this->createMock(DatagridInterface::class);
 
         $fieldDescription = new FieldDescription('test');
-        $fieldDescription->setAdmin($this->admin);
+        $fieldDescription->setAdmin($admin);
 
         $this->filterFactory->method('create')->willReturn(new ModelFilter());
 
-        $this->admin->method('getLabelTranslatorStrategy')->willReturn(new FormLabelTranslatorStrategy());
+        $admin->method('getLabelTranslatorStrategy')->willReturn(new FormLabelTranslatorStrategy());
 
         $datagrid
             ->expects(static::once())
@@ -234,5 +245,53 @@ final class DatagridBuilderTest extends TestCase
         $this->datagridBuilder->fixFieldDescription($fieldDescription);
 
         static::assertSame('fieldName', $fieldDescription->getOption('field_name'));
+    }
+
+    public function testAddFilterThrowsWhenTypeIsNullAndGuesserReturnsNull(): void
+    {
+        $this->typeGuesser->method('guess')->willReturn(null);
+
+        $admin = static::createStub(AdminInterface::class);
+
+        $fieldDescription = new FieldDescription('test');
+        $fieldDescription->setAdmin($admin);
+
+        $this->expectException(\InvalidArgumentException::class);
+        $this->expectExceptionMessageMatches('/Cannot guess a type/');
+
+        $this->datagridBuilder->addFilter(
+            static::createStub(DatagridInterface::class),
+            null,
+            $fieldDescription,
+        );
+    }
+
+    public function testGetBaseDatagridThrowsWhenAdminQueryIsForeign(): void
+    {
+        $admin = static::createStub(AdminInterface::class);
+        $admin->method('getPagerType')->willReturn(Pager::TYPE_DEFAULT);
+        // Return a foreign ProxyQueryInterface, not ours — TypeError expected.
+        $admin->method('createQuery')->willReturn(
+            static::createStub(\Sonata\AdminBundle\Datagrid\ProxyQueryInterface::class),
+        );
+        $this->formFactory
+            ->method('createNamedBuilder')
+            ->willReturn(static::createStub(\Symfony\Component\Form\FormBuilderInterface::class));
+
+        $this->expectException(\TypeError::class);
+        $this->expectExceptionMessage('MUST implement');
+
+        $this->datagridBuilder->getBaseDatagrid($admin);
+    }
+
+    public function testGetBaseDatagridThrowsForUnknownPagerType(): void
+    {
+        $admin = static::createStub(AdminInterface::class);
+        $admin->method('getPagerType')->willReturn('unknown-pager-type');
+
+        $this->expectException(\RuntimeException::class);
+        $this->expectExceptionMessageMatches('/Unknown pager type/');
+
+        $this->datagridBuilder->getBaseDatagrid($admin);
     }
 }

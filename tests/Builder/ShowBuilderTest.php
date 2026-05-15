@@ -14,7 +14,6 @@ declare(strict_types=1);
 namespace Sonata\DoctrineMongoDBAdminBundle\Tests\Builder;
 
 use Doctrine\ODM\MongoDB\Mapping\ClassMetadata;
-use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\MockObject\Stub;
 use PHPUnit\Framework\TestCase;
 use Sonata\AdminBundle\Admin\AdminInterface;
@@ -37,11 +36,6 @@ final class ShowBuilderTest extends TestCase
 
     private ShowBuilder $showBuilder;
 
-    /**
-     * @var MockObject&AdminInterface<object>
-     */
-    private AdminInterface $admin;
-
     protected function setUp(): void
     {
         $this->guesser = static::createStub(TypeGuesserInterface::class);
@@ -53,19 +47,18 @@ final class ShowBuilderTest extends TestCase
                 FieldDescriptionInterface::TYPE_MANY_TO_ONE => '@SonataAdmin/CRUD/Association/show_many_to_one.html.twig',
             ]
         );
-
-        $this->admin = $this->createMock(AdminInterface::class);
     }
 
     public function testAddFieldNoType(): void
     {
+        $admin = $this->createMock(AdminInterface::class);
         $typeGuess = static::createStub(TypeGuess::class);
 
         $fieldDescription = new FieldDescription('FakeName', [], ['type' => ClassMetadata::ONE]);
-        $fieldDescription->setAdmin($this->admin);
+        $fieldDescription->setAdmin($admin);
 
-        $this->admin->expects(static::once())->method('attachAdminClass');
-        $this->admin->expects(static::once())->method('addShowFieldDescription');
+        $admin->expects(static::once())->method('attachAdminClass');
+        $admin->expects(static::once())->method('addShowFieldDescription');
 
         $typeGuess->method('getType')->willReturn('fakeType');
 
@@ -82,10 +75,12 @@ final class ShowBuilderTest extends TestCase
 
     public function testAddFieldWithType(): void
     {
-        $fieldDescription = new FieldDescription('FakeName');
-        $fieldDescription->setAdmin($this->admin);
+        $admin = $this->createMock(AdminInterface::class);
 
-        $this->admin->expects(static::once())->method('addShowFieldDescription');
+        $fieldDescription = new FieldDescription('FakeName');
+        $fieldDescription->setAdmin($admin);
+
+        $admin->expects(static::once())->method('addShowFieldDescription');
 
         $this->showBuilder->addField(
             new FieldDescriptionCollection(),
@@ -98,11 +93,49 @@ final class ShowBuilderTest extends TestCase
 
     public function testFixFieldDescriptionException(): void
     {
+        $admin = static::createStub(AdminInterface::class);
+
         $fieldDescription = new FieldDescription('name');
-        $fieldDescription->setAdmin($this->admin);
+        $fieldDescription->setAdmin($admin);
 
         $this->expectException(\RuntimeException::class);
 
         $this->showBuilder->fixFieldDescription($fieldDescription);
+    }
+
+    public function testAddFieldThrowsWhenTypeGuesserReturnsNull(): void
+    {
+        $admin = static::createStub(AdminInterface::class);
+        $this->guesser->method('guess')->willReturn(null);
+
+        $fieldDescription = new FieldDescription('foo');
+        $fieldDescription->setAdmin($admin);
+
+        $this->expectException(\InvalidArgumentException::class);
+        $this->expectExceptionMessageMatches('/Cannot guess a type/');
+
+        $this->showBuilder->addField(new FieldDescriptionCollection(), null, $fieldDescription);
+    }
+
+    public function testFixFieldDescriptionDefaultsTemplateAndLabel(): void
+    {
+        $admin = static::createStub(AdminInterface::class);
+
+        $fieldDescription = new FieldDescription('FakeName');
+        $fieldDescription->setAdmin($admin);
+        $fieldDescription->setType(FieldDescriptionInterface::TYPE_MANY_TO_ONE);
+
+        $this->showBuilder->fixFieldDescription($fieldDescription);
+
+        static::assertSame('FakeName', $fieldDescription->getOption('label'));
+        static::assertSame(
+            '@SonataAdmin/CRUD/Association/show_many_to_one.html.twig',
+            $fieldDescription->getTemplate(),
+        );
+    }
+
+    public function testGetBaseListReturnsAFieldDescriptionCollection(): void
+    {
+        static::assertInstanceOf(FieldDescriptionCollection::class, $this->showBuilder->getBaseList());
     }
 }

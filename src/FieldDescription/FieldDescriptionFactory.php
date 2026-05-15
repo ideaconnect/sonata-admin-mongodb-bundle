@@ -21,7 +21,7 @@ use Sonata\AdminBundle\FieldDescription\FieldDescriptionInterface;
 
 final class FieldDescriptionFactory implements FieldDescriptionFactoryInterface
 {
-    public function __construct(private ManagerRegistry $registry)
+    public function __construct(private readonly ManagerRegistry $registry)
     {
     }
 

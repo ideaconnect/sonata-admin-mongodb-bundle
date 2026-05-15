@@ -34,7 +34,7 @@ abstract class FilterWithQueryBuilderTestCase extends TestCase
             ->method('field')
             ->with(self::DEFAULT_FIELD_NAME)
             ->willReturnSelf();
-        $expr = $this->createMock(Expr::class);
+        $expr = static::createStub(Expr::class);
         $expr
             ->method('field')
             ->willReturnSelf();

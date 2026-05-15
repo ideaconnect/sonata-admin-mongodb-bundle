@@ -17,12 +17,7 @@ use Symfony\Component\Form\Extension\Core\Type\DateTimeType;
 
 final class DateTimeFilter extends AbstractDateFilter
 {
-    /**
-     * Flag indicating that filter will filter by datetime instead by date.
-     *
-     * @var bool
-     */
-    protected $time = true;
+    protected bool $time = true;
 
     protected function getDateFieldType(): string
     {

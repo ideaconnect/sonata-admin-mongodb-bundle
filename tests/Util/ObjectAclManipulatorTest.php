@@ -57,47 +57,105 @@ final class ObjectAclManipulatorTest extends TestCase
         $this->dm->persist(new DocumentForAcl());
         $this->dm->flush();
 
+        $output = $this->runBatchConfigureAcls();
+
+        static::assertStringContainsString('[TOTAL] generated class ACEs for 1 objects (added 1, updated 0)', $output);
+
+        $this->dm->createQueryBuilder(DocumentForAcl::class)
+            ->remove()
+            ->getQuery()
+            ->execute();
+    }
+
+    public function testBatchConfigureAclsAcrossExactlyOneFullBatch(): void
+    {
+        // BATCH_SIZE = 20 — persisting 20 exactly hits the batch flush branch
+        // and the trailing-partial-batch branch must be a no-op.
+        for ($i = 0; $i < 20; ++$i) {
+            $this->dm->persist(new DocumentForAcl());
+        }
+        $this->dm->flush();
+
+        $output = $this->runBatchConfigureAcls();
+
+        static::assertStringContainsString('[TOTAL] generated class ACEs for 20 objects (added 20, updated 0)', $output);
+
+        $this->cleanup();
+    }
+
+    public function testBatchConfigureAclsAcrossPartialTrailingBatch(): void
+    {
+        // 21 docs = one full batch (20) + one trailing — must hit both the
+        // in-loop flush *and* the "if (count > 0)" tail path.
+        for ($i = 0; $i < 21; ++$i) {
+            $this->dm->persist(new DocumentForAcl());
+        }
+        $this->dm->flush();
+
+        $output = $this->runBatchConfigureAcls();
+
+        static::assertStringContainsString('[TOTAL] generated class ACEs for 21 objects (added 21, updated 0)', $output);
+
+        $this->cleanup();
+    }
+
+    public function testBatchConfigureAclsEmitsProgressReportEveryProgressInterval(): void
+    {
+        // PROGRESS_REPORT_INTERVAL = 200 — must emit one mid-run progress line
+        // *and* the final [TOTAL] line.
+        for ($i = 0; $i < 200; ++$i) {
+            $this->dm->persist(new DocumentForAcl());
+        }
+        $this->dm->flush();
+
+        $output = $this->runBatchConfigureAcls();
+
+        static::assertStringContainsString('generated class ACEs for 200 objects', $output);
+        static::assertStringContainsString('[TOTAL] generated class ACEs for 200 objects', $output);
+
+        $this->cleanup();
+    }
+
+    public function testBatchConfigureAclsWithSecurityIdentityIncludesObjectOwnerMessage(): void
+    {
+        $this->dm->persist(new DocumentForAcl());
+        $this->dm->flush();
+
+        $output = $this->runBatchConfigureAcls(
+            new \Symfony\Component\Security\Acl\Domain\UserSecurityIdentity('user', 'App\\Entity\\User'),
+        );
+
+        static::assertStringContainsString('and set the object owner', $output);
+
+        $this->cleanup();
+    }
+
+    private function runBatchConfigureAcls(
+        ?\Symfony\Component\Security\Acl\Domain\UserSecurityIdentity $identity = null,
+    ): string {
         $aclSecurityHandler = static::createStub(AclSecurityHandlerInterface::class);
-        $aclSecurityHandler
-            ->method('findObjectAcls')
-            ->willReturn(new \SplObjectStorage());
-
-        $aclSecurityHandler
-            ->method('buildSecurityInformation')
-            ->willReturn([]);
-
-        $aclSecurityHandler
-            ->method('createAcl')
-            ->willReturn(static::createStub(MutableAclInterface::class));
+        $aclSecurityHandler->method('findObjectAcls')->willReturn(new \SplObjectStorage());
+        $aclSecurityHandler->method('buildSecurityInformation')->willReturn([]);
+        $aclSecurityHandler->method('createAcl')->willReturn(static::createStub(MutableAclInterface::class));
 
         $admin = static::createStub(AdminInterface::class);
-        $admin
-            ->method('getSecurityHandler')
-            ->willReturn($aclSecurityHandler);
-
-        $admin
-            ->method('getClass')
-            ->willReturn(DocumentForAcl::class);
-
-        $modelManager = static::createStub(ModelManagerInterface::class);
-
-        $admin
-            ->method('getModelManager')
-            ->willReturn($modelManager);
+        $admin->method('getSecurityHandler')->willReturn($aclSecurityHandler);
+        $admin->method('getClass')->willReturn(DocumentForAcl::class);
+        $admin->method('getModelManager')->willReturn(static::createStub(ModelManagerInterface::class));
 
         $managerRegistry = static::createStub(ManagerRegistry::class);
-        $managerRegistry
-            ->method('getManagerForClass')
-            ->willReturn($this->dm);
+        $managerRegistry->method('getManagerForClass')->willReturn($this->dm);
 
         $objectAclManipulator = new ObjectAclManipulator($managerRegistry);
 
         $output = new BufferedOutput();
+        $objectAclManipulator->batchConfigureAcls($output, $admin, $identity);
 
-        $objectAclManipulator->batchConfigureAcls($output, $admin);
+        return $output->fetch();
+    }
 
-        static::assertStringContainsString('[TOTAL] generated class ACEs for 1 objects (added 1, updated 0)', $output->fetch());
-
+    private function cleanup(): void
+    {
         $this->dm->createQueryBuilder(DocumentForAcl::class)
             ->remove()
             ->getQuery()

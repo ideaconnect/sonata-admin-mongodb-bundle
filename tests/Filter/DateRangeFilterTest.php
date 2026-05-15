@@ -186,6 +186,67 @@ final class DateRangeFilterTest extends FilterWithQueryBuilderTestCase
         ];
     }
 
+    public function testFilterNotBetweenAppliesStrictBounds(): void
+    {
+        $filter = $this->createFilter();
+
+        $startDateTime = new \DateTime('2016-08-01');
+        $endDateTime = new \DateTime('2016-08-31');
+
+        $queryBuilder = $this->getQueryBuilder();
+        $queryBuilder
+            ->expects(static::once())
+            ->method('lt')
+            ->with($startDateTime);
+        $queryBuilder
+            ->expects(static::once())
+            ->method('gt')
+            ->with($endDateTime);
+
+        $filter->apply(new ProxyQuery($queryBuilder), FilterData::fromArray([
+            'type' => DateRangeOperatorType::TYPE_NOT_BETWEEN,
+            'value' => [
+                'start' => $startDateTime,
+                'end' => $endDateTime,
+            ],
+        ]));
+
+        static::assertTrue($filter->isActive());
+    }
+
+    public function testFilterIsInactiveWhenBothBoundsAreNonDates(): void
+    {
+        $filter = $this->createFilter();
+
+        $queryBuilder = $this->getQueryBuilder();
+        $queryBuilder->expects(static::never())->method('field');
+
+        $filter->apply(new ProxyQuery($queryBuilder), FilterData::fromArray([
+            'type' => DateRangeOperatorType::TYPE_BETWEEN,
+            'value' => [
+                'start' => 'not-a-date',
+                'end' => 'not-a-date',
+            ],
+        ]));
+
+        static::assertFalse($filter->isActive());
+    }
+
+    public function testFilterIsInactiveWhenValueIsNotAnArray(): void
+    {
+        $filter = $this->createFilter();
+
+        $queryBuilder = $this->getQueryBuilder();
+        $queryBuilder->expects(static::never())->method('field');
+
+        $filter->apply(new ProxyQuery($queryBuilder), FilterData::fromArray([
+            'type' => DateRangeOperatorType::TYPE_BETWEEN,
+            'value' => 'not-an-array',
+        ]));
+
+        static::assertFalse($filter->isActive());
+    }
+
     private function createFilter(): DateRangeFilter
     {
         $filter = new DateRangeFilter();

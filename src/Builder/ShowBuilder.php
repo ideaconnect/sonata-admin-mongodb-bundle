@@ -24,8 +24,8 @@ final class ShowBuilder implements ShowBuilderInterface
      * @param string[] $templates
      */
     public function __construct(
-        private TypeGuesserInterface $guesser,
-        private array $templates,
+        private readonly TypeGuesserInterface $guesser,
+        private readonly array $templates,
     ) {
     }
 

@@ -17,19 +17,9 @@ use Sonata\Form\Type\DateTimeRangeType;
 
 final class DateTimeRangeFilter extends AbstractDateFilter
 {
-    /**
-     * This Filter allows filtering by time.
-     *
-     * @var bool
-     */
-    protected $time = true;
+    protected bool $time = true;
 
-    /**
-     * This is a range filter.
-     *
-     * @var bool
-     */
-    protected $range = true;
+    protected bool $range = true;
 
     protected function getDateFieldType(): string
     {

@@ -13,7 +13,6 @@ declare(strict_types=1);
 
 namespace Sonata\DoctrineMongoDBAdminBundle\Tests\Builder;
 
-use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\MockObject\Stub;
 use Sonata\AdminBundle\Admin\AdminInterface;
 use Sonata\AdminBundle\Datagrid\ListMapper;
@@ -42,7 +41,7 @@ final class ListBuilderTest extends AbstractModelManagerTestCase
     protected ListBuilder $listBuilder;
 
     /**
-     * @var MockObject&AdminInterface<object>
+     * @var Stub&AdminInterface<object>
      */
     protected $admin;
 
@@ -51,7 +50,7 @@ final class ListBuilderTest extends AbstractModelManagerTestCase
         parent::setUp();
 
         $this->typeGuesser = static::createStub(TypeGuesserInterface::class);
-        $this->admin = $this->createMock(AdminInterface::class);
+        $this->admin = static::createStub(AdminInterface::class);
 
         $this->listBuilder = new ListBuilder($this->typeGuesser, [
             'fakeTemplate' => 'fake',
@@ -61,12 +60,14 @@ final class ListBuilderTest extends AbstractModelManagerTestCase
 
     public function testAddListActionField(): void
     {
+        $admin = $this->createMock(AdminInterface::class);
+
         $fieldDescription = new FieldDescription('foo');
-        $fieldDescription->setAdmin($this->admin);
+        $fieldDescription->setAdmin($admin);
 
         $list = $this->listBuilder->getBaseList();
 
-        $this->admin
+        $admin
             ->expects(static::once())
             ->method('addListFieldDescription');
 
@@ -82,6 +83,8 @@ final class ListBuilderTest extends AbstractModelManagerTestCase
 
     public function testCorrectFixedActionsFieldType(): void
     {
+        $admin = $this->createMock(AdminInterface::class);
+
         $this->typeGuesser
             ->method('guess')
             ->willReturn(
@@ -89,11 +92,11 @@ final class ListBuilderTest extends AbstractModelManagerTestCase
             );
 
         $fieldDescription = new FieldDescription(ListMapper::NAME_ACTIONS);
-        $fieldDescription->setAdmin($this->admin);
+        $fieldDescription->setAdmin($admin);
 
         $list = $this->listBuilder->getBaseList();
 
-        $this->admin
+        $admin
             ->expects(static::once())
             ->method('addListFieldDescription');
 
@@ -137,5 +140,78 @@ final class ListBuilderTest extends AbstractModelManagerTestCase
         $this->expectException(\RuntimeException::class);
 
         $this->listBuilder->fixFieldDescription($fieldDescription);
+    }
+
+    public function testBuildFieldThrowsWhenTypeGuesserReturnsNull(): void
+    {
+        $this->typeGuesser->method('guess')->willReturn(null);
+
+        $fieldDescription = new FieldDescription('foo');
+        $fieldDescription->setAdmin($this->admin);
+
+        $this->expectException(\InvalidArgumentException::class);
+        $this->expectExceptionMessageMatches('/Cannot guess a type/');
+
+        $this->listBuilder->buildField(null, $fieldDescription);
+    }
+
+    public function testFixFieldDescriptionDefaultsTemplateAndLabelForAssociationField(): void
+    {
+        $documentClass = DocumentWithReferences::class;
+        $classMetadata = $this->getMetadataForDocumentWithAttributes($documentClass);
+
+        $admin = $this->createMock(AdminInterface::class);
+        $admin->expects(static::once())->method('attachAdminClass');
+
+        $fieldDescription = new FieldDescription(
+            'embeddedDocument',
+            [],
+            $classMetadata->fieldMappings['embeddedDocument'],
+            $classMetadata->associationMappings['embeddedDocument'],
+        );
+        $fieldDescription->setAdmin($admin);
+        $fieldDescription->setType('string');
+
+        $this->listBuilder->fixFieldDescription($fieldDescription);
+
+        static::assertSame('embeddedDocument', $fieldDescription->getOption('label'));
+        static::assertSame('@SonataAdmin/CRUD/list_string.html.twig', $fieldDescription->getTemplate());
+    }
+
+    public function testFixFieldDescriptionSortableOptionFalseDoesNotPopulateSortDetails(): void
+    {
+        $documentClass = DocumentWithReferences::class;
+        $classMetadata = $this->getMetadataForDocumentWithAttributes($documentClass);
+
+        $fieldDescription = new FieldDescription(
+            'name',
+            ['sortable' => false],
+            $classMetadata->fieldMappings['name'],
+        );
+        $fieldDescription->setAdmin($this->admin);
+        $fieldDescription->setType('string');
+
+        $this->listBuilder->fixFieldDescription($fieldDescription);
+
+        static::assertNull($fieldDescription->getOption('sort_parent_association_mappings'));
+        static::assertNull($fieldDescription->getOption('sort_field_mapping'));
+    }
+
+    public function testActionsHelperTemplatesGetDefaultsAppliedPerAction(): void
+    {
+        $fieldDescription = new FieldDescription('_action', [
+            'actions' => [
+                'edit' => [],
+                'delete' => ['template' => 'custom.html.twig'],
+            ],
+        ]);
+        $fieldDescription->setAdmin($this->admin);
+
+        $this->listBuilder->fixFieldDescription($fieldDescription);
+
+        $actions = $fieldDescription->getOption('actions');
+        static::assertSame('@SonataAdmin/CRUD/list__action_edit.html.twig', $actions['edit']['template']);
+        static::assertSame('custom.html.twig', $actions['delete']['template'], 'Pre-set template must not be overwritten');
+        static::assertSame('Action', $fieldDescription->getOption('name'));
     }
 }

@@ -17,6 +17,8 @@ use Sonata\AdminBundle\Filter\Model\FilterData;
 use Sonata\DoctrineMongoDBAdminBundle\Datagrid\ProxyQuery;
 use Sonata\DoctrineMongoDBAdminBundle\Datagrid\ProxyQueryInterface;
 use Sonata\DoctrineMongoDBAdminBundle\Filter\CallbackFilter;
+use Symfony\Component\Form\Extension\Core\Type\HiddenType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
 
 final class CallbackFilterTest extends FilterWithQueryBuilderTestCase
 {
@@ -101,5 +103,66 @@ final class CallbackFilterTest extends FilterWithQueryBuilderTestCase
         $this->expectException(\RuntimeException::class);
 
         $filter->apply($builder, FilterData::fromArray(['myValue']));
+    }
+
+    public function testFilterThrowsWhenCallbackReturnsNonBoolScalar(): void
+    {
+        $builder = new ProxyQuery($this->getQueryBuilder());
+
+        $filter = new CallbackFilter();
+        $filter->initialize('field_name', [
+            'field_name' => self::DEFAULT_FIELD_NAME,
+            'callback' => static fn (): string => 'not-a-bool',
+        ]);
+
+        $this->expectException(\UnexpectedValueException::class);
+        $this->expectExceptionMessageMatches('/should return a boolean/');
+
+        $filter->apply($builder, FilterData::fromArray(['value' => 'x']));
+    }
+
+    public function testFilterThrowsWhenCallbackReturnsNonBoolObject(): void
+    {
+        $builder = new ProxyQuery($this->getQueryBuilder());
+
+        $filter = new CallbackFilter();
+        $filter->initialize('field_name', [
+            'field_name' => self::DEFAULT_FIELD_NAME,
+            'callback' => static fn (): \stdClass => new \stdClass(),
+        ]);
+
+        $this->expectException(\UnexpectedValueException::class);
+        $this->expectExceptionMessageMatches('/instance of "stdClass"/');
+
+        $filter->apply($builder, FilterData::fromArray(['value' => 'x']));
+    }
+
+    public function testGetDefaultOptions(): void
+    {
+        $filter = new CallbackFilter();
+
+        static::assertSame(
+            [
+                'callback' => null,
+                'field_type' => TextType::class,
+                'operator_type' => HiddenType::class,
+                'operator_options' => [],
+            ],
+            $filter->getDefaultOptions(),
+        );
+    }
+
+    public function testGetFormOptionsExposesFieldAndOperatorMetadata(): void
+    {
+        $filter = new CallbackFilter();
+        $filter->initialize('field_name', [
+            'field_name' => self::DEFAULT_FIELD_NAME,
+        ]);
+
+        $options = $filter->getFormOptions();
+
+        static::assertSame(TextType::class, $options['field_type']);
+        static::assertSame(HiddenType::class, $options['operator_type']);
+        static::assertSame([], $options['operator_options']);
     }
 }

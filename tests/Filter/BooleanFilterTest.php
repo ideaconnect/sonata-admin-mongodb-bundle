@@ -88,6 +88,65 @@ final class BooleanFilterTest extends FilterWithQueryBuilderTestCase
         static::assertSame(BooleanType::class, $filter->getFieldType());
     }
 
+    public function testGetFormOptionsExposesFieldAndOperatorMetadata(): void
+    {
+        $filter = $this->createFilter();
+
+        $options = $filter->getFormOptions();
+
+        static::assertSame(BooleanType::class, $options['field_type']);
+        static::assertSame(['class' => 'FooBar'], $options['field_options']);
+        static::assertSame([], $options['operator_options']);
+    }
+
+    public function testFilterIsInactiveForUnknownScalarValue(): void
+    {
+        $filter = $this->createFilter();
+
+        $queryBuilder = $this->getQueryBuilder();
+        $queryBuilder->expects(static::never())->method('field');
+
+        $filter->apply(
+            new ProxyQuery($queryBuilder),
+            FilterData::fromArray(['type' => null, 'value' => 999]),
+        );
+
+        static::assertFalse($filter->isActive());
+    }
+
+    public function testFilterIsInactiveWhenArrayContainsNoValidValues(): void
+    {
+        $filter = $this->createFilter();
+
+        $queryBuilder = $this->getQueryBuilder();
+        $queryBuilder->expects(static::never())->method('field');
+
+        $filter->apply(
+            new ProxyQuery($queryBuilder),
+            FilterData::fromArray(['type' => null, 'value' => [999, 'bogus']]),
+        );
+
+        static::assertFalse($filter->isActive());
+    }
+
+    public function testFilterArrayDropsUnknownEntriesAndKeepsValidOnes(): void
+    {
+        $filter = $this->createFilter();
+
+        $queryBuilder = $this->getQueryBuilder();
+        $queryBuilder
+            ->expects(static::once())
+            ->method('in')
+            ->with([true]);
+
+        $filter->apply(
+            new ProxyQuery($queryBuilder),
+            FilterData::fromArray(['type' => null, 'value' => [BooleanType::TYPE_YES, 999]]),
+        );
+
+        static::assertTrue($filter->isActive());
+    }
+
     private function createFilter(): BooleanFilter
     {
         $filter = new BooleanFilter();

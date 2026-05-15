@@ -18,6 +18,7 @@ use Doctrine\ODM\MongoDB\Configuration;
 use Doctrine\ODM\MongoDB\DocumentManager;
 use Doctrine\ODM\MongoDB\Hydrator\HydratorFactory;
 use Doctrine\ODM\MongoDB\Mapping\ClassMetadata;
+use Doctrine\ODM\MongoDB\Mapping\Driver\AttributeDriver;
 use Doctrine\ODM\MongoDB\Query\Builder;
 use Doctrine\ODM\MongoDB\Query\Query;
 use Doctrine\ODM\MongoDB\Repository\DocumentRepository;
@@ -138,7 +139,7 @@ final class ModelManagerTest extends TestCase
             ->method('createQueryBuilder')
             ->willReturn(static::createStub(Builder::class));
 
-        $documentManager = $this->createMock(DocumentManager::class);
+        $documentManager = static::createStub(DocumentManager::class);
         $documentManager
             ->method('getRepository')
             ->willReturn($repository);
@@ -149,6 +150,342 @@ final class ModelManagerTest extends TestCase
 
         $modelManager = new ModelManager($this->registry, $this->propertyAccessor);
         $modelManager->createQuery(TestDocument::class);
+    }
+
+    public function testCreatePersistsAndFlushes(): void
+    {
+        $object = new TestDocument();
+
+        $dm = $this->createMock(DocumentManager::class);
+        $dm->expects(static::once())->method('persist')->with($object);
+        $dm->expects(static::once())->method('flush');
+
+        $this->registry
+            ->method('getManagerForClass')
+            ->willReturn($dm);
+
+        (new ModelManager($this->registry, $this->propertyAccessor))->create($object);
+    }
+
+    public function testCreateWrapsMongoExceptionInModelManagerException(): void
+    {
+        $dm = static::createStub(DocumentManager::class);
+        $dm->method('persist')->willThrowException(new RuntimeException('boom'));
+
+        $this->registry
+            ->method('getManagerForClass')
+            ->willReturn($dm);
+
+        $this->expectException(ModelManagerException::class);
+        $this->expectExceptionMessageMatches('/Failed to create object/');
+
+        (new ModelManager($this->registry, $this->propertyAccessor))->create(new TestDocument());
+    }
+
+    public function testUpdatePersistsAndFlushes(): void
+    {
+        $object = new TestDocument();
+
+        $dm = $this->createMock(DocumentManager::class);
+        $dm->expects(static::once())->method('persist')->with($object);
+        $dm->expects(static::once())->method('flush');
+
+        $this->registry
+            ->method('getManagerForClass')
+            ->willReturn($dm);
+
+        (new ModelManager($this->registry, $this->propertyAccessor))->update($object);
+    }
+
+    public function testUpdateWrapsMongoExceptionInModelManagerException(): void
+    {
+        $dm = static::createStub(DocumentManager::class);
+        $dm->method('persist')->willThrowException(new RuntimeException('boom'));
+
+        $this->registry
+            ->method('getManagerForClass')
+            ->willReturn($dm);
+
+        $this->expectException(ModelManagerException::class);
+        $this->expectExceptionMessageMatches('/Failed to update object/');
+
+        (new ModelManager($this->registry, $this->propertyAccessor))->update(new TestDocument());
+    }
+
+    public function testDeleteRemovesAndFlushes(): void
+    {
+        $object = new TestDocument();
+
+        $dm = $this->createMock(DocumentManager::class);
+        $dm->expects(static::once())->method('remove')->with($object);
+        $dm->expects(static::once())->method('flush');
+
+        $this->registry
+            ->method('getManagerForClass')
+            ->willReturn($dm);
+
+        (new ModelManager($this->registry, $this->propertyAccessor))->delete($object);
+    }
+
+    public function testDeleteWrapsMongoExceptionInModelManagerException(): void
+    {
+        $dm = static::createStub(DocumentManager::class);
+        $dm->method('remove')->willThrowException(new RuntimeException('boom'));
+
+        $this->registry
+            ->method('getManagerForClass')
+            ->willReturn($dm);
+
+        $this->expectException(ModelManagerException::class);
+        $this->expectExceptionMessageMatches('/Failed to delete object/');
+
+        (new ModelManager($this->registry, $this->propertyAccessor))->delete(new TestDocument());
+    }
+
+    public function testGetDocumentManagerThrowsWhenNoneRegisteredForClass(): void
+    {
+        $this->registry
+            ->method('getManagerForClass')
+            ->willReturn(null);
+
+        $modelManager = new ModelManager($this->registry, $this->propertyAccessor);
+
+        $this->expectException(\RuntimeException::class);
+        $this->expectExceptionMessage('No document manager defined for class');
+
+        $modelManager->create(new TestDocument());
+    }
+
+    public function testFindDelegatesToRepository(): void
+    {
+        $expected = new TestDocument();
+
+        $repository = $this->createMock(DocumentRepository::class);
+        $repository->expects(static::once())->method('find')->with('the-id')->willReturn($expected);
+
+        $dm = $this->createMock(DocumentManager::class);
+        $dm->method('getRepository')->with(TestDocument::class)->willReturn($repository);
+
+        $this->registry
+            ->method('getManagerForClass')
+            ->willReturn($dm);
+
+        $modelManager = new ModelManager($this->registry, $this->propertyAccessor);
+
+        static::assertSame($expected, $modelManager->find(TestDocument::class, 'the-id'));
+    }
+
+    public function testFindByDelegatesToRepository(): void
+    {
+        $expected = [new TestDocument()];
+
+        $repository = $this->createMock(DocumentRepository::class);
+        $repository->expects(static::once())->method('findBy')->with(['name' => 'A'])->willReturn($expected);
+
+        $dm = $this->createMock(DocumentManager::class);
+        $dm->method('getRepository')->with(TestDocument::class)->willReturn($repository);
+
+        $this->registry
+            ->method('getManagerForClass')
+            ->willReturn($dm);
+
+        $modelManager = new ModelManager($this->registry, $this->propertyAccessor);
+
+        static::assertSame($expected, $modelManager->findBy(TestDocument::class, ['name' => 'A']));
+    }
+
+    public function testFindOneByDelegatesToRepository(): void
+    {
+        $expected = new TestDocument();
+
+        $repository = $this->createMock(DocumentRepository::class);
+        $repository->expects(static::once())->method('findOneBy')->with(['name' => 'A'])->willReturn($expected);
+
+        $dm = $this->createMock(DocumentManager::class);
+        $dm->method('getRepository')->with(TestDocument::class)->willReturn($repository);
+
+        $this->registry
+            ->method('getManagerForClass')
+            ->willReturn($dm);
+
+        $modelManager = new ModelManager($this->registry, $this->propertyAccessor);
+
+        static::assertSame($expected, $modelManager->findOneBy(TestDocument::class, ['name' => 'A']));
+    }
+
+    public function testGetIdentifierValuesAndManagedNormalizedIdentifierIntegration(): void
+    {
+        // UnitOfWork is final and can't be doubled — exercise the live path
+        // against an in-memory DocumentManager to cover both methods.
+        $dm = DocumentManager::create(null, $this->createInMemoryConfiguration());
+
+        $document = new DocumentWithReferences('integration');
+        $dm->persist($document);
+        $dm->flush();
+
+        $registry = static::createStub(ManagerRegistry::class);
+        $registry->method('getManagerForClass')->willReturn($dm);
+
+        $modelManager = new ModelManager($registry, $this->propertyAccessor);
+
+        $values = $modelManager->getIdentifierValues($document);
+        static::assertCount(1, $values);
+        static::assertSame($document->id, $values[0]);
+        static::assertSame((string) $document->id, $modelManager->getNormalizedIdentifier($document));
+
+        $dm->createQueryBuilder(DocumentWithReferences::class)
+            ->remove()
+            ->getQuery()
+            ->execute();
+    }
+
+    public function testGetNormalizedIdentifierReturnsNullForUnmanagedObject(): void
+    {
+        $object = new TestDocument();
+
+        $dm = $this->createMock(DocumentManager::class);
+        $dm->expects(static::once())->method('contains')->with($object)->willReturn(false);
+
+        $this->registry
+            ->method('getManagerForClass')
+            ->willReturn($dm);
+
+        $modelManager = new ModelManager($this->registry, $this->propertyAccessor);
+
+        static::assertNull($modelManager->getNormalizedIdentifier($object));
+    }
+
+    public function testGetUrlSafeIdentifierMirrorsGetNormalizedIdentifier(): void
+    {
+        $object = new TestDocument();
+
+        $dm = static::createStub(DocumentManager::class);
+        $dm->method('contains')->willReturn(false);
+
+        $this->registry
+            ->method('getManagerForClass')
+            ->willReturn($dm);
+
+        $modelManager = new ModelManager($this->registry, $this->propertyAccessor);
+
+        static::assertNull($modelManager->getUrlSafeIdentifier($object));
+    }
+
+    public function testAddIdentifiersToQueryAppliesInClauseOnIdField(): void
+    {
+        $queryBuilder = $this->createMock(Builder::class);
+        $queryBuilder->expects(static::once())->method('field')->with('_id')->willReturnSelf();
+        $queryBuilder->expects(static::once())->method('in')->with(['1', '2']);
+
+        $proxyQuery = new ProxyQuery($queryBuilder);
+
+        $modelManager = new ModelManager($this->registry, $this->propertyAccessor);
+        $modelManager->addIdentifiersToQuery(TestDocument::class, $proxyQuery, ['1', '2']);
+    }
+
+    public function testAddIdentifiersToQueryThrowsForForeignProxyQuery(): void
+    {
+        $modelManager = new ModelManager($this->registry, $this->propertyAccessor);
+
+        $this->expectException(\TypeError::class);
+
+        $modelManager->addIdentifiersToQuery(
+            TestDocument::class,
+            static::createStub(\Sonata\AdminBundle\Datagrid\ProxyQueryInterface::class),
+            ['1'],
+        );
+    }
+
+    public function testBatchDeleteThrowsForForeignProxyQuery(): void
+    {
+        $modelManager = new ModelManager($this->registry, $this->propertyAccessor);
+
+        $this->expectException(\TypeError::class);
+
+        $modelManager->batchDelete(
+            TestDocument::class,
+            static::createStub(\Sonata\AdminBundle\Datagrid\ProxyQueryInterface::class),
+        );
+    }
+
+    public function testGetExportFieldsReturnsClassMetadataFieldNames(): void
+    {
+        $classMetadata = static::createStub(ClassMetadata::class);
+        $classMetadata->method('getFieldNames')->willReturn(['id', 'name']);
+
+        $dm = static::createStub(DocumentManager::class);
+        $dm->method('getClassMetadata')->willReturn($classMetadata);
+
+        $this->registry
+            ->method('getManagerForClass')
+            ->willReturn($dm);
+
+        $modelManager = new ModelManager($this->registry, $this->propertyAccessor);
+
+        static::assertSame(['id', 'name'], $modelManager->getExportFields(TestDocument::class));
+    }
+
+    public function testExecuteQueryThrowsForUnsupportedQueryType(): void
+    {
+        $modelManager = new ModelManager($this->registry, $this->propertyAccessor);
+
+        $this->expectException(\TypeError::class);
+
+        $modelManager->executeQuery(new \stdClass());
+    }
+
+    public function testExecuteQueryWithBuilderIntegration(): void
+    {
+        // Doctrine\ODM\MongoDB\Query\Query is final and can't be doubled, so
+        // exercise both Builder and ProxyQuery against an in-memory DocumentManager.
+        $dm = DocumentManager::create(null, $this->createInMemoryConfiguration());
+        $dm->persist(new DocumentWithReferences('exec-builder'));
+        $dm->flush();
+
+        $registry = static::createStub(ManagerRegistry::class);
+        $registry->method('getManagerForClass')->willReturn($dm);
+
+        $modelManager = new ModelManager($registry, $this->propertyAccessor);
+
+        $builder = $dm->createQueryBuilder(DocumentWithReferences::class);
+        $result = $modelManager->executeQuery($builder);
+
+        $names = [];
+        foreach ($result as $doc) {
+            $names[] = $doc->name;
+        }
+        static::assertSame(['exec-builder'], $names);
+
+        $dm->createQueryBuilder(DocumentWithReferences::class)
+            ->remove()
+            ->getQuery()
+            ->execute();
+    }
+
+    public function testExecuteQueryWithProxyQueryIntegration(): void
+    {
+        $dm = DocumentManager::create(null, $this->createInMemoryConfiguration());
+        $dm->persist(new DocumentWithReferences('exec-proxy'));
+        $dm->flush();
+
+        $registry = static::createStub(ManagerRegistry::class);
+        $registry->method('getManagerForClass')->willReturn($dm);
+
+        $modelManager = new ModelManager($registry, $this->propertyAccessor);
+
+        $proxyQuery = new ProxyQuery($dm->createQueryBuilder(DocumentWithReferences::class));
+        $result = $modelManager->executeQuery($proxyQuery);
+
+        $names = [];
+        foreach ($result as $doc) {
+            $names[] = $doc->name;
+        }
+        static::assertSame(['exec-proxy'], $names);
+
+        $dm->createQueryBuilder(DocumentWithReferences::class)
+            ->remove()
+            ->getQuery()
+            ->execute();
     }
 
     #[DataProvider('provideSupportsQueryCases')]
@@ -443,6 +780,27 @@ final class ModelManagerTest extends TestCase
         $this->expectExceptionMessageMatches($expectedExceptionMessage);
 
         $modelManager->batchDelete(DocumentWithReferences::class, $proxyQuery, $batchSize);
+    }
+
+    private function createInMemoryConfiguration(): Configuration
+    {
+        $config = new Configuration();
+
+        $directory = sys_get_temp_dir().'/mongodb';
+
+        $config->setProxyDir($directory);
+        $config->setProxyNamespace('Proxies');
+        $config->setHydratorDir($directory);
+        $config->setHydratorNamespace('Hydrators');
+        $config->setPersistentCollectionDir($directory);
+        $config->setPersistentCollectionNamespace('PersistentCollections');
+        $config->setMetadataDriverImpl(new AttributeDriver());
+
+        if (\PHP_VERSION_ID >= 80400) {
+            $config->setUseNativeLazyObject(true);
+        }
+
+        return $config;
     }
 
     /**

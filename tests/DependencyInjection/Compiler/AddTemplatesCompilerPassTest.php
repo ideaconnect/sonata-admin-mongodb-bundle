@@ -53,6 +53,29 @@ final class AddTemplatesCompilerPassTest extends AbstractCompilerPassTestCase
         );
     }
 
+    public function testSetThemesAddsCallsWhenNoneAreSet(): void
+    {
+        // No prior setFormTheme/setFilterTheme calls — exercises the addMethodCall
+        // branch of mergeMethodCall (the merge branch is exercised by testSetThemes).
+        $adminServiceId = 'admin_id';
+        $adminService = new Definition();
+        $adminService->addTag('sonata.admin', ['manager_type' => 'doctrine_mongodb']);
+        $this->setDefinition($adminServiceId, $adminService);
+
+        $this->compile();
+
+        $this->assertContainerBuilderHasServiceDefinitionWithMethodCall(
+            $adminServiceId,
+            'setFormTheme',
+            [['@SonataDoctrineMongoDBAdmin/Form/form_admin_fields.html.twig']],
+        );
+        $this->assertContainerBuilderHasServiceDefinitionWithMethodCall(
+            $adminServiceId,
+            'setFilterTheme',
+            [['@SonataDoctrineMongoDBAdmin/Form/filter_admin_fields.html.twig']],
+        );
+    }
+
     protected function registerCompilerPass(ContainerBuilder $container): void
     {
         $container->addCompilerPass(new AddTemplatesCompilerPass());

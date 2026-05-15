@@ -34,28 +34,32 @@ use Symfony\Component\Form\FormFactoryInterface;
 final class DatagridBuilder implements DatagridBuilderInterface
 {
     public function __construct(
-        private FormFactoryInterface $formFactory,
-        private FilterFactoryInterface $filterFactory,
-        private TypeGuesserInterface $guesser,
-        private bool $csrfTokenEnabled = true,
+        private readonly FormFactoryInterface $formFactory,
+        private readonly FilterFactoryInterface $filterFactory,
+        private readonly TypeGuesserInterface $guesser,
+        private readonly bool $csrfTokenEnabled = true,
     ) {
     }
 
     public function fixFieldDescription(FieldDescriptionInterface $fieldDescription): void
     {
-        if ([] !== $fieldDescription->getFieldMapping()) {
-            $fieldDescription->setOption('field_mapping', $fieldDescription->getOption('field_mapping', $fieldDescription->getFieldMapping()));
+        // setOption('x', getOption('x', getter())) is a no-op when 'x' is
+        // already set; only the unset branch matters. Express that directly.
+        if ([] !== $fieldDescription->getFieldMapping() && null === $fieldDescription->getOption('field_mapping')) {
+            $fieldDescription->setOption('field_mapping', $fieldDescription->getFieldMapping());
         }
 
-        if ([] !== $fieldDescription->getAssociationMapping()) {
-            $fieldDescription->setOption('association_mapping', $fieldDescription->getOption('association_mapping', $fieldDescription->getAssociationMapping()));
+        if ([] !== $fieldDescription->getAssociationMapping() && null === $fieldDescription->getOption('association_mapping')) {
+            $fieldDescription->setOption('association_mapping', $fieldDescription->getAssociationMapping());
         }
 
-        if ([] !== $fieldDescription->getParentAssociationMappings()) {
-            $fieldDescription->setOption('parent_association_mappings', $fieldDescription->getOption('parent_association_mappings', $fieldDescription->getParentAssociationMappings()));
+        if ([] !== $fieldDescription->getParentAssociationMappings() && null === $fieldDescription->getOption('parent_association_mappings')) {
+            $fieldDescription->setOption('parent_association_mappings', $fieldDescription->getParentAssociationMappings());
         }
 
-        $fieldDescription->setOption('field_name', $fieldDescription->getOption('field_name', $fieldDescription->getFieldName()));
+        if (null === $fieldDescription->getOption('field_name')) {
+            $fieldDescription->setOption('field_name', $fieldDescription->getFieldName());
+        }
 
         if ($fieldDescription->describesAssociation()) {
             $fieldDescription->getAdmin()->attachAdminClass($fieldDescription);
@@ -120,26 +124,17 @@ final class DatagridBuilder implements DatagridBuilderInterface
     }
 
     /**
-     * Get pager by pagerType.
-     *
      * @throws \RuntimeException If invalid pager type is set
      *
      * @return PagerInterface<ProxyQueryInterface<object>>
      */
     private function getPager(string $pagerType): PagerInterface
     {
-        switch ($pagerType) {
-            case AdminPager::TYPE_DEFAULT:
-                return new Pager();
-
-            case AdminPager::TYPE_SIMPLE:
-                /** @var SimplePager<ProxyQueryInterface<object>> $simplePager */
-                $simplePager = new SimplePager();
-
-                return $simplePager;
-
-            default:
-                throw new \RuntimeException(\sprintf('Unknown pager type "%s".', $pagerType));
-        }
+        return match ($pagerType) {
+            AdminPager::TYPE_DEFAULT => new Pager(),
+            /** @var SimplePager<ProxyQueryInterface<object>> */
+            AdminPager::TYPE_SIMPLE => new SimplePager(),
+            default => throw new \RuntimeException(\sprintf('Unknown pager type "%s".', $pagerType)),
+        };
     }
 }

@@ -17,7 +17,6 @@ use Doctrine\ODM\MongoDB\Configuration;
 use Doctrine\ODM\MongoDB\DocumentManager;
 use Doctrine\ODM\MongoDB\Mapping\Driver\AttributeDriver;
 use Doctrine\ODM\MongoDB\Query\Builder;
-use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Sonata\DoctrineMongoDBAdminBundle\Datagrid\ProxyQuery;
 use Sonata\DoctrineMongoDBAdminBundle\Tests\Fixtures\Document\DocumentWithReferences;
@@ -25,18 +24,11 @@ use Sonata\DoctrineMongoDBAdminBundle\Tests\Fixtures\Document\EmbeddedDocument;
 
 final class ProxyQueryTest extends TestCase
 {
-    /**
-     * @var Builder&MockObject
-     */
-    private Builder $queryBuilder;
-
     private DocumentManager $dm;
 
     protected function setUp(): void
     {
         $this->dm = DocumentManager::create(null, $this->createConfiguration());
-
-        $this->queryBuilder = $this->createMock(Builder::class);
     }
 
     protected function tearDown(): void
@@ -47,37 +39,38 @@ final class ProxyQueryTest extends TestCase
             ->execute();
     }
 
-    public function testSetLimitToZeroWhenResettingMaxResults(): void
+    public function testSettersDoNotMutateTheSharedQueryBuilder(): void
     {
-        $proxyQuery = new ProxyQuery($this->queryBuilder);
+        // Regression for B1: setMaxResults/setFirstResult used to call
+        // ->limit()/->skip() on the QueryBuilder passed at construction,
+        // leaking the proxy's pagination state into a builder the caller
+        // may still hold a reference to.
+        $queryBuilder = $this->createMock(Builder::class);
+        $queryBuilder->expects(static::never())->method('limit');
+        $queryBuilder->expects(static::never())->method('skip');
 
-        $this->queryBuilder
-            ->expects(static::once())
-            ->method('limit')
-            ->with(0);
+        $proxyQuery = new ProxyQuery($queryBuilder);
+        $proxyQuery->setMaxResults(10);
+        $proxyQuery->setFirstResult(5);
 
-        $proxyQuery->setMaxResults(null);
-
-        static::assertNull($proxyQuery->getMaxResults());
+        static::assertSame(10, $proxyQuery->getMaxResults());
+        static::assertSame(5, $proxyQuery->getFirstResult());
     }
 
-    public function testSetSkipToZeroWhenResettingFirstResult(): void
+    public function testSetMaxResultsAndFirstResultAreStoredAndReturnedVerbatim(): void
     {
-        $proxyQuery = new ProxyQuery($this->queryBuilder);
+        $proxyQuery = new ProxyQuery(static::createStub(Builder::class));
 
-        $this->queryBuilder
-            ->expects(static::once())
-            ->method('skip')
-            ->with(0);
-
+        $proxyQuery->setMaxResults(null);
         $proxyQuery->setFirstResult(null);
 
+        static::assertNull($proxyQuery->getMaxResults());
         static::assertNull($proxyQuery->getFirstResult());
     }
 
     public function testSorting(): void
     {
-        $proxyQuery = new ProxyQuery($this->queryBuilder);
+        $proxyQuery = new ProxyQuery(static::createStub(Builder::class));
         $proxyQuery->setSortBy([], ['fieldName' => 'name']);
         $proxyQuery->setSortOrder('ASC');
 
@@ -86,10 +79,32 @@ final class ProxyQueryTest extends TestCase
             $proxyQuery->getSortBy()
         );
 
+        // Sort order is normalised to lower case so it can be safely fed
+        // straight into Doctrine's Builder::sort() without ambiguity.
         static::assertSame(
-            'ASC',
+            'asc',
             $proxyQuery->getSortOrder()
         );
+    }
+
+    public function testSetSortByRejectsInvalidFieldName(): void
+    {
+        $proxyQuery = new ProxyQuery(static::createStub(Builder::class));
+
+        $this->expectException(\InvalidArgumentException::class);
+        $this->expectExceptionMessage('Invalid sort field');
+
+        $proxyQuery->setSortBy([], ['fieldName' => '$where']);
+    }
+
+    public function testSetSortOrderRejectsUnknownValues(): void
+    {
+        $proxyQuery = new ProxyQuery(static::createStub(Builder::class));
+
+        $this->expectException(\InvalidArgumentException::class);
+        $this->expectExceptionMessage('Invalid sort order');
+
+        $proxyQuery->setSortOrder('sideways');
     }
 
     public function testSortingWithWithEmbedded(): void
@@ -144,6 +159,46 @@ final class ProxyQueryTest extends TestCase
         $result = $proxyQuery->execute();
 
         static::assertSame(['B', 'A'], $this->getNames($result));
+    }
+
+    public function testExecuteAppliesFirstResultAndMaxResultsWithoutMutatingSharedBuilder(): void
+    {
+        // Regression for B1: pagination must be applied on the clone produced
+        // inside execute(), not on the original builder.
+        $documents = [];
+        foreach (['A', 'B', 'C', 'D'] as $name) {
+            $documents[$name] = new DocumentWithReferences($name);
+            $this->dm->persist($documents[$name]);
+        }
+        $this->dm->flush();
+
+        $queryBuilder = $this->dm->createQueryBuilder(DocumentWithReferences::class);
+        $proxyQuery = new ProxyQuery($queryBuilder);
+        $proxyQuery->setSortBy([], ['fieldName' => 'name']);
+        $proxyQuery->setSortOrder('ASC');
+        $proxyQuery->setFirstResult(1);
+        $proxyQuery->setMaxResults(2);
+
+        /** @var iterable<DocumentWithReferences> $page1 */
+        $page1 = $proxyQuery->execute();
+        static::assertSame(['B', 'C'], $this->getNames($page1));
+
+        // The original builder must still be unbounded; verify a fresh query
+        // off the SAME builder returns everything in sort order.
+        $proxyQueryAll = new ProxyQuery($queryBuilder);
+        $proxyQueryAll->setSortBy([], ['fieldName' => 'name']);
+        $proxyQueryAll->setSortOrder('ASC');
+        /** @var iterable<DocumentWithReferences> $all */
+        $all = $proxyQueryAll->execute();
+        static::assertSame(['A', 'B', 'C', 'D'], $this->getNames($all));
+
+        // And the original proxyQuery is reusable: changing maxResults and
+        // executing again gives a different page off the same shared builder.
+        $proxyQuery->setFirstResult(0);
+        $proxyQuery->setMaxResults(1);
+        /** @var iterable<DocumentWithReferences> $page2 */
+        $page2 = $proxyQuery->execute();
+        static::assertSame(['A'], $this->getNames($page2));
     }
 
     /**

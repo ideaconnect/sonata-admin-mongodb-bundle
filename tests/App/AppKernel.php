@@ -30,7 +30,6 @@ use Symfony\Component\Config\Loader\LoaderInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\HttpKernel\Kernel;
 use Symfony\Component\Routing\Loader\Configurator\RoutingConfigurator;
-use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\UX\StimulusBundle\StimulusBundle;
 
 final class AppKernel extends Kernel
@@ -78,12 +77,7 @@ final class AppKernel extends Kernel
     protected function configureContainer(ContainerBuilder $container, LoaderInterface $loader): void
     {
         $loader->load(__DIR__.'/config/config.yaml');
-
-        if (!class_exists(IsGranted::class)) {
-            $loader->load(__DIR__.'/config/config_symfony_v5.yaml');
-        } else {
-            $loader->load(__DIR__.'/config/config_symfony_v6.yaml');
-        }
+        $loader->load(__DIR__.'/config/config_symfony.yaml');
 
         if (class_exists(HttpCacheHandler::class)) {
             $loader->load(__DIR__.'/config/config_sonata_block_v4.yaml');
@@ -94,6 +88,8 @@ final class AppKernel extends Kernel
 
     private function getBaseDir(): string
     {
-        return sys_get_temp_dir().'/sonata-doctrine-mongodb-admin-bundle/var/';
+        // Include the PID so parallel test runners (ParaTest, multiple CI
+        // workers on the same host) don't trample each other's caches.
+        return sys_get_temp_dir().'/sonata-doctrine-mongodb-admin-bundle-'.getmypid().'/var/';
     }
 }

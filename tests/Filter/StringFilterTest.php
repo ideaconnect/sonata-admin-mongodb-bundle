@@ -220,4 +220,33 @@ final class StringFilterTest extends FilterWithQueryBuilderTestCase
 
         static::assertSame(TextType::class, $filter->getFieldType());
     }
+
+    public function testGetFormOptionsExposesFieldAndOperatorMetadata(): void
+    {
+        $filter = new StringFilter();
+        $filter->initialize('field_name', [
+            'field_name' => self::DEFAULT_FIELD_NAME,
+        ]);
+
+        $options = $filter->getFormOptions();
+
+        static::assertSame(TextType::class, $options['field_type']);
+        static::assertSame(ContainsOperatorType::class, $options['operator_type']);
+    }
+
+    public function testFilterIsInactiveForWhitespaceValue(): void
+    {
+        $filter = new StringFilter();
+        $filter->initialize('field_name', [
+            'field_name' => self::DEFAULT_FIELD_NAME,
+            'format' => '%s',
+        ]);
+
+        $queryBuilder = $this->getQueryBuilder();
+        $queryBuilder->expects(static::never())->method('field');
+
+        $filter->apply(new ProxyQuery($queryBuilder), FilterData::fromArray(['value' => '   ']));
+
+        static::assertFalse($filter->isActive());
+    }
 }

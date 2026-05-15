@@ -42,8 +42,8 @@ final class ModelManager implements ModelManagerInterface, ProxyResolverInterfac
     private const BATCH_SIZE = 20;
 
     public function __construct(
-        private ManagerRegistry $registry,
-        private PropertyAccessorInterface $propertyAccessor,
+        private readonly ManagerRegistry $registry,
+        private readonly PropertyAccessorInterface $propertyAccessor,
     ) {
     }
 
@@ -124,13 +124,11 @@ final class ModelManager implements ModelManagerInterface, ProxyResolverInterfac
     }
 
     /**
-     * NEXT_MAJOR: Change visibility to private.
-     *
      * @param object|class-string<T> $class
      *
-     * @throw \RuntimeException
+     * @throws \RuntimeException
      */
-    public function getDocumentManager($class): DocumentManager
+    private function getDocumentManager(object|string $class): DocumentManager
     {
         if (\is_object($class)) {
             $class = $class::class;
@@ -246,12 +244,10 @@ final class ModelManager implements ModelManagerInterface, ProxyResolverInterfac
                 if (0 === (++$i % $batchSize)) {
                     $documentManager->flush();
                     $confirmedDeletionsCount = $i;
-                    $documentManager->clear();
                 }
             }
 
             $documentManager->flush();
-            $documentManager->clear();
         } catch (Exception|MongoDBException $exception) {
             $id = null;
 

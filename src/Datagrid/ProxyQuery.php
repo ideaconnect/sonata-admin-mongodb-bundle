@@ -18,13 +18,21 @@ use Doctrine\ODM\MongoDB\Query\Builder;
 use Sonata\AdminBundle\Datagrid\ProxyQueryInterface as BaseProxyQueryInterface;
 
 /**
- * This class try to unify the query usage with Doctrine.
+ * Unifies the query usage with Doctrine MongoDB ODM.
+ *
+ * Pagination and sorting are stored on the proxy and applied to a clone of
+ * the wrapped {@see Builder} inside {@see self::execute()}; the underlying
+ * builder is never mutated by setters.
  *
  * @phpstan-template-covariant T of object
  * @phpstan-implements ProxyQueryInterface<T>
  */
 final class ProxyQuery implements ProxyQueryInterface
 {
+    private const SORT_FIELD_PATTERN = '/^[A-Za-z_][A-Za-z0-9_]*(?:\.[A-Za-z_][A-Za-z0-9_]*)*$/';
+
+    private const SORT_ORDERS = ['asc', 'desc'];
+
     private ?string $sortBy = null;
 
     private ?string $sortOrder = null;
@@ -33,42 +41,38 @@ final class ProxyQuery implements ProxyQueryInterface
 
     private ?int $maxResults = null;
 
-    /**
-     * @var array<string, mixed>
-     */
-    private array $options = [];
-
-    public function __construct(private Builder $queryBuilder)
+    public function __construct(private readonly Builder $queryBuilder)
     {
-    }
-
-    /**
-     * @param mixed[] $args
-     *
-     * @return mixed
-     */
-    public function __call(string $name, array $args)
-    {
-        return $this->queryBuilder->$name(...$args);
     }
 
     public function __clone()
     {
+        // Reassigning a readonly property is permitted inside __clone since PHP 8.3.
         $this->queryBuilder = clone $this->queryBuilder;
     }
 
     public function execute()
     {
-        // always clone the original queryBuilder.
+        // Always work on a clone so the proxy's settings never leak into the
+        // QueryBuilder passed at construction time, and successive execute()
+        // calls remain independent.
         $queryBuilder = clone $this->queryBuilder;
 
-        // todo : check how doctrine behave, potential SQL injection here ...
-        $sortBy = $this->getSortBy();
-        if (null !== $sortBy) {
-            $queryBuilder->sort($sortBy, $this->getSortOrder() ?? 'asc');
+        if (null !== $this->sortBy) {
+            $queryBuilder->sort($this->sortBy, $this->sortOrder ?? 'asc');
         }
 
-        $result = $queryBuilder->getQuery($this->options)->execute();
+        if (null !== $this->firstResult) {
+            $queryBuilder->skip($this->firstResult);
+        }
+
+        // setMaxResults(null) means "no limit" — don't call ->limit() at all.
+        // setMaxResults(0) is honored as MongoDB's "no limit" idiom.
+        if (null !== $this->maxResults) {
+            $queryBuilder->limit($this->maxResults);
+        }
+
+        $result = $queryBuilder->getQuery()->execute();
         \assert($result instanceof Iterator);
 
         return $result;
@@ -82,7 +86,18 @@ final class ProxyQuery implements ProxyQueryInterface
             $parents .= $mapping['fieldName'].'.';
         }
 
-        $this->sortBy = $parents.$fieldMapping['fieldName'];
+        $sortBy = $parents.$fieldMapping['fieldName'];
+
+        // Defense in depth: sort field names come from Doctrine ClassMetadata
+        // in the standard Sonata flow, but reject anything that doesn't look
+        // like a dot-separated identifier path before handing it to MongoDB,
+        // so an attacker who can influence the FieldDescription cannot smuggle
+        // operators (e.g. "$where") through the sort stage.
+        if (1 !== preg_match(self::SORT_FIELD_PATTERN, $sortBy)) {
+            throw new \InvalidArgumentException(\sprintf('Invalid sort field "%s".', $sortBy));
+        }
+
+        $this->sortBy = $sortBy;
 
         return $this;
     }
@@ -94,7 +109,17 @@ final class ProxyQuery implements ProxyQueryInterface
 
     public function setSortOrder(string $sortOrder): BaseProxyQueryInterface
     {
-        $this->sortOrder = $sortOrder;
+        $normalized = strtolower($sortOrder);
+
+        if (!\in_array($normalized, self::SORT_ORDERS, true)) {
+            throw new \InvalidArgumentException(\sprintf(
+                'Invalid sort order "%s", expected one of: "%s".',
+                $sortOrder,
+                implode('", "', self::SORT_ORDERS),
+            ));
+        }
+
+        $this->sortOrder = $normalized;
 
         return $this;
     }
@@ -112,7 +137,6 @@ final class ProxyQuery implements ProxyQueryInterface
     public function setFirstResult(?int $firstResult): BaseProxyQueryInterface
     {
         $this->firstResult = $firstResult;
-        $this->queryBuilder->skip($firstResult ?? 0);
 
         return $this;
     }
@@ -126,22 +150,11 @@ final class ProxyQuery implements ProxyQueryInterface
     {
         $this->maxResults = $maxResults;
 
-        // @see https://docs.mongodb.com/manual/reference/method/cursor.limit/#zero-value
-        $this->queryBuilder->limit($maxResults ?? 0);
-
         return $this;
     }
 
     public function getMaxResults(): ?int
     {
         return $this->maxResults;
-    }
-
-    /**
-     * @param array<string, mixed> $options
-     */
-    public function setOptions(array $options): void
-    {
-        $this->options = $options;
     }
 }

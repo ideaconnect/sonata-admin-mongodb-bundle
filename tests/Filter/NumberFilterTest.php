@@ -95,6 +95,49 @@ final class NumberFilterTest extends FilterWithQueryBuilderTestCase
         static::assertSame(NumberType::class, $filter->getFieldType());
     }
 
+    public function testGetFormOptionsExposesFieldAndOperatorMetadata(): void
+    {
+        $filter = $this->createFilter();
+
+        $options = $filter->getFormOptions();
+
+        static::assertSame(NumberType::class, $options['field_type']);
+        static::assertSame(NumberOperatorType::class, $options['operator_type']);
+    }
+
+    public function testFilterIsInactiveWhenValueIsNonNumeric(): void
+    {
+        $filter = $this->createFilter();
+
+        $queryBuilder = $this->getQueryBuilder();
+        $queryBuilder->expects(static::never())->method('field');
+
+        $filter->apply(
+            new ProxyQuery($queryBuilder),
+            FilterData::fromArray(['value' => 'not-a-number']),
+        );
+
+        static::assertFalse($filter->isActive());
+    }
+
+    public function testFilterFallsBackToEqualsForUnknownOperatorType(): void
+    {
+        $filter = $this->createFilter();
+
+        $queryBuilder = $this->getQueryBuilder();
+        $queryBuilder
+            ->expects(static::once())
+            ->method('equals')
+            ->with(42.0);
+
+        $filter->apply(
+            new ProxyQuery($queryBuilder),
+            FilterData::fromArray(['type' => 9_999_999, 'value' => 42]),
+        );
+
+        static::assertTrue($filter->isActive());
+    }
+
     private function createFilter(): NumberFilter
     {
         $filter = new NumberFilter();
