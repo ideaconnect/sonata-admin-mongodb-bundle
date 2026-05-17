@@ -18,7 +18,7 @@ use Sonata\AdminBundle\Exporter\DataSourceInterface;
 use Sonata\DoctrineMongoDBAdminBundle\Datagrid\ProxyQueryInterface;
 use Sonata\Exporter\Source\DoctrineODMQuerySourceIterator;
 
-final class DataSource implements DataSourceInterface
+final readonly class DataSource implements DataSourceInterface
 {
     /**
      * @param bool $hydrate When false, exports skip ODM hydration and stream raw arrays
@@ -27,7 +27,7 @@ final class DataSource implements DataSourceInterface
      *                      will not be available — only mapped field names. Defaults to
      *                      `true` to preserve the historical behavior.
      */
-    public function __construct(private readonly bool $hydrate = true)
+    public function __construct(private bool $hydrate = true)
     {
     }
 
