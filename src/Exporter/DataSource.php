@@ -20,6 +20,17 @@ use Sonata\Exporter\Source\DoctrineODMQuerySourceIterator;
 
 final class DataSource implements DataSourceInterface
 {
+    /**
+     * @param bool $hydrate When false, exports skip ODM hydration and stream raw arrays
+     *                      straight from the driver. Materially faster on wide collections
+     *                      but `$object->getX()` accessors on the FieldDescription side
+     *                      will not be available — only mapped field names. Defaults to
+     *                      `true` to preserve the historical behavior.
+     */
+    public function __construct(private readonly bool $hydrate = true)
+    {
+    }
+
     public function createIterator(BaseProxyQueryInterface $query, array $fields): \Iterator
     {
         if (!$query instanceof ProxyQueryInterface) {
@@ -34,6 +45,11 @@ final class DataSource implements DataSourceInterface
         $query->setFirstResult(null);
         $query->setMaxResults(null);
 
-        return new DoctrineODMQuerySourceIterator($query->getQueryBuilder()->getQuery(), $fields);
+        // Clone the builder so flipping the hydrate flag for this export doesn't
+        // leak into the shared QueryBuilder the proxy was constructed with.
+        $builder = clone $query->getQueryBuilder();
+        $builder->hydrate($this->hydrate);
+
+        return new DoctrineODMQuerySourceIterator($builder->getQuery(), $fields);
     }
 }

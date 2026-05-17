@@ -43,18 +43,19 @@ final readonly class DatagridBuilder implements DatagridBuilderInterface
 
     public function fixFieldDescription(FieldDescriptionInterface $fieldDescription): void
     {
-        // setOption('x', getOption('x', getter())) is a no-op when 'x' is
-        // already set; only the unset branch matters. Express that directly.
-        if ([] !== $fieldDescription->getFieldMapping() && null === $fieldDescription->getOption('field_mapping')) {
-            $fieldDescription->setOption('field_mapping', $fieldDescription->getFieldMapping());
-        }
+        // For each "default this option from the mapping if no user override" pair,
+        // only the unset branch is meaningful — `setOption(x, getOption(x, default))`
+        // is a no-op when x is already set.
+        $defaultableMappings = [
+            'field_mapping' => $fieldDescription->getFieldMapping(),
+            'association_mapping' => $fieldDescription->getAssociationMapping(),
+            'parent_association_mappings' => $fieldDescription->getParentAssociationMappings(),
+        ];
 
-        if ([] !== $fieldDescription->getAssociationMapping() && null === $fieldDescription->getOption('association_mapping')) {
-            $fieldDescription->setOption('association_mapping', $fieldDescription->getAssociationMapping());
-        }
-
-        if ([] !== $fieldDescription->getParentAssociationMappings() && null === $fieldDescription->getOption('parent_association_mappings')) {
-            $fieldDescription->setOption('parent_association_mappings', $fieldDescription->getParentAssociationMappings());
+        foreach ($defaultableMappings as $option => $value) {
+            if ([] !== $value && null === $fieldDescription->getOption($option)) {
+                $fieldDescription->setOption($option, $value);
+            }
         }
 
         if (null === $fieldDescription->getOption('field_name')) {

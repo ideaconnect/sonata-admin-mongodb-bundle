@@ -97,6 +97,16 @@ final class ProxyQueryTest extends TestCase
         $proxyQuery->setSortBy([], ['fieldName' => '$where']);
     }
 
+    public function testSetSortByAcceptsUnderscorePrefixedFieldName(): void
+    {
+        // _id is the canonical Mongo identifier and must remain sortable —
+        // the validation regex allows a leading underscore deliberately.
+        $proxyQuery = new ProxyQuery(static::createStub(Builder::class));
+        $proxyQuery->setSortBy([], ['fieldName' => '_id']);
+
+        static::assertSame('_id', $proxyQuery->getSortBy());
+    }
+
     public function testSetSortOrderRejectsUnknownValues(): void
     {
         $proxyQuery = new ProxyQuery(static::createStub(Builder::class));

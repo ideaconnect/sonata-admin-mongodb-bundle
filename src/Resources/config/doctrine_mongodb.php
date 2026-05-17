@@ -68,7 +68,7 @@ return static function (ContainerConfigurator $containerConfigurator): void {
         ->set('sonata.admin.guesser.doctrine_mongodb_show_chain', TypeGuesserChain::class)
             ->args([
                 [
-                    service('sonata.admin.guesser.doctrine_mongodb_list'),
+                    service('sonata.admin.guesser.doctrine_mongodb_show'),
                 ],
             ])
 

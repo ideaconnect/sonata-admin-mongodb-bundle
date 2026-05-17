@@ -247,6 +247,53 @@ final class DateRangeFilterTest extends FilterWithQueryBuilderTestCase
         static::assertFalse($filter->isActive());
     }
 
+    public function testFilterDropsNonDateStartWhileApplyingValidEnd(): void
+    {
+        $filter = $this->createFilter();
+
+        $endDateTime = new \DateTime('2016-08-31');
+
+        $queryBuilder = $this->getQueryBuilder();
+        $queryBuilder->expects(static::never())->method('gte');
+        $queryBuilder
+            ->expects(static::once())
+            ->method('lte');
+
+        $filter->apply(new ProxyQuery($queryBuilder), FilterData::fromArray([
+            'type' => DateRangeOperatorType::TYPE_BETWEEN,
+            'value' => [
+                'start' => 'not-a-date',
+                'end' => $endDateTime,
+            ],
+        ]));
+
+        static::assertTrue($filter->isActive());
+    }
+
+    public function testFilterDropsNonDateEndWhileApplyingValidStart(): void
+    {
+        $filter = $this->createFilter();
+
+        $startDateTime = new \DateTime('2016-08-01');
+
+        $queryBuilder = $this->getQueryBuilder();
+        $queryBuilder
+            ->expects(static::once())
+            ->method('gte')
+            ->with($startDateTime);
+        $queryBuilder->expects(static::never())->method('lte');
+
+        $filter->apply(new ProxyQuery($queryBuilder), FilterData::fromArray([
+            'type' => DateRangeOperatorType::TYPE_BETWEEN,
+            'value' => [
+                'start' => $startDateTime,
+                'end' => 'not-a-date',
+            ],
+        ]));
+
+        static::assertTrue($filter->isActive());
+    }
+
     private function createFilter(): DateRangeFilter
     {
         $filter = new DateRangeFilter();

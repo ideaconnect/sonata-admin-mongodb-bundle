@@ -144,17 +144,20 @@ abstract class AbstractDateFilter extends Filter
             return;
         }
 
-        if (
-            !$value['start'] instanceof \DateTimeInterface
-            && !$value['end'] instanceof \DateTimeInterface
-        ) {
+        // Normalize each side to "null or DateTimeInterface" — a malformed payload
+        // (e.g. a string for one side from a hand-crafted query) must not reach the
+        // driver, which would crash later when applyType() tries to use it.
+        $start = $value['start'] instanceof \DateTimeInterface ? $value['start'] : null;
+        $end = $value['end'] instanceof \DateTimeInterface ? $value['end'] : null;
+
+        if (null === $start && null === $end) {
             return;
         }
 
         // date filter should filter records for the whole days
         if (
             false === $this->time
-            && ($value['end'] instanceof \DateTime || $value['end'] instanceof \DateTimeImmutable)
+            && ($end instanceof \DateTime || $end instanceof \DateTimeImmutable)
         ) {
             // since the received `\DateTime` object  uses the model timezone to represent
             // the value submitted by the view (which can use a different timezone) and this
@@ -163,27 +166,27 @@ abstract class AbstractDateFilter extends Filter
             // is transformed to "2020-11-07 03:00:00.0+00:00" in the model object), we increment
             // the time part by adding "23:59:59" in order to cover the whole end date and get proper
             // results from queries like "o.created_at <= :date_end".
-            $value['end'] = $value['end']->modify('+23 hours 59 minutes 59 seconds');
+            $end = $end->modify('+23 hours 59 minutes 59 seconds');
         }
 
         // default type for range filter
         $type = $data->getType() ?? DateRangeOperatorType::TYPE_BETWEEN;
 
         if (DateRangeOperatorType::TYPE_NOT_BETWEEN === $type) {
-            if (null !== $value['start']) {
-                $this->applyType($query, $this->getOperator(DateOperatorType::TYPE_LESS_THAN), $field, $value['start']);
+            if (null !== $start) {
+                $this->applyType($query, $this->getOperator(DateOperatorType::TYPE_LESS_THAN), $field, $start);
             }
 
-            if (null !== $value['end']) {
-                $this->applyType($query, $this->getOperator(DateOperatorType::TYPE_GREATER_THAN), $field, $value['end']);
+            if (null !== $end) {
+                $this->applyType($query, $this->getOperator(DateOperatorType::TYPE_GREATER_THAN), $field, $end);
             }
         } else {
-            if (null !== $value['start']) {
-                $this->applyType($query, $this->getOperator(DateOperatorType::TYPE_GREATER_EQUAL), $field, $value['start']);
+            if (null !== $start) {
+                $this->applyType($query, $this->getOperator(DateOperatorType::TYPE_GREATER_EQUAL), $field, $start);
             }
 
-            if (null !== $value['end']) {
-                $this->applyType($query, $this->getOperator(DateOperatorType::TYPE_LESS_EQUAL), $field, $value['end']);
+            if (null !== $end) {
+                $this->applyType($query, $this->getOperator(DateOperatorType::TYPE_LESS_EQUAL), $field, $end);
             }
         }
     }

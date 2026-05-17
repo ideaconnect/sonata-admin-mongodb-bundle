@@ -19,6 +19,7 @@ use PHPUnit\Framework\Attributes\DataProvider;
 use Sonata\AdminBundle\Filter\FilterInterface;
 use Sonata\AdminBundle\Filter\Model\FilterData;
 use Sonata\AdminBundle\Form\Type\Operator\ContainsOperatorType;
+use Sonata\AdminBundle\Form\Type\Operator\StringOperatorType;
 use Sonata\DoctrineMongoDBAdminBundle\Datagrid\ProxyQuery;
 use Sonata\DoctrineMongoDBAdminBundle\Filter\StringFilter;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
@@ -248,5 +249,141 @@ final class StringFilterTest extends FilterWithQueryBuilderTestCase
         $filter->apply(new ProxyQuery($queryBuilder), FilterData::fromArray(['value' => '   ']));
 
         static::assertFalse($filter->isActive());
+    }
+
+    /**
+     * @phpstan-return iterable<string, array{0: string, 1: string}>
+     */
+    public static function provideRegexMetacharacterCases(): iterable
+    {
+        yield 'dot is escaped' => ['foo.bar', 'foo\\.bar'];
+        yield 'plus is escaped' => ['a+b', 'a\\+b'];
+        yield 'wildcard set is escaped' => ['[a-z]+', '\\[a\\-z\\]\\+'];
+        yield 'redos-shaped input is literalized' => ['(a+)+b', '\\(a\\+\\)\\+b'];
+    }
+
+    #[DataProvider('provideRegexMetacharacterCases')]
+    public function testContainsEscapesRegexMetacharacters(string $input, string $expectedPattern): void
+    {
+        $filter = new StringFilter();
+        $filter->initialize('field_name', [
+            'field_name' => self::DEFAULT_FIELD_NAME,
+            'format' => '%s',
+        ]);
+
+        $queryBuilder = $this->getQueryBuilder();
+        $queryBuilder
+            ->expects(static::once())
+            ->method('equals')
+            ->with(new Regex($expectedPattern, 'i'));
+
+        $filter->apply(
+            new ProxyQuery($queryBuilder),
+            FilterData::fromArray(['value' => $input, 'type' => ContainsOperatorType::TYPE_CONTAINS]),
+        );
+
+        static::assertTrue($filter->isActive());
+    }
+
+    #[DataProvider('provideRegexMetacharacterCases')]
+    public function testNotContainsEscapesRegexMetacharacters(string $input, string $expectedPattern): void
+    {
+        $filter = new StringFilter();
+        $filter->initialize('field_name', [
+            'field_name' => self::DEFAULT_FIELD_NAME,
+            'format' => '%s',
+        ]);
+
+        $queryBuilder = $this->getQueryBuilder();
+        $queryBuilder
+            ->expects(static::once())
+            ->method('not')
+            ->with(new Regex($expectedPattern, 'i'));
+
+        $filter->apply(
+            new ProxyQuery($queryBuilder),
+            FilterData::fromArray(['value' => $input, 'type' => ContainsOperatorType::TYPE_NOT_CONTAINS]),
+        );
+
+        static::assertTrue($filter->isActive());
+    }
+
+    public function testStartsWithUsesAnchoredRegex(): void
+    {
+        $filter = new StringFilter();
+        $filter->initialize('field_name', ['field_name' => self::DEFAULT_FIELD_NAME]);
+
+        $queryBuilder = $this->getQueryBuilder();
+        $queryBuilder
+            ->expects(static::once())
+            ->method('equals')
+            ->with(new Regex('^foo\\.', 'i'));
+
+        $filter->apply(
+            new ProxyQuery($queryBuilder),
+            FilterData::fromArray(['value' => 'foo.', 'type' => StringOperatorType::TYPE_STARTS_WITH]),
+        );
+
+        static::assertTrue($filter->isActive());
+    }
+
+    public function testEndsWithUsesAnchoredRegex(): void
+    {
+        $filter = new StringFilter();
+        $filter->initialize('field_name', ['field_name' => self::DEFAULT_FIELD_NAME]);
+
+        $queryBuilder = $this->getQueryBuilder();
+        $queryBuilder
+            ->expects(static::once())
+            ->method('equals')
+            ->with(new Regex('\\.bar$', 'i'));
+
+        $filter->apply(
+            new ProxyQuery($queryBuilder),
+            FilterData::fromArray(['value' => '.bar', 'type' => StringOperatorType::TYPE_ENDS_WITH]),
+        );
+
+        static::assertTrue($filter->isActive());
+    }
+
+    public function testNotEqualUsesPlainNotEqual(): void
+    {
+        $filter = new StringFilter();
+        $filter->initialize('field_name', ['field_name' => self::DEFAULT_FIELD_NAME]);
+
+        $queryBuilder = $this->getQueryBuilder();
+        $queryBuilder
+            ->expects(static::once())
+            ->method('notEqual')
+            ->with('asd');
+
+        $filter->apply(
+            new ProxyQuery($queryBuilder),
+            FilterData::fromArray(['value' => 'asd', 'type' => StringOperatorType::TYPE_NOT_EQUAL]),
+        );
+
+        static::assertTrue($filter->isActive());
+    }
+
+    public function testCaseSensitiveOptionRemovesIFlag(): void
+    {
+        $filter = new StringFilter();
+        $filter->initialize('field_name', [
+            'field_name' => self::DEFAULT_FIELD_NAME,
+            'case_sensitive' => true,
+        ]);
+
+        $queryBuilder = $this->getQueryBuilder();
+        $queryBuilder
+            ->expects(static::once())
+            ->method('equals')
+            ->with(new Regex('asd', ''));
+
+        $filter->apply(
+            new ProxyQuery($queryBuilder),
+            FilterData::fromArray(['value' => 'asd', 'type' => ContainsOperatorType::TYPE_CONTAINS]),
+        );
+
+        static::assertTrue($filter->isActive());
     }
 }

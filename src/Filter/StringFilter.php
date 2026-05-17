@@ -17,6 +17,7 @@ use Doctrine\ODM\MongoDB\Query\Expr;
 use MongoDB\BSON\Regex;
 use Sonata\AdminBundle\Filter\Model\FilterData;
 use Sonata\AdminBundle\Form\Type\Operator\ContainsOperatorType;
+use Sonata\AdminBundle\Form\Type\Operator\StringOperatorType;
 use Sonata\AdminBundle\Search\SearchableFilterInterface;
 use Sonata\DoctrineMongoDBAdminBundle\Datagrid\ProxyQueryInterface;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
@@ -28,6 +29,9 @@ final class StringFilter extends Filter implements SearchableFilterInterface
         return [
             'field_type' => TextType::class,
             'global_search' => true,
+            // When false (default), regex-based operators run case-insensitive
+            // — the historical behavior. Set true to flip the 'i' modifier off.
+            'case_sensitive' => false,
         ];
     }
 
@@ -68,13 +72,24 @@ final class StringFilter extends Filter implements SearchableFilterInterface
             $obj = $query->getQueryBuilder()->expr();
         }
 
-        if (ContainsOperatorType::TYPE_EQUAL === $type) {
-            $obj->field($field)->equals($value);
-        } elseif (ContainsOperatorType::TYPE_CONTAINS === $type) {
-            $obj->field($field)->equals(new Regex($value, 'i'));
-        } elseif (ContainsOperatorType::TYPE_NOT_CONTAINS === $type) {
-            $obj->field($field)->not(new Regex($value, 'i'));
-        }
+        // Anchored variants (STARTS_WITH/ENDS_WITH) require the escaped pattern
+        // bracketed by ^ or $; everything else hands the raw escape through.
+        // Regex flags are computed once: case-insensitive unless the user opts out.
+        $flags = true === $this->getOption('case_sensitive') ? '' : 'i';
+        $escaped = preg_quote($value, '/');
+
+        // Match against the int constants shared by ContainsOperatorType and
+        // StringOperatorType — both expose the same numeric value for TYPE_EQUAL,
+        // TYPE_CONTAINS, TYPE_NOT_CONTAINS, and StringOperatorType adds 4/5/6.
+        match ($type) {
+            ContainsOperatorType::TYPE_EQUAL => $obj->field($field)->equals($value),
+            StringOperatorType::TYPE_NOT_EQUAL => $obj->field($field)->notEqual($value),
+            ContainsOperatorType::TYPE_CONTAINS => $obj->field($field)->equals(new Regex($escaped, $flags)),
+            ContainsOperatorType::TYPE_NOT_CONTAINS => $obj->field($field)->not(new Regex($escaped, $flags)),
+            StringOperatorType::TYPE_STARTS_WITH => $obj->field($field)->equals(new Regex('^'.$escaped, $flags)),
+            StringOperatorType::TYPE_ENDS_WITH => $obj->field($field)->equals(new Regex($escaped.'$', $flags)),
+            default => null,
+        };
 
         if (self::CONDITION_OR === $this->condition) {
             \assert($obj instanceof Expr);

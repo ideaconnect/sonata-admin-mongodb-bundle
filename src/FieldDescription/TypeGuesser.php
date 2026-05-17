@@ -40,7 +40,9 @@ final class TypeGuesser implements TypeGuesserInterface
             }
         }
 
-        // TODO: Remove Type::BOOLEAN and Type::INTEGER when dropping support of doctrine/mongodb-odm < 3.0
+        // ODM 2.x ships both the short (BOOL/INT) and long (BOOLEAN/INTEGER) Type constants;
+        // the long forms are the post-3.0 canonical names. Matching both keeps the guesser
+        // forward-compatible without requiring a hard dependency bump.
         return match ($fieldDescription->getMappingType()) {
             Type::COLLECTION, Type::HASH => new TypeGuess(FieldDescriptionInterface::TYPE_ARRAY, [], Guess::HIGH_CONFIDENCE),
             Type::BOOL, Type::BOOLEAN => new TypeGuess(FieldDescriptionInterface::TYPE_BOOLEAN, [], Guess::HIGH_CONFIDENCE),

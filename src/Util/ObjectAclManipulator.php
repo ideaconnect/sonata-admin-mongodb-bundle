@@ -101,7 +101,11 @@ final class ObjectAclManipulator extends BaseObjectAclManipulator
                 $countUpdated += $batchUpdated;
             }
         } catch (\BadMethodCallException $e) {
-            throw new ModelManagerException('', 0, $e);
+            throw new ModelManagerException(
+                \sprintf('Failed to configure ACLs for "%s": %s', $admin->getCode(), $e->getMessage()),
+                0,
+                $e,
+            );
         }
 
         $output->writeln(\sprintf(

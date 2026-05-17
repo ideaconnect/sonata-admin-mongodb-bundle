@@ -58,7 +58,9 @@ final class FilterTypeGuesser implements TypeGuesserInterface
             );
         }
 
-        // TODO: Remove Type::BOOLEAN and Type::INTEGER when dropping support of doctrine/mongodb-odm < 3.0
+        // ODM 2.x ships both short (BOOL/INT) and long (BOOLEAN/INTEGER) Type aliases as
+        // distinct mapping strings; we match both so legacy mappings keep working without
+        // forcing users onto the post-3.0 canonical names.
         return match ($fieldDescription->getMappingType()) {
             Type::BOOL, Type::BOOLEAN => new TypeGuess(BooleanFilter::class, $options, Guess::HIGH_CONFIDENCE),
             Type::TIMESTAMP => new TypeGuess(DateTimeFilter::class, $options, Guess::HIGH_CONFIDENCE),

@@ -223,11 +223,16 @@ final readonly class ModelManager implements ModelManagerInterface, ProxyResolve
 
                 if (0 === (++$i % $batchSize)) {
                     $documentManager->flush();
+                    // Detach every managed document so the UnitOfWork doesn't grow
+                    // unbounded across batches. Without this a multi-100k delete
+                    // retains every removed doc in memory until the request ends.
+                    $documentManager->clear();
                     $confirmedDeletionsCount = $i;
                 }
             }
 
             $documentManager->flush();
+            $documentManager->clear();
         } catch (Exception|MongoDBException $exception) {
             $id = null;
 

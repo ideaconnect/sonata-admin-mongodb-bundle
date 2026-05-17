@@ -64,4 +64,49 @@ final class DataSourceTest extends TestCase
 
         $this->dataSource->createIterator($proxyQuery, []);
     }
+
+    public function testHydrateFlagFlowsThroughToClonedBuilder(): void
+    {
+        $query = new Query(
+            static::createStub(DocumentManager::class),
+            static::createStub(ClassMetadata::class),
+            static::createStub(Collection::class),
+            ['type' => Query::TYPE_FIND]
+        );
+
+        $queryBuilder = $this->createMock(Builder::class);
+        $queryBuilder
+            ->expects(static::once())
+            ->method('hydrate')
+            ->with(false)
+            ->willReturnSelf();
+        $queryBuilder
+            ->method('getQuery')
+            ->willReturn($query);
+
+        $dataSource = new DataSource(false);
+        $dataSource->createIterator(new ProxyQuery($queryBuilder), []);
+    }
+
+    public function testHydrateDefaultsToTrueForBackwardsCompatibility(): void
+    {
+        $query = new Query(
+            static::createStub(DocumentManager::class),
+            static::createStub(ClassMetadata::class),
+            static::createStub(Collection::class),
+            ['type' => Query::TYPE_FIND]
+        );
+
+        $queryBuilder = $this->createMock(Builder::class);
+        $queryBuilder
+            ->expects(static::once())
+            ->method('hydrate')
+            ->with(true)
+            ->willReturnSelf();
+        $queryBuilder
+            ->method('getQuery')
+            ->willReturn($query);
+
+        $this->dataSource->createIterator(new ProxyQuery($queryBuilder), []);
+    }
 }
