@@ -96,10 +96,17 @@ jobs:
               run: make coverage
 
             - name: Upload coverage to Codecov
+              # Always run — we want coverage uploaded even when a few tests
+              # fail so the report on Codecov stays current and we can compare
+              # what regressed. Skip only when there's literally no file to
+              # upload (e.g. setup-php / composer install bailed earlier).
+              if: ${{ !cancelled() && hashFiles('build/logs/clover.xml') != '' }}
               uses: codecov/codecov-action@v5
               with:
                   token: ${{ secrets.CODECOV_TOKEN }}
+                  slug: ideaconnect/sonata-admin-mongodb-bundle
                   files: ./build/logs/clover.xml
                   flags: php-${{ matrix.php-version }}-${{ matrix.dependencies }}${{ matrix.symfony-require && format('-symfony-{0}', matrix.symfony-require) || '' }}
+                  name: php-${{ matrix.php-version }} ${{ matrix.dependencies }}${{ matrix.symfony-require && format(' (symfony {0})', matrix.symfony-require) || '' }}
                   fail_ci_if_error: false
                   verbose: true
