@@ -66,8 +66,26 @@ final class FieldDescriptionFactoryTest extends RegistryTestCase
      */
     public function testCreateThrowsWhenAssociationHasNoTargetDocument(): void
     {
+        // Minimal AssociationFieldMapping satisfying ODM's @phpstan-type shape.
+        // The factory only inspects existence + reads getAssociationTargetClass(),
+        // but the property's declared shape requires the full set of bools and
+        // identity fields below.
+        $mapping = [
+            'fieldName' => 'rel',
+            'name' => 'rel',
+            'isCascadeRemove' => false,
+            'isCascadePersist' => false,
+            'isCascadeRefresh' => false,
+            'isCascadeMerge' => false,
+            'isCascadeDetach' => false,
+            'isOwningSide' => true,
+            'isInverseSide' => false,
+            'targetDocument' => null,
+            'association' => 1,
+        ];
+
         $metadata = static::createStub(ClassMetadata::class);
-        $metadata->associationMappings = ['rel' => ['fieldName' => 'rel']];
+        $metadata->associationMappings = ['rel' => $mapping];
         $metadata->method('getAssociationTargetClass')->willReturn(null);
 
         $dm = static::createStub(DocumentManager::class);
