@@ -68,13 +68,24 @@ final readonly class ListBuilder implements ListBuilderInterface
         }
 
         if ([] !== $fieldDescription->getFieldMapping()) {
+            // sortable === false → user explicitly opted out, leave alone.
+            // sortable === null → fill in defaults (sortable + sort mappings).
+            // sortable === true → fill in only the missing sort mappings.
             if (false !== $fieldDescription->getOption('sortable')) {
-                $fieldDescription->setOption('sortable', $fieldDescription->getOption('sortable', true));
-                $fieldDescription->setOption('sort_parent_association_mappings', $fieldDescription->getOption('sort_parent_association_mappings', $fieldDescription->getParentAssociationMappings()));
-                $fieldDescription->setOption('sort_field_mapping', $fieldDescription->getOption('sort_field_mapping', $fieldDescription->getFieldMapping()));
+                if (null === $fieldDescription->getOption('sortable')) {
+                    $fieldDescription->setOption('sortable', true);
+                }
+                if (null === $fieldDescription->getOption('sort_parent_association_mappings')) {
+                    $fieldDescription->setOption('sort_parent_association_mappings', $fieldDescription->getParentAssociationMappings());
+                }
+                if (null === $fieldDescription->getOption('sort_field_mapping')) {
+                    $fieldDescription->setOption('sort_field_mapping', $fieldDescription->getFieldMapping());
+                }
             }
 
-            $fieldDescription->setOption('_sort_order', $fieldDescription->getOption('_sort_order', 'ASC'));
+            if (null === $fieldDescription->getOption('_sort_order')) {
+                $fieldDescription->setOption('_sort_order', 'ASC');
+            }
         }
 
         $type = $fieldDescription->getType();
@@ -82,7 +93,9 @@ final readonly class ListBuilder implements ListBuilderInterface
             throw new \RuntimeException(\sprintf('Please define a type for field `%s` in `%s`', $fieldDescription->getName(), $fieldDescription->getAdmin()::class));
         }
 
-        $fieldDescription->setOption('label', $fieldDescription->getOption('label', $fieldDescription->getName()));
+        if (null === $fieldDescription->getOption('label')) {
+            $fieldDescription->setOption('label', $fieldDescription->getName());
+        }
 
         if (null === $fieldDescription->getTemplate()) {
             $fieldDescription->setTemplate($this->getTemplate($type));

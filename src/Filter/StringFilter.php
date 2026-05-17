@@ -55,11 +55,20 @@ final class StringFilter extends Filter implements SearchableFilterInterface
 
     protected function filter(ProxyQueryInterface $query, string $field, FilterData $data): void
     {
-        if (!$data->hasValue() || null === $data->getValue()) {
+        if (!$data->hasValue()) {
             return;
         }
 
-        $value = trim((string) $data->getValue());
+        $raw = $data->getValue();
+
+        // Submitted shape must be a scalar (or null) — anything else (array,
+        // object) means a malformed payload, never something we can string-cast
+        // into a regex. Skip silently rather than fatal in `(string) []`.
+        if (null === $raw || !\is_scalar($raw)) {
+            return;
+        }
+
+        $value = trim((string) $raw);
 
         if ('' === $value) {
             return;
@@ -78,18 +87,27 @@ final class StringFilter extends Filter implements SearchableFilterInterface
         $flags = true === $this->getOption('case_sensitive') ? '' : 'i';
         $escaped = preg_quote($value, '/');
 
+        // Each arm is a closure so we can detect "unknown operator" via the
+        // null default and short-circuit before flipping the filter to
+        // "active" on a query the builder never saw.
         // Match against the int constants shared by ContainsOperatorType and
         // StringOperatorType — both expose the same numeric value for TYPE_EQUAL,
         // TYPE_CONTAINS, TYPE_NOT_CONTAINS, and StringOperatorType adds 4/5/6.
-        match ($type) {
-            ContainsOperatorType::TYPE_EQUAL => $obj->field($field)->equals($value),
-            StringOperatorType::TYPE_NOT_EQUAL => $obj->field($field)->notEqual($value),
-            ContainsOperatorType::TYPE_CONTAINS => $obj->field($field)->equals(new Regex($escaped, $flags)),
-            ContainsOperatorType::TYPE_NOT_CONTAINS => $obj->field($field)->not(new Regex($escaped, $flags)),
-            StringOperatorType::TYPE_STARTS_WITH => $obj->field($field)->equals(new Regex('^'.$escaped, $flags)),
-            StringOperatorType::TYPE_ENDS_WITH => $obj->field($field)->equals(new Regex($escaped.'$', $flags)),
+        $apply = match ($type) {
+            ContainsOperatorType::TYPE_EQUAL => static fn () => $obj->field($field)->equals($value),
+            StringOperatorType::TYPE_NOT_EQUAL => static fn () => $obj->field($field)->notEqual($value),
+            ContainsOperatorType::TYPE_CONTAINS => static fn () => $obj->field($field)->equals(new Regex($escaped, $flags)),
+            ContainsOperatorType::TYPE_NOT_CONTAINS => static fn () => $obj->field($field)->not(new Regex($escaped, $flags)),
+            StringOperatorType::TYPE_STARTS_WITH => static fn () => $obj->field($field)->equals(new Regex('^'.$escaped, $flags)),
+            StringOperatorType::TYPE_ENDS_WITH => static fn () => $obj->field($field)->equals(new Regex($escaped.'$', $flags)),
             default => null,
         };
+
+        if (null === $apply) {
+            return;
+        }
+
+        $apply();
 
         if (self::CONDITION_OR === $this->condition) {
             \assert($obj instanceof Expr);

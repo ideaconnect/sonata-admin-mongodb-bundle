@@ -39,4 +39,21 @@ final class FieldDescriptionFactoryTest extends RegistryTestCase
         $fieldDescription = $fieldDescriptionFactory->create(ContainerDocument::class, 'embeddedDocument');
         static::assertNotSame([], $fieldDescription->getAssociationMapping());
     }
+
+    /**
+     * R6: a non-association segment in a dot-separated path used to emit an
+     * "undefined array key" warning and let the loop continue with null,
+     * crashing deep in ODM. It now throws an InvalidArgumentException that
+     * names the bad segment.
+     */
+    public function testCreateThrowsWhenPathSegmentIsNotAnAssociation(): void
+    {
+        $fieldDescriptionFactory = new FieldDescriptionFactory($this->registry);
+
+        $this->expectException(\InvalidArgumentException::class);
+        $this->expectExceptionMessage('"plainField" is not an association');
+
+        // plainField is a scalar — using it as a parent in a dot-path is illegal.
+        $fieldDescriptionFactory->create(ContainerDocument::class, 'plainField.something');
+    }
 }

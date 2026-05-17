@@ -25,7 +25,9 @@ final class FieldDescription extends BaseFieldDescription
 
     public function isIdentifier(): bool
     {
-        return $this->fieldMapping['id'] ?? false;
+        // ODM writes `'id' => true` for identifier fields; cast defensively so
+        // a non-bool truthy value can't TypeError at the strict return.
+        return (bool) ($this->fieldMapping['id'] ?? false);
     }
 
     public function getValue(object $object)

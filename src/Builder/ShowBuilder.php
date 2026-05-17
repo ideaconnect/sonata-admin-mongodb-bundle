@@ -66,7 +66,9 @@ final readonly class ShowBuilder implements ShowBuilderInterface
             throw new \RuntimeException(\sprintf('Please define a type for field `%s` in `%s`', $fieldDescription->getName(), $fieldDescription->getAdmin()::class));
         }
 
-        $fieldDescription->setOption('label', $fieldDescription->getOption('label', $fieldDescription->getName()));
+        if (null === $fieldDescription->getOption('label')) {
+            $fieldDescription->setOption('label', $fieldDescription->getName());
+        }
 
         if (null === $fieldDescription->getTemplate()) {
             $fieldDescription->setTemplate($this->getTemplate($type));

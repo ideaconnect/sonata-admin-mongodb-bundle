@@ -98,6 +98,38 @@ final class PagerTest extends TestCase
         static::assertSame(0, $pager->getLastPage());
     }
 
+    public function testInitResetsProxyPaginationToNull(): void
+    {
+        // R3: post-init the proxy's first/maxResults should be null (proxy's
+        // "no pagination" state), not 0. Previously init() reset to 0, which
+        // forced a useless skip(0)/limit(0) on every subsequent execute().
+        $this->persistNames(['A', 'B']);
+
+        $pager = $this->createInitializedPager(maxPerPage: 0, page: 1);
+
+        $query = $pager->getQuery();
+        static::assertNotNull($query);
+        static::assertNull($query->getFirstResult());
+        static::assertNull($query->getMaxResults());
+    }
+
+    public function testCloneResetsResultsCount(): void
+    {
+        // R12: cloning an initialized pager must not carry the source's
+        // resultsCount through — the clone's count is undefined until it
+        // gets its own init().
+        $this->persistNames(['A', 'B']);
+
+        $pager = $this->createInitializedPager(maxPerPage: 10, page: 1);
+        static::assertSame(2, $pager->countResults());
+
+        $clone = clone $pager;
+
+        $this->expectException(\LogicException::class);
+        $this->expectExceptionMessage('Pager has not been initialized');
+        $clone->countResults();
+    }
+
     public function testGetCurrentPageResultsReturnsTheRightSlice(): void
     {
         $this->persistNames(['A', 'B', 'C', 'D', 'E']);

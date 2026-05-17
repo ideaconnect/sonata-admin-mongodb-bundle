@@ -78,12 +78,16 @@ abstract class AbstractDateFilter extends Filter
 
         // date filter should filter records for the whole day
         if (false === $this->time && DateOperatorType::TYPE_EQUAL === $type) {
+            // PHP only allows DateTime and DateTimeImmutable to implement
+            // DateTimeInterface (the interface is final-internal); the
+            // instanceof guard above narrows to one of those two concretely.
+            $interval = new \DateInterval('P1D');
+
             if ($value instanceof \DateTime) {
                 $endValue = clone $value;
-                $endValue->add(new \DateInterval('P1D'));
+                $endValue->add($interval);
             } else {
-                /** @var \DateTimeImmutable $value */
-                $endValue = $value->add(new \DateInterval('P1D'));
+                $endValue = $value->add($interval);
             }
 
             $this->applyType($query, $this->getOperator(DateOperatorType::TYPE_GREATER_EQUAL), $field, $value);

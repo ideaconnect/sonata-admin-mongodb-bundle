@@ -56,9 +56,33 @@ final readonly class FieldDescriptionFactory implements FieldDescriptionFactoryI
 
         foreach ($nameElements as $nameElement) {
             $metadata = $this->getMetadata($class);
+
+            // Guard explicitly: a missing association would otherwise emit an
+            // "undefined array key" warning (line below) and let the loop
+            // continue with a null target class, crashing deep in ODM. We'd
+            // rather fail loudly here with a path that names the bad segment.
+            if (!isset($metadata->associationMappings[$nameElement])) {
+                throw new \InvalidArgumentException(\sprintf(
+                    'Field path "%s" cannot be resolved on "%s": "%s" is not an association.',
+                    $propertyFullName,
+                    $class,
+                    $nameElement,
+                ));
+            }
+
             $parentAssociationMappings[] = $metadata->associationMappings[$nameElement];
-            $class = $metadata->getAssociationTargetClass($nameElement);
-            \assert(null !== $class);
+
+            $target = $metadata->getAssociationTargetClass($nameElement);
+            if (null === $target) {
+                throw new \InvalidArgumentException(\sprintf(
+                    'Association "%s" on "%s" has no targetDocument; cannot resolve "%s".',
+                    $nameElement,
+                    $class,
+                    $propertyFullName,
+                ));
+            }
+
+            $class = $target;
         }
 
         return [$this->getMetadata($class), $lastPropertyName, $parentAssociationMappings];
@@ -77,7 +101,7 @@ final readonly class FieldDescriptionFactory implements FieldDescriptionFactoryI
     /**
      * @param class-string $class
      *
-     * @throw \RuntimeException
+     * @throws \RuntimeException
      */
     private function getDocumentManager(string $class): DocumentManager
     {

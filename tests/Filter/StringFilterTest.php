@@ -386,4 +386,102 @@ final class StringFilterTest extends FilterWithQueryBuilderTestCase
 
         static::assertTrue($filter->isActive());
     }
+
+    /**
+     * Locks the case_sensitive flag's effect across every regex-using operator
+     * (T1). CONTAINS is already covered above; this extends to the three
+     * anchored / negated variants so they don't silently regress.
+     *
+     * @phpstan-return iterable<string, array{int, string, non-empty-string}>
+     */
+    public static function provideCaseSensitiveOptionRemovesIFlagAcrossOperatorsCases(): iterable
+    {
+        // [operator, expected Regex pattern, expected Mongo builder method].
+        yield 'NOT_CONTAINS' => [ContainsOperatorType::TYPE_NOT_CONTAINS, 'asd', 'not'];
+        yield 'STARTS_WITH' => [StringOperatorType::TYPE_STARTS_WITH, '^asd', 'equals'];
+        yield 'ENDS_WITH' => [StringOperatorType::TYPE_ENDS_WITH, 'asd$', 'equals'];
+    }
+
+    /**
+     * @param non-empty-string $builderMethod
+     */
+    #[DataProvider('provideCaseSensitiveOptionRemovesIFlagAcrossOperatorsCases')]
+    public function testCaseSensitiveOptionRemovesIFlagAcrossOperators(
+        int $type,
+        string $expectedPattern,
+        string $builderMethod,
+    ): void {
+        $filter = new StringFilter();
+        $filter->initialize('field_name', [
+            'field_name' => self::DEFAULT_FIELD_NAME,
+            'case_sensitive' => true,
+        ]);
+
+        $queryBuilder = $this->getQueryBuilder();
+        $queryBuilder
+            ->expects(static::once())
+            ->method($builderMethod)
+            ->with(new Regex($expectedPattern, ''));
+
+        $filter->apply(
+            new ProxyQuery($queryBuilder),
+            FilterData::fromArray(['value' => 'asd', 'type' => $type]),
+        );
+
+        static::assertTrue($filter->isActive());
+    }
+
+    /**
+     * Regression for R1: an unknown operator int used to leave the builder
+     * untouched while still flipping isActive() to true. The filter now
+     * short-circuits without ever calling field().
+     */
+    public function testFilterIsInactiveForUnknownOperatorType(): void
+    {
+        $filter = new StringFilter();
+        $filter->initialize('field_name', [
+            'field_name' => self::DEFAULT_FIELD_NAME,
+        ]);
+
+        $queryBuilder = $this->getQueryBuilder();
+        $queryBuilder->expects(static::never())->method('field');
+
+        $filter->apply(
+            new ProxyQuery($queryBuilder),
+            FilterData::fromArray(['value' => 'asd', 'type' => 9_999_999]),
+        );
+
+        static::assertFalse($filter->isActive());
+    }
+
+    /**
+     * Regression for R2: a non-scalar submitted value used to TypeError on the
+     * `(string)` cast. It now skips the filter silently.
+     *
+     * @phpstan-return iterable<string, array{mixed}>
+     */
+    public static function provideFilterIsInactiveForNonScalarValueCases(): iterable
+    {
+        yield 'array' => [['nested']];
+        yield 'object' => [new \stdClass()];
+    }
+
+    #[DataProvider('provideFilterIsInactiveForNonScalarValueCases')]
+    public function testFilterIsInactiveForNonScalarValue(mixed $value): void
+    {
+        $filter = new StringFilter();
+        $filter->initialize('field_name', [
+            'field_name' => self::DEFAULT_FIELD_NAME,
+        ]);
+
+        $queryBuilder = $this->getQueryBuilder();
+        $queryBuilder->expects(static::never())->method('field');
+
+        $filter->apply(
+            new ProxyQuery($queryBuilder),
+            FilterData::fromArray(['value' => $value]),
+        );
+
+        static::assertFalse($filter->isActive());
+    }
 }

@@ -18,6 +18,7 @@ use Doctrine\ODM\MongoDB\DocumentManager;
 use Doctrine\ODM\MongoDB\Mapping\Driver\AttributeDriver;
 use PHPUnit\Framework\TestCase;
 use Sonata\AdminBundle\Admin\AdminInterface;
+use Sonata\AdminBundle\Exception\ModelManagerException;
 use Sonata\AdminBundle\Model\ModelManagerInterface;
 use Sonata\AdminBundle\Security\Handler\AclSecurityHandlerInterface;
 use Sonata\AdminBundle\Security\Handler\NoopSecurityHandler;
@@ -127,6 +128,45 @@ final class ObjectAclManipulatorTest extends TestCase
         );
 
         static::assertStringContainsString('and set the object owner', $output);
+
+        $this->cleanup();
+    }
+
+    /**
+     * T2: BadMethodCallException raised during ACL configuration is now wrapped
+     * into a ModelManagerException that names the admin code and the original
+     * message — previously the wrap was an empty-string ModelManagerException
+     * with the cause only reachable via getPrevious().
+     */
+    public function testBatchConfigureAclsWrapsBadMethodCallExceptionWithContext(): void
+    {
+        $this->dm->persist(new DocumentForAcl());
+        $this->dm->flush();
+
+        $aclSecurityHandler = static::createStub(AclSecurityHandlerInterface::class);
+        $aclSecurityHandler
+            ->method('findObjectAcls')
+            ->willThrowException(new \BadMethodCallException('ACL store missing'));
+
+        $admin = static::createStub(AdminInterface::class);
+        $admin->method('getSecurityHandler')->willReturn($aclSecurityHandler);
+        $admin->method('getClass')->willReturn(DocumentForAcl::class);
+        $admin->method('getCode')->willReturn('admin.code.for.acl');
+        $admin->method('getModelManager')->willReturn(static::createStub(ModelManagerInterface::class));
+
+        $managerRegistry = static::createStub(ManagerRegistry::class);
+        $managerRegistry->method('getManagerForClass')->willReturn($this->dm);
+
+        $objectAclManipulator = new ObjectAclManipulator($managerRegistry);
+
+        try {
+            $objectAclManipulator->batchConfigureAcls(new BufferedOutput(), $admin);
+            static::fail('Expected ModelManagerException to be thrown');
+        } catch (ModelManagerException $e) {
+            static::assertStringContainsString('admin.code.for.acl', $e->getMessage());
+            static::assertStringContainsString('ACL store missing', $e->getMessage());
+            static::assertInstanceOf(\BadMethodCallException::class, $e->getPrevious());
+        }
 
         $this->cleanup();
     }

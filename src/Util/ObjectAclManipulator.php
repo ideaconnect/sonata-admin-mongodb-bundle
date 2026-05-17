@@ -100,6 +100,20 @@ final class ObjectAclManipulator extends BaseObjectAclManipulator
                 $countAdded += $batchAdded;
                 $countUpdated += $batchUpdated;
             }
+
+            // Emit one trailing progress line when the run didn't end exactly
+            // on a PROGRESS_REPORT_INTERVAL boundary; without this a 195-doc
+            // run never shows mid-run progress and a 195,000,195-doc run
+            // misses its final 195 in the report.
+            if ($count > 0 && 0 !== ($count % self::PROGRESS_REPORT_INTERVAL)) {
+                $output->writeln(\sprintf(
+                    '   - generated class ACEs%s for %s objects (added %s, updated %s)',
+                    $objectOwnersMsg,
+                    $count,
+                    $countAdded,
+                    $countUpdated
+                ));
+            }
         } catch (\BadMethodCallException $e) {
             throw new ModelManagerException(
                 \sprintf('Failed to configure ACLs for "%s": %s', $admin->getCode(), $e->getMessage()),

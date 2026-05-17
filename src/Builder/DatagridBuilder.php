@@ -87,9 +87,13 @@ final readonly class DatagridBuilder implements DatagridBuilderInterface
 
             foreach ($options as $name => $value) {
                 if (\is_array($value)) {
+                    // For arrays we merge so a user-provided override deep-extends
+                    // the guesser's suggestion (right-hand wins).
                     $fieldDescription->setOption($name, array_merge($value, $fieldDescription->getOption($name, [])));
-                } else {
-                    $fieldDescription->setOption($name, $fieldDescription->getOption($name, $value));
+                } elseif (null === $fieldDescription->getOption($name)) {
+                    // For scalars the guesser only fills in the unset case;
+                    // a user-provided override is preserved.
+                    $fieldDescription->setOption($name, $value);
                 }
             }
         } else {
