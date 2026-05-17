@@ -12,7 +12,7 @@ it for relational databases.
 [![Doctrine MongoDB ODM](https://img.shields.io/badge/Doctrine%20MongoDB%20ODM-%5E2.6-orange)](https://www.doctrine-project.org/projects/mongodb-odm.html)
 [![Sonata Admin](https://img.shields.io/badge/Sonata%20Admin-%5E4.39-blue)](https://docs.sonata-project.org/projects/admin-bundle)
 
-[![codecov](https://codecov.io/gh/ideaconnect/sonata-admin-mongodb-bundle/graph/badge.svg?token=yUdY2iB1AV)](https://codecov.io/gh/ideaconnect/sonata-admin-mongodb-bundle)
+[![codecov](https://codecov.io/gh/ideaconnect/sonata-admin-mongodb-bundle/branch/5.x/graph/badge.svg?token=yUdY2iB1AV)](https://codecov.io/gh/ideaconnect/sonata-admin-mongodb-bundle)
 [![Test](https://github.com/ideaconnect/sonata-admin-mongodb-bundle/actions/workflows/test.yaml/badge.svg)](https://github.com/ideaconnect/sonata-admin-mongodb-bundle/actions/workflows/test.yaml)
 [![Quality assurance](https://github.com/ideaconnect/sonata-admin-mongodb-bundle/actions/workflows/qa.yaml/badge.svg)](https://github.com/ideaconnect/sonata-admin-mongodb-bundle/actions/workflows/qa.yaml)
 [![Lint](https://github.com/ideaconnect/sonata-admin-mongodb-bundle/actions/workflows/lint.yaml/badge.svg)](https://github.com/ideaconnect/sonata-admin-mongodb-bundle/actions/workflows/lint.yaml)
