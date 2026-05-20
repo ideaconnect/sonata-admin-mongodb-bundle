@@ -9,9 +9,6 @@
          bootstrap="tests/bootstrap.php"
 >
     <testsuites>
-        <testsuite name="SonataDoctrineMongoDBAdminBundle Test Suite">
-            <directory>./tests/</directory>
-        </testsuite>
         <testsuite name="unit">
             <directory>./tests/</directory>
             <exclude>./tests/Functional</exclude>
