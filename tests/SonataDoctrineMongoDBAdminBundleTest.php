@@ -18,6 +18,7 @@ use Sonata\DoctrineMongoDBAdminBundle\DependencyInjection\Compiler\AddGuesserCom
 use Sonata\DoctrineMongoDBAdminBundle\DependencyInjection\Compiler\AddTemplatesCompilerPass;
 use Sonata\DoctrineMongoDBAdminBundle\SonataDoctrineMongoDBAdminBundle;
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
+use Symfony\Component\DependencyInjection\Compiler\PassConfig;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 
 final class SonataDoctrineMongoDBAdminBundleTest extends TestCase
@@ -31,6 +32,31 @@ final class SonataDoctrineMongoDBAdminBundleTest extends TestCase
 
         static::assertNotNull($this->findCompilerPass($containerBuilder, AddGuesserCompilerPass::class));
         static::assertNotNull($this->findCompilerPass($containerBuilder, AddTemplatesCompilerPass::class));
+    }
+
+    public function testAddTemplatesCompilerPassRegistersAtPriorityMinusOne(): void
+    {
+        // The pass MUST be registered with priority -1 so it runs *after*
+        // default-priority passes that publish admin definitions. Increment
+        // (-> 0) or decrement (-> -2) mutants would silently re-order the
+        // compile pipeline.
+        $containerBuilder = new ContainerBuilder();
+        new SonataDoctrineMongoDBAdminBundle()->build($containerBuilder);
+
+        $passConfig = $containerBuilder->getCompiler()->getPassConfig();
+        $buckets = new \ReflectionProperty(PassConfig::class, 'beforeOptimizationPasses')->getValue($passConfig);
+
+        $priority = null;
+        foreach ($buckets as $prio => $passes) {
+            foreach ($passes as $pass) {
+                if ($pass instanceof AddTemplatesCompilerPass) {
+                    $priority = $prio;
+                    break 2;
+                }
+            }
+        }
+
+        static::assertSame(-1, $priority);
     }
 
     /** @param class-string $class */

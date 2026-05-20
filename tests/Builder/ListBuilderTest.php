@@ -197,6 +197,84 @@ final class ListBuilderTest extends AbstractModelManagerTestCase
         static::assertNull($fieldDescription->getOption('sort_field_mapping'));
     }
 
+    public function testFixFieldDescriptionAppliesAllSortDefaultsWhenUnset(): void
+    {
+        // Locks the four `null === …` branches inside the sort-defaults block:
+        // sortable → true, sort_parent_association_mappings → field's parents,
+        // sort_field_mapping → field's fieldMapping, _sort_order → 'ASC'.
+        $documentClass = DocumentWithReferences::class;
+        $classMetadata = $this->getMetadataForDocumentWithAttributes($documentClass);
+
+        $parents = [['fieldName' => 'parent']];
+        $fieldDescription = new FieldDescription(
+            'name',
+            [],
+            $classMetadata->fieldMappings['name'],
+            [],
+            $parents,
+        );
+        $fieldDescription->setAdmin($this->admin);
+        $fieldDescription->setType('string');
+
+        $this->admin->method('getClass')->willReturn($documentClass);
+
+        $this->listBuilder->fixFieldDescription($fieldDescription);
+
+        static::assertTrue($fieldDescription->getOption('sortable'));
+        static::assertSame($parents, $fieldDescription->getOption('sort_parent_association_mappings'));
+        static::assertSame($classMetadata->fieldMappings['name'], $fieldDescription->getOption('sort_field_mapping'));
+        static::assertSame('ASC', $fieldDescription->getOption('_sort_order'));
+    }
+
+    public function testFixFieldDescriptionPreservesUserProvidedSortOptions(): void
+    {
+        // Symmetric guard for the same four defaults: when the caller has
+        // already supplied a value, fixFieldDescription must NOT overwrite
+        // it. An `Identical` → `NotIdentical` mutant on any of the four
+        // `null ===` checks would flip the gate and clobber the sentinels.
+        $documentClass = DocumentWithReferences::class;
+        $classMetadata = $this->getMetadataForDocumentWithAttributes($documentClass);
+
+        $fieldDescription = new FieldDescription(
+            'name',
+            [
+                'sortable' => true,
+                'sort_parent_association_mappings' => [['user' => 'parent']],
+                'sort_field_mapping' => ['user' => 'mapping'],
+                '_sort_order' => 'DESC',
+            ],
+            $classMetadata->fieldMappings['name'],
+        );
+        $fieldDescription->setAdmin($this->admin);
+        $fieldDescription->setType('string');
+        $this->admin->method('getClass')->willReturn($documentClass);
+
+        $this->listBuilder->fixFieldDescription($fieldDescription);
+
+        static::assertTrue($fieldDescription->getOption('sortable'));
+        static::assertSame([['user' => 'parent']], $fieldDescription->getOption('sort_parent_association_mappings'));
+        static::assertSame(['user' => 'mapping'], $fieldDescription->getOption('sort_field_mapping'));
+        static::assertSame('DESC', $fieldDescription->getOption('_sort_order'));
+    }
+
+    public function testFixFieldDescriptionSkipsSortDefaultsWhenFieldMappingIsEmpty(): void
+    {
+        // The whole sort-defaults block is gated on `[] !== getFieldMapping()`.
+        // Flip the operator to `===` and we'd default sort options for fields
+        // without mappings (e.g. virtual fields), which is exactly the case
+        // this guard exists to skip.
+        $fieldDescription = new FieldDescription('virtual');
+        $fieldDescription->setAdmin($this->admin);
+        $fieldDescription->setType('string');
+
+        $this->listBuilder->fixFieldDescription($fieldDescription);
+
+        static::assertNull($fieldDescription->getOption('sortable'));
+        static::assertNull($fieldDescription->getOption('sort_parent_association_mappings'));
+        static::assertNull($fieldDescription->getOption('sort_field_mapping'));
+        static::assertNull($fieldDescription->getOption('_sort_order'));
+    }
+
     public function testActionsHelperTemplatesGetDefaultsAppliedPerAction(): void
     {
         $fieldDescription = new FieldDescription('_action', [

@@ -13,8 +13,10 @@ declare(strict_types=1);
 
 namespace Sonata\DoctrineMongoDBAdminBundle\Tests\Exporter;
 
+use Doctrine\ODM\MongoDB\Configuration;
 use Doctrine\ODM\MongoDB\DocumentManager;
 use Doctrine\ODM\MongoDB\Mapping\ClassMetadata;
+use Doctrine\ODM\MongoDB\Mapping\Driver\AttributeDriver;
 use Doctrine\ODM\MongoDB\Query\Builder;
 use Doctrine\ODM\MongoDB\Query\Query;
 use MongoDB\Collection;
@@ -22,6 +24,7 @@ use PHPUnit\Framework\TestCase;
 use Sonata\AdminBundle\Datagrid\ProxyQueryInterface;
 use Sonata\DoctrineMongoDBAdminBundle\Datagrid\ProxyQuery;
 use Sonata\DoctrineMongoDBAdminBundle\Exporter\DataSource;
+use Sonata\DoctrineMongoDBAdminBundle\Tests\Fixtures\Document\DocumentWithReferences;
 
 final class DataSourceTest extends TestCase
 {
@@ -108,5 +111,45 @@ final class DataSourceTest extends TestCase
             ->willReturn($query);
 
         $this->dataSource->createIterator(new ProxyQuery($queryBuilder), []);
+    }
+
+    public function testCreateIteratorDoesNotMutateSharedBuilder(): void
+    {
+        // The CloneRemoval mutant strips the `clone` in createIterator, which
+        // would let the hydrate(false) call mutate the source builder the
+        // proxy was constructed with. Use a real Builder so the setter
+        // actually flips state — mocks intercept the call and don't expose
+        // mutation we can observe.
+        $dm = DocumentManager::create(null, $this->createConfiguration());
+        $queryBuilder = $dm->createQueryBuilder(DocumentWithReferences::class);
+        $queryBuilder->hydrate(true);
+
+        $proxyQuery = new ProxyQuery($queryBuilder);
+
+        new DataSource(false)->createIterator($proxyQuery, []);
+
+        $hydrateProp = new \ReflectionProperty(Builder::class, 'hydrate');
+        static::assertTrue(
+            $hydrateProp->getValue($queryBuilder),
+            'Source builder hydrate flag must not be touched (clone protects it).',
+        );
+    }
+
+    private function createConfiguration(): Configuration
+    {
+        $config = new Configuration();
+
+        $directory = sys_get_temp_dir().'/mongodb';
+
+        $config->setProxyDir($directory);
+        $config->setProxyNamespace('Proxies');
+        $config->setHydratorDir($directory);
+        $config->setHydratorNamespace('Hydrators');
+        $config->setPersistentCollectionDir($directory);
+        $config->setPersistentCollectionNamespace('PersistentCollections');
+        $config->setMetadataDriverImpl(new AttributeDriver());
+        $config->setUseNativeLazyObject(true);
+
+        return $config;
     }
 }

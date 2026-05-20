@@ -235,6 +235,36 @@ final class StringFilterTest extends FilterWithQueryBuilderTestCase
         static::assertSame(ContainsOperatorType::class, $options['operator_type']);
     }
 
+    public function testGetDefaultOptions(): void
+    {
+        static::assertSame(
+            [
+                'field_type' => TextType::class,
+                'global_search' => true,
+                'case_sensitive' => false,
+            ],
+            new StringFilter()->getDefaultOptions(),
+        );
+    }
+
+    public function testGetFormOptionsHasExactShape(): void
+    {
+        $filter = new StringFilter();
+        $filter->initialize('field_name', [
+            'field_name' => self::DEFAULT_FIELD_NAME,
+        ]);
+
+        static::assertSame(
+            [
+                'field_type' => TextType::class,
+                'field_options' => [],
+                'label' => null,
+                'operator_type' => ContainsOperatorType::class,
+            ],
+            $filter->getFormOptions(),
+        );
+    }
+
     public function testFilterIsInactiveForWhitespaceValue(): void
     {
         $filter = new StringFilter();

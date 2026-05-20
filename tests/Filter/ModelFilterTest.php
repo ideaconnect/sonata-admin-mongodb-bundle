@@ -102,6 +102,63 @@ final class ModelFilterTest extends TestCase
         static::assertTrue($filter->isActive());
     }
 
+    public function testHandleMultipleReturnsEarlyOnEmptyArray(): void
+    {
+        // An empty incoming array must not trigger any builder work — drop
+        // the early return and the loop would still produce no IDs but the
+        // downstream `$ids` empty check would skip the query call anyway,
+        // so the only observable signal is that `field()` is never called.
+        $filter = new ModelFilter();
+        $filter->initialize('field_name', [
+            'field_name' => 'field',
+            'field_options' => ['class' => 'FooBar'],
+            'field_mapping' => ['type' => 'collection'],
+        ]);
+
+        $queryBuilder = $this->createMock(Builder::class);
+        $queryBuilder->expects(static::never())->method('field');
+
+        $filter->apply(new ProxyQuery($queryBuilder), FilterData::fromArray([
+            'type' => EqualOperatorType::TYPE_EQUAL,
+            'value' => [],
+        ]));
+
+        static::assertFalse($filter->isActive());
+    }
+
+    public function testHandleMultipleSkipsInvalidEntriesAndContinues(): void
+    {
+        // Drives the continue branch: a `break;` mutant would stop after the
+        // first non-object entry and drop the otherwise-valid document that
+        // follows. The expected `in()` argument list captures the surviving id.
+        $filter = new ModelFilter();
+        $filter->initialize('field_name', [
+            'field_name' => 'field',
+            'field_options' => ['class' => 'FooBar'],
+            'field_mapping' => ['type' => 'collection'],
+        ]);
+
+        $validDocument = new DocumentStub();
+
+        $queryBuilder = $this->createMock(Builder::class);
+        $queryBuilder
+            ->expects(static::once())
+            ->method('field')
+            ->with('field._id')
+            ->willReturnSelf();
+        $queryBuilder
+            ->expects(static::once())
+            ->method('in')
+            ->with([new ObjectId($validDocument->getId())]);
+
+        $filter->apply(new ProxyQuery($queryBuilder), FilterData::fromArray([
+            'type' => EqualOperatorType::TYPE_EQUAL,
+            'value' => ['not-an-object', $validDocument],
+        ]));
+
+        static::assertTrue($filter->isActive());
+    }
+
     /**
      * Regression for B2: handleScalar used to call ->getId() on the value
      * unconditionally, which fatals when the submitted value is not an object
@@ -332,6 +389,40 @@ final class ModelFilterTest extends TestCase
         static::assertSame(DocumentType::class, $options['field_type']);
         static::assertSame(['class' => 'FooBar'], $options['field_options']);
         static::assertSame(EqualOperatorType::class, $options['operator_type']);
+    }
+
+    public function testGetDefaultOptions(): void
+    {
+        static::assertSame(
+            [
+                'mapping_type' => false,
+                'field_type' => DocumentType::class,
+                'field_options' => [],
+                'operator_type' => EqualOperatorType::class,
+                'operator_options' => [],
+            ],
+            new ModelFilter()->getDefaultOptions(),
+        );
+    }
+
+    public function testGetFormOptionsHasExactShape(): void
+    {
+        $filter = new ModelFilter();
+        $filter->initialize('field_name', [
+            'field_name' => 'field',
+            'field_options' => ['class' => 'FooBar'],
+        ]);
+
+        static::assertSame(
+            [
+                'field_type' => DocumentType::class,
+                'field_options' => ['class' => 'FooBar'],
+                'operator_type' => EqualOperatorType::class,
+                'operator_options' => [],
+                'label' => null,
+            ],
+            $filter->getFormOptions(),
+        );
     }
 
     public function testHandleScalarNotEqualUsesNotEqualOperator(): void

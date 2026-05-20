@@ -100,6 +100,57 @@ final class FieldDescriptionTest extends TestCase
         static::assertSame($fieldMapping, $field->getFieldMapping());
     }
 
+    public function testIsIdentifierIsFalseWhenIdKeyMissing(): void
+    {
+        // Defensive default: fieldMapping with no 'id' key must report false,
+        // not whatever happens to be truthy.
+        $field = new FieldDescription('name', [], ['type' => 'string', 'fieldName' => 'name']);
+
+        static::assertFalse($field->isIdentifier());
+    }
+
+    public function testSetAssociationMappingDoesNotOverwriteAlreadyResolvedMappingType(): void
+    {
+        // Constructor processes fieldMapping first → mappingType resolves to
+        // its 'type'. The associationMapping ??= must NOT clobber it.
+        $field = new FieldDescription(
+            'name',
+            [],
+            ['type' => 'integer', 'fieldName' => 'position'],
+            ['type' => 'string', 'fieldName' => 'position'],
+        );
+
+        static::assertSame('integer', $field->getMappingType());
+    }
+
+    public function testSetFieldMappingDoesNotOverwriteAlreadyResolvedMappingType(): void
+    {
+        // Symmetric guard for setFieldMapping: when mappingType is already
+        // resolved (here: from a prior setAssociationMapping call), a second
+        // call to setFieldMapping must keep it. FieldDescription is final, so
+        // we drive the protected setters via reflection in reverse of the
+        // constructor's order to expose this.
+        $field = new FieldDescription('name');
+
+        $assoc = new \ReflectionMethod(FieldDescription::class, 'setAssociationMapping');
+        $assoc->invoke($field, ['type' => 'string', 'fieldName' => 'position']);
+
+        $fieldMapping = new \ReflectionMethod(FieldDescription::class, 'setFieldMapping');
+        $fieldMapping->invoke($field, ['type' => 'integer', 'fieldName' => 'position']);
+
+        static::assertSame('string', $field->getMappingType());
+    }
+
+    public function testSetParentAssociationMappingsThrowsOnNonArrayEntry(): void
+    {
+        // The foreach validates each entry; a `foreach ([])` mutant would
+        // silently skip validation and the bad payload would propagate.
+        $this->expectException(\RuntimeException::class);
+        $this->expectExceptionMessage('An association mapping must be an array');
+
+        new FieldDescription('name', [], [], [], ['not-an-array']);
+    }
+
     public function testGetParentValue(): void
     {
         $parentAssociationMappings = [

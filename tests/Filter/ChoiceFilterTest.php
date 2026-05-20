@@ -19,6 +19,7 @@ use Sonata\AdminBundle\Form\Type\Operator\ContainsOperatorType;
 use Sonata\AdminBundle\Form\Type\Operator\EqualOperatorType;
 use Sonata\DoctrineMongoDBAdminBundle\Datagrid\ProxyQuery;
 use Sonata\DoctrineMongoDBAdminBundle\Filter\ChoiceFilter;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
 
 final class ChoiceFilterTest extends FilterWithQueryBuilderTestCase
 {
@@ -177,6 +178,22 @@ final class ChoiceFilterTest extends FilterWithQueryBuilderTestCase
                 'operator_options' => [],
             ],
             new ChoiceFilter()->getDefaultOptions(),
+        );
+    }
+
+    public function testGetFormOptionsHasExactShape(): void
+    {
+        $filter = $this->createFilter();
+
+        static::assertSame(
+            [
+                'operator_type' => EqualOperatorType::class,
+                'operator_options' => [],
+                'field_type' => TextType::class,
+                'field_options' => ['class' => 'FooBar'],
+                'label' => null,
+            ],
+            $filter->getFormOptions(),
         );
     }
 

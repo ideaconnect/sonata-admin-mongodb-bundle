@@ -1,0 +1,33 @@
+{
+    $schema: "vendor/infection/infection/resources/schema.json",
+    source: {
+        directories: [
+            "src",
+        ],
+        excludes: [
+            "Resources",
+            "DependencyInjection/Compiler",
+        ],
+    },
+    timeout: 30,
+    logs: {
+        text: "build/infection/infection.log",
+        html: "build/infection/infection.html",
+        summary: "build/infection/summary.log",
+        json: "build/infection/infection.json",
+        stryker: {
+            badge: "5.x",
+        },
+    },
+    tmpDir: "build/infection/tmp",
+    testFramework: "phpunit",
+    testFrameworkOptions: "--testsuite=unit --no-coverage",
+    phpUnit: {
+        configDir: ".",
+    },
+    minMsi: 0,
+    minCoveredMsi: 0,
+    mutators: {
+        "@default": true,
+    },
+}

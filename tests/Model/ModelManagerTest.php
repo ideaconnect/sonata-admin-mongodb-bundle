@@ -19,6 +19,7 @@ use Doctrine\ODM\MongoDB\DocumentManager;
 use Doctrine\ODM\MongoDB\Hydrator\HydratorFactory;
 use Doctrine\ODM\MongoDB\Mapping\ClassMetadata;
 use Doctrine\ODM\MongoDB\Mapping\Driver\AttributeDriver;
+use Doctrine\ODM\MongoDB\MongoDBException;
 use Doctrine\ODM\MongoDB\Query\Builder;
 use Doctrine\ODM\MongoDB\Query\Query;
 use Doctrine\ODM\MongoDB\Repository\DocumentRepository;
@@ -80,6 +81,55 @@ final class ModelManagerTest extends TestCase
             ->willReturn($this->getMetadataForDocumentWithAttributes($documentWithReferencesClass));
 
         static::assertSame(['id'], $modelManager->getIdentifierFieldNames($documentWithReferencesClass));
+    }
+
+    public function testGetIdentifierFieldNamesStripsNulls(): void
+    {
+        // `array_filter(..., static fn (?string $id) => null !== $id)` keeps
+        // only non-null identifiers. Unwrap the array_filter mutant returns
+        // the raw `getIdentifier()` payload — including any nulls — which
+        // would later break the downstream `implode()` in
+        // getNormalizedIdentifier(). Lock the filtered shape.
+        $classMetadata = static::createStub(ClassMetadata::class);
+        $classMetadata->method('getIdentifier')->willReturn(['a', null, 'b']);
+
+        $dm = static::createStub(DocumentManager::class);
+        $dm->method('getClassMetadata')->willReturn($classMetadata);
+
+        $this->registry->method('getManagerForClass')->willReturn($dm);
+
+        $modelManager = new ModelManager($this->registry, $this->propertyAccessor);
+
+        static::assertSame([0 => 'a', 2 => 'b'], $modelManager->getIdentifierFieldNames(TestDocument::class));
+    }
+
+    public function testReverseTransformPrefersFieldMappingsOverAssociationMappings(): void
+    {
+        // getFieldName() consults fieldMappings first and `return`s; remove
+        // that return and a name present in BOTH maps would resolve via the
+        // associationMappings branch, sending the value to the wrong setter.
+        $object = new class {
+            public string $fieldOne = '';
+            public string $assocOne = '';
+        };
+
+        $classMetadata = static::createStub(ClassMetadata::class);
+        // Mocked mapping arrays are intentionally minimal — `getFieldName()`
+        // only reads the `fieldName` key off each entry.
+        // @phpstan-ignore-next-line assign.propertyType
+        $classMetadata->fieldMappings = ['shared' => ['fieldName' => 'fieldOne']];
+        // @phpstan-ignore-next-line assign.propertyType
+        $classMetadata->associationMappings = ['shared' => ['fieldName' => 'assocOne']];
+
+        $dm = static::createStub(DocumentManager::class);
+        $dm->method('getClassMetadata')->willReturn($classMetadata);
+        $this->registry->method('getManagerForClass')->willReturn($dm);
+
+        $modelManager = new ModelManager($this->registry, $this->propertyAccessor);
+        $modelManager->reverseTransform($object, ['shared' => 'value']);
+
+        static::assertSame('value', $object->fieldOne);
+        static::assertSame('', $object->assocOne);
     }
 
     public function testReverseTransformWithSetter(): void
@@ -183,6 +233,23 @@ final class ModelManagerTest extends TestCase
         new ModelManager($this->registry, $this->propertyAccessor)->create(new TestDocument());
     }
 
+    public function testCreateWrapsOdmMongoDBExceptionInModelManagerException(): void
+    {
+        // The catch clause is `Exception|MongoDBException` — the first arm is
+        // the *driver* exception, the second is the *ODM* exception. Drop
+        // `MongoDBException` from the union and an ODM-side failure would
+        // propagate uncaught instead of being wrapped.
+        $dm = static::createStub(DocumentManager::class);
+        $dm->method('persist')->willThrowException(new MongoDBException('odm-side'));
+
+        $this->registry->method('getManagerForClass')->willReturn($dm);
+
+        $this->expectException(ModelManagerException::class);
+        $this->expectExceptionMessageMatches('/Failed to create object/');
+
+        new ModelManager($this->registry, $this->propertyAccessor)->create(new TestDocument());
+    }
+
     public function testUpdatePersistsAndFlushes(): void
     {
         $object = new TestDocument();
@@ -213,6 +280,19 @@ final class ModelManagerTest extends TestCase
         new ModelManager($this->registry, $this->propertyAccessor)->update(new TestDocument());
     }
 
+    public function testUpdateWrapsOdmMongoDBExceptionInModelManagerException(): void
+    {
+        $dm = static::createStub(DocumentManager::class);
+        $dm->method('persist')->willThrowException(new MongoDBException('odm-side'));
+
+        $this->registry->method('getManagerForClass')->willReturn($dm);
+
+        $this->expectException(ModelManagerException::class);
+        $this->expectExceptionMessageMatches('/Failed to update object/');
+
+        new ModelManager($this->registry, $this->propertyAccessor)->update(new TestDocument());
+    }
+
     public function testDeleteRemovesAndFlushes(): void
     {
         $object = new TestDocument();
@@ -236,6 +316,19 @@ final class ModelManagerTest extends TestCase
         $this->registry
             ->method('getManagerForClass')
             ->willReturn($dm);
+
+        $this->expectException(ModelManagerException::class);
+        $this->expectExceptionMessageMatches('/Failed to delete object/');
+
+        new ModelManager($this->registry, $this->propertyAccessor)->delete(new TestDocument());
+    }
+
+    public function testDeleteWrapsOdmMongoDBExceptionInModelManagerException(): void
+    {
+        $dm = static::createStub(DocumentManager::class);
+        $dm->method('remove')->willThrowException(new MongoDBException('odm-side'));
+
+        $this->registry->method('getManagerForClass')->willReturn($dm);
 
         $this->expectException(ModelManagerException::class);
         $this->expectExceptionMessageMatches('/Failed to delete object/');
@@ -395,6 +488,65 @@ final class ModelManagerTest extends TestCase
             static::createStub(ProxyQueryInterface::class),
             ['1'],
         );
+    }
+
+    public function testBatchDeleteClearsDocumentManagerOnEachFullBatch(): void
+    {
+        // BATCH_SIZE = 20. With 21 documents we expect the loop to hit the
+        // batch boundary once (clear+flush at i=20) and then a final flush+clear
+        // after the trailing item — two clear() calls in total. Dropping the
+        // in-loop `clear()` (mutant 84, MethodCallRemoval) would leave only the
+        // final one.
+        $documents = array_fill(0, 21, new DocumentWithReferences('test', new EmbeddedDocument()));
+
+        $classMetadata = static::createStub(ClassMetadata::class);
+        $classMetadata->method('newInstance')->willReturn(new DocumentWithReferences('test', new EmbeddedDocument()));
+        $classMetadata->name = DocumentWithReferences::class;
+        $classMetadata->reflClass = static::createStub(\ReflectionClass::class);
+
+        $dm = $this->createMock(DocumentManager::class);
+        $dm->method('contains')->willReturnCallback(
+            static fn (object $document): bool => $document instanceof DocumentWithReferences,
+        );
+
+        $cursor = $this->createBatchCursor($documents);
+
+        $collection = static::createStub(Collection::class);
+        $collection->method('find')->willReturn($cursor);
+
+        $queryBuilder = static::createStub(Builder::class);
+        $queryBuilder->method('getQuery')->willReturn(new Query(
+            $dm,
+            $classMetadata,
+            $collection,
+            ['type' => Query::TYPE_FIND, 'query' => []],
+        ));
+
+        $documentRepository = static::createStub(DocumentRepository::class);
+        $documentRepository->method('createQueryBuilder')->willReturn($queryBuilder);
+
+        $dm->method('getRepository')->willReturn($documentRepository);
+        $dm->method('getClassMetadata')->willReturn($classMetadata);
+        $dm->expects(static::exactly(2))->method('clear');
+        $dm->expects(static::exactly(2))->method('flush');
+
+        $eventManager = new EventManager();
+        $hydratorFactory = new HydratorFactory(
+            $dm,
+            $eventManager,
+            sys_get_temp_dir(),
+            'Sonata\DoctrineMongoDBAdminBundle\Tests\Hydrator',
+            Configuration::AUTOGENERATE_FILE_NOT_EXISTS,
+        );
+        $dm->method('getUnitOfWork')->willReturn(new UnitOfWork($dm, $eventManager, $hydratorFactory));
+
+        $registry = static::createStub(ManagerRegistry::class);
+        $registry->method('getManagerForClass')->willReturn($dm);
+
+        $modelManager = new ModelManager($registry, $this->propertyAccessor);
+        $proxyQuery = $modelManager->createQuery(DocumentWithReferences::class);
+
+        $modelManager->batchDelete(DocumentWithReferences::class, $proxyQuery, 20);
     }
 
     public function testBatchDeleteThrowsForForeignProxyQuery(): void
@@ -576,6 +728,27 @@ final class ModelManagerTest extends TestCase
             .' objects$#',
             [],
             [new RuntimeException()],
+        ];
+
+        // Locks the `$i > $batchSize` boundary (mutant 86 flips to `>=`).
+        // With exactly batchSize items and a failure on the first (and only)
+        // flush, confirmedDeletionsCount is still 0 — the message must NOT
+        // carry the `(N objects were successfully deleted…)` suffix.
+        yield 'exactly one batch, fails on first flush, no confirmed-deletions suffix' => [
+            '#^Failed to delete object "Sonata\\\DoctrineMongoDBAdminBundle\\\Tests\\\Fixtures\\\Document\\\DocumentWithReferences"'
+            .' \(id: [a-z0-9]*\) while performing batch deletion$#',
+            array_fill(0, 20, new DocumentWithReferences('test', new EmbeddedDocument())),
+            [new RuntimeException()],
+        ];
+
+        // Locks the ODM-side MongoDBException in the catch union (mutant 85).
+        // Removing `|MongoDBException` would let this case propagate uncaught
+        // instead of being wrapped into a ModelManagerException.
+        yield 'odm-side MongoDBException is wrapped' => [
+            '#^Failed to perform batch deletion for "Sonata\\\DoctrineMongoDBAdminBundle\\\Tests\\\Fixtures\\\Document\\\DocumentWithReferences"'
+            .' objects$#',
+            [],
+            [new MongoDBException('odm-side')],
         ];
     }
 
@@ -783,6 +956,86 @@ final class ModelManagerTest extends TestCase
         $this->expectExceptionMessageMatches($expectedExceptionMessage);
 
         $modelManager->batchDelete(DocumentWithReferences::class, $proxyQuery, $batchSize);
+    }
+
+    /**
+     * @param array<int, DocumentWithReferences> $documents
+     */
+    private function createBatchCursor(array $documents): CursorInterface
+    {
+        return new class($documents) implements CursorInterface {
+            /** @var \Iterator<int, array{'_id': string|null}> */
+            private \Iterator $iterator;
+
+            /** @param array<int, DocumentWithReferences> $documents */
+            public function __construct(private array $documents)
+            {
+                $elements = [];
+                foreach ($this->documents as $document) {
+                    $elements[] = ['_id' => $document->id];
+                }
+
+                $this->iterator = new \ArrayIterator($elements);
+            }
+
+            public function getId(): Int64
+            {
+                return new Int64(42);
+            }
+
+            public function getServer(): never
+            {
+                throw new \BadMethodCallException();
+            }
+
+            public function isDead(): bool
+            {
+                return false;
+            }
+
+            /** @param array<mixed> $typemap */
+            public function setTypeMap(array $typemap): void
+            {
+            }
+
+            /** @return DocumentWithReferences[] */
+            public function toArray(): array
+            {
+                return $this->documents;
+            }
+
+            public function valid(): bool
+            {
+                return $this->iterator->valid();
+            }
+
+            /** @return array{'_id': string|null} */
+            public function current(): array
+            {
+                $current = $this->iterator->current();
+                \assert(null !== $current);
+
+                return $current;
+            }
+
+            public function next(): void
+            {
+                $this->iterator->next();
+            }
+
+            public function rewind(): void
+            {
+                $this->iterator->rewind();
+            }
+
+            public function key(): int
+            {
+                $key = $this->iterator->key();
+                \assert(null !== $key);
+
+                return $key;
+            }
+        };
     }
 
     private function createInMemoryConfiguration(): Configuration

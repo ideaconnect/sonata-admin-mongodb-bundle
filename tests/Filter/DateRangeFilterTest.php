@@ -247,6 +247,26 @@ final class DateRangeFilterTest extends FilterWithQueryBuilderTestCase
         static::assertFalse($filter->isActive());
     }
 
+    public function testFilterRangeBranchDoesNotFallThroughForDateTimeValue(): void
+    {
+        // R: with range=true, filter() must `return;` after calling filterRange.
+        // Drop that return and a DateTime payload would slip past the
+        // filterRange "not array" guard into the non-range whole-day branch,
+        // silently flipping the filter active and calling gte/lt.
+        $filter = $this->createFilter();
+
+        $queryBuilder = $this->getQueryBuilder();
+        $queryBuilder->expects(static::never())->method('field');
+        $queryBuilder->expects(static::never())->method('gte');
+        $queryBuilder->expects(static::never())->method('lt');
+
+        $filter->apply(new ProxyQuery($queryBuilder), FilterData::fromArray([
+            'value' => new \DateTime('2020-01-01'),
+        ]));
+
+        static::assertFalse($filter->isActive());
+    }
+
     public function testFilterDropsNonDateStartWhileApplyingValidEnd(): void
     {
         $filter = $this->createFilter();

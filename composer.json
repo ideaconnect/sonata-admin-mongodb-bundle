@@ -331,6 +331,7 @@
     "require-dev": {
         "doctrine/data-fixtures": "^2.0",
         "friendsofphp/php-cs-fixer": "^3.95",
+        "infection/infection": "^0.33.1",
         "matthiasnoback/symfony-config-test": "^6.1",
         "matthiasnoback/symfony-dependency-injection-test": "^6.2",
         "phpstan/extension-installer": "^1.1",
@@ -367,7 +368,8 @@
     "config": {
         "allow-plugins": {
             "composer/package-versions-deprecated": true,
-            "phpstan/extension-installer": true
+            "phpstan/extension-installer": true,
+            "infection/extension-installer": true
         },
         "sort-packages": true
     },
@@ -375,5 +377,31 @@
         "branch-alias": {
             "dev-master": "5.x-dev"
         }
+    },
+    "scripts": {
+        "infection": "infection --threads=max --show-mutations",
+        "infection-ci": "infection --threads=max --min-msi=0 --min-covered-msi=0 --logger-github",
+        "test:phpunit": "phpunit -c phpunit.xml.dist",
+        "test:phpstan": "phpstan --memory-limit=1G analyse --no-progress",
+        "test:cs": "php-cs-fixer fix --ansi --verbose --diff --dry-run",
+        "test:rector": "rector --dry-run --no-progress-bar",
+        "test:infection": "@infection",
+        "test:everything": [
+            "@test:cs",
+            "@test:rector",
+            "@test:phpstan",
+            "@test:phpunit",
+            "@test:infection"
+        ]
+    },
+    "scripts-descriptions": {
+        "infection": "Run mutation tests interactively, showing escaped mutant diffs.",
+        "infection-ci": "Run mutation tests in CI mode (GitHub annotations, no MSI gate).",
+        "test:phpunit": "Run the full PHPUnit suite.",
+        "test:phpstan": "Run static analysis (PHPStan).",
+        "test:cs": "Check code style (php-cs-fixer dry-run).",
+        "test:rector": "Check Rector refactor suggestions (dry-run).",
+        "test:infection": "Run mutation tests (alias of `infection`).",
+        "test:everything": "Run every quality check: cs, rector, phpstan, phpunit, infection."
     }
 }

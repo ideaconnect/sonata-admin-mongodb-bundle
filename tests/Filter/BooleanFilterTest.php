@@ -18,6 +18,7 @@ use Sonata\AdminBundle\Filter\Model\FilterData;
 use Sonata\DoctrineMongoDBAdminBundle\Datagrid\ProxyQuery;
 use Sonata\DoctrineMongoDBAdminBundle\Filter\BooleanFilter;
 use Sonata\Form\Type\BooleanType;
+use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 
 final class BooleanFilterTest extends FilterWithQueryBuilderTestCase
 {
@@ -99,6 +100,34 @@ final class BooleanFilterTest extends FilterWithQueryBuilderTestCase
         static::assertSame([], $options['operator_options']);
     }
 
+    public function testGetDefaultOptions(): void
+    {
+        static::assertSame(
+            [
+                'field_type' => BooleanType::class,
+                'operator_type' => HiddenType::class,
+                'operator_options' => [],
+            ],
+            new BooleanFilter()->getDefaultOptions(),
+        );
+    }
+
+    public function testGetFormOptionsHasExactShape(): void
+    {
+        $filter = $this->createFilter();
+
+        static::assertSame(
+            [
+                'field_type' => BooleanType::class,
+                'field_options' => ['class' => 'FooBar'],
+                'operator_type' => HiddenType::class,
+                'operator_options' => [],
+                'label' => null,
+            ],
+            $filter->getFormOptions(),
+        );
+    }
+
     public function testFilterIsInactiveForUnknownScalarValue(): void
     {
         $filter = $this->createFilter();
@@ -142,6 +171,30 @@ final class BooleanFilterTest extends FilterWithQueryBuilderTestCase
         $filter->apply(
             new ProxyQuery($queryBuilder),
             FilterData::fromArray(['type' => null, 'value' => [BooleanType::TYPE_YES, 999]]),
+        );
+
+        static::assertTrue($filter->isActive());
+    }
+
+    public function testFilterArraySkipsInvalidEntriesAndContinues(): void
+    {
+        // continue → break mutant would abort after the bogus entry and
+        // discard the trailing TYPE_NO. Putting the invalid in the MIDDLE
+        // proves both pre- and post-invalid valid entries survive.
+        $filter = $this->createFilter();
+
+        $queryBuilder = $this->getQueryBuilder();
+        $queryBuilder
+            ->expects(static::once())
+            ->method('in')
+            ->with([true, false]);
+
+        $filter->apply(
+            new ProxyQuery($queryBuilder),
+            FilterData::fromArray([
+                'type' => null,
+                'value' => [BooleanType::TYPE_YES, 999, BooleanType::TYPE_NO],
+            ]),
         );
 
         static::assertTrue($filter->isActive());

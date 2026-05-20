@@ -36,6 +36,7 @@ final class ObjectAclManipulatorTest extends TestCase
     protected function setUp(): void
     {
         $this->dm = DocumentManager::create(null, $this->createConfiguration());
+        $this->cleanup();
     }
 
     public function testFailsWithoutACLSecurityHandler(): void

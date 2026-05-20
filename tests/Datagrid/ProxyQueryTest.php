@@ -130,6 +130,24 @@ final class ProxyQueryTest extends TestCase
         );
     }
 
+    public function testSetSortByAccumulatesNestedParentPath(): void
+    {
+        // Two parent mappings must compose into a dotted path: a `=` instead
+        // of a `.=` in the loop body would only keep the last segment.
+        $queryBuilder = $this->dm->createQueryBuilder(DocumentWithReferences::class);
+
+        $proxyQuery = new ProxyQuery($queryBuilder);
+        $proxyQuery->setSortBy(
+            [
+                ['fieldName' => 'outer'],
+                ['fieldName' => 'inner'],
+            ],
+            ['fieldName' => 'position'],
+        );
+
+        static::assertSame('outer.inner.position', $proxyQuery->getSortBy());
+    }
+
     public function testExecuteAllowsSorting(): void
     {
         $documentA = new DocumentWithReferences('A');

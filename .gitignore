@@ -14,3 +14,6 @@ tests/App/config/reference.php
 /docs/_build/
 /drivers
 /tests/App/public/bundles
+/infection.json5
+/infection.log
+/.infection.cache

@@ -293,4 +293,157 @@ final class DatagridBuilderTest extends TestCase
 
         $this->datagridBuilder->getBaseDatagrid($admin);
     }
+
+    public function testGetBaseDatagridDisablesCsrfWhenEnabledByDefault(): void
+    {
+        // The constructor default is csrfTokenEnabled=true. When enabled, the
+        // form is built with `csrf_protection => false` (the default form
+        // shouldn't carry tokens). Mutants flipping the default to false
+        // (skip the entire if block) or flipping the literal to true (turn
+        // CSRF *on* on the filter form) both must fail this assertion.
+        $proxyQuery = static::createStub(ProxyQueryInterface::class);
+        $admin = static::createStub(AdminInterface::class);
+        $admin->method('getPagerType')->willReturn(Pager::TYPE_DEFAULT);
+        $admin->method('createQuery')->willReturn($proxyQuery);
+        $admin->method('getList')->willReturn(new FieldDescriptionCollection());
+
+        $formFactory = $this->createMock(FormFactoryInterface::class);
+        $formFactory
+            ->expects(static::once())
+            ->method('createNamedBuilder')
+            ->with('filter', static::anything(), [], ['csrf_protection' => false])
+            ->willReturn(static::createStub(FormBuilderInterface::class));
+
+        new DatagridBuilder($formFactory, $this->filterFactory, $this->typeGuesser)
+            ->getBaseDatagrid($admin);
+    }
+
+    public function testGetBaseDatagridDoesNotInjectCsrfOptionWhenDisabled(): void
+    {
+        // Symmetric guard: when csrfTokenEnabled=false, no csrf_protection key
+        // should leak into the form options. The TrueValue mutant on the
+        // constructor default would force the option in unintentionally.
+        $proxyQuery = static::createStub(ProxyQueryInterface::class);
+        $admin = static::createStub(AdminInterface::class);
+        $admin->method('getPagerType')->willReturn(Pager::TYPE_DEFAULT);
+        $admin->method('createQuery')->willReturn($proxyQuery);
+        $admin->method('getList')->willReturn(new FieldDescriptionCollection());
+
+        $formFactory = $this->createMock(FormFactoryInterface::class);
+        $formFactory
+            ->expects(static::once())
+            ->method('createNamedBuilder')
+            ->with('filter', static::anything(), [], [])
+            ->willReturn(static::createStub(FormBuilderInterface::class));
+
+        new DatagridBuilder($formFactory, $this->filterFactory, $this->typeGuesser, false)
+            ->getBaseDatagrid($admin);
+    }
+
+    public function testFixFieldDescriptionKeepsUserProvidedMappingOption(): void
+    {
+        // The defaultable-mappings loop uses `&&`: only fill the option when
+        // the field already has a non-empty mapping AND the option is null.
+        // An OR mutant would overwrite a user-supplied option whenever the
+        // mapping is non-empty — pre-seed the option to a sentinel and assert
+        // it survives.
+        $documentClass = DocumentWithReferences::class;
+        $classMetadata = $this->getMetadataForDocumentWithAttributes($documentClass);
+
+        $sentinel = ['user' => 'override'];
+        $fieldDescription = new FieldDescription(
+            'name',
+            ['field_mapping' => $sentinel],
+            $classMetadata->fieldMappings['name'],
+        );
+        $fieldDescription->setAdmin($this->admin);
+        $this->admin->method('getClass')->willReturn($documentClass);
+
+        $this->datagridBuilder->fixFieldDescription($fieldDescription);
+
+        static::assertSame($sentinel, $fieldDescription->getOption('field_mapping'));
+    }
+
+    public function testAddFilterNoTypeRegistersTypeAndMergesArrayOption(): void
+    {
+        // Triple-purpose test: locks
+        //   (3) setType($type) is actually called (covers MethodCallRemoval),
+        //   (4) array_merge order — user override on the right wins,
+        //   (6) mergeOption('field_options', ['required' => false]) lands on
+        //       the *options array sent to the filter factory*.
+        $admin = $this->createMock(AdminInterface::class);
+        $admin->expects(static::once())->method('addFilterFieldDescription');
+        $admin->method('getCode')->willReturn('someFakeCode');
+        $admin->method('getLabelTranslatorStrategy')->willReturn(new FormLabelTranslatorStrategy());
+
+        $datagrid = $this->createMock(DatagridInterface::class);
+        $datagrid->expects(static::once())->method('addFilter');
+
+        $guessType = new TypeGuess(ModelFilter::class, [
+            'guess_array_option' => ['from_guesser'],
+        ], Guess::VERY_HIGH_CONFIDENCE);
+
+        $fieldDescription = new FieldDescription('test', [
+            'guess_array_option' => ['from_user'],
+        ]);
+        $fieldDescription->setAdmin($admin);
+
+        $this->typeGuesser->method('guess')->willReturn($guessType);
+
+        $filterFactory = $this->createMock(FilterFactoryInterface::class);
+        $capturedOptions = null;
+        $filterFactory
+            ->expects(static::once())
+            ->method('create')
+            ->with('test', ModelFilter::class, static::callback(
+                static function (array $options) use (&$capturedOptions): bool {
+                    $capturedOptions = $options;
+
+                    return true;
+                },
+            ))
+            ->willReturn(new ModelFilter());
+
+        new DatagridBuilder($this->formFactory, $filterFactory, $this->typeGuesser)
+            ->addFilter($datagrid, null, $fieldDescription);
+
+        static::assertSame(ModelFilter::class, $fieldDescription->getType());
+        // array_merge($guesser, $user) — guesser values come first, then user
+        // entries OVERWRITE matching keys; here both arrays have a single
+        // numeric entry and `array_merge` re-indexes so we get both.
+        static::assertSame(
+            ['from_guesser', 'from_user'],
+            $fieldDescription->getOption('guess_array_option'),
+        );
+        // mergeOption('field_options', ['required' => false]) — locks
+        // mutants 6/7/8 (FalseValue, ArrayItemRemoval, MethodCallRemoval).
+        static::assertIsArray($capturedOptions);
+        static::assertArrayHasKey('field_options', $capturedOptions);
+        static::assertIsArray($capturedOptions['field_options']);
+        static::assertFalse($capturedOptions['field_options']['required']);
+    }
+
+    public function testAddFilterCallsFixFieldDescriptionSettingFieldNameOption(): void
+    {
+        // fixFieldDescription is the only path that fills 'field_name' from
+        // the description's fieldName property. Drop the call (mutant 5,
+        // MethodCallRemoval) and 'field_name' stays null on the resulting
+        // filter options.
+        $admin = static::createStub(AdminInterface::class);
+        $admin->method('getCode')->willReturn('code');
+        $admin->method('getLabelTranslatorStrategy')->willReturn(new FormLabelTranslatorStrategy());
+
+        $datagrid = static::createStub(DatagridInterface::class);
+
+        $fieldDescription = new FieldDescription('test', [], [], [], [], 'expectedFieldName');
+        $fieldDescription->setAdmin($admin);
+
+        $filterFactory = static::createStub(FilterFactoryInterface::class);
+        $filterFactory->method('create')->willReturn(new ModelFilter());
+
+        new DatagridBuilder($this->formFactory, $filterFactory, $this->typeGuesser)
+            ->addFilter($datagrid, ModelFilter::class, $fieldDescription);
+
+        static::assertSame('expectedFieldName', $fieldDescription->getOption('field_name'));
+    }
 }

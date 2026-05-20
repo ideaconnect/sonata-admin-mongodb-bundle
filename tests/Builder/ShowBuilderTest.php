@@ -140,4 +140,21 @@ final class ShowBuilderTest extends TestCase
         // shape (empty by default) so the test exercises observable behavior.
         static::assertCount(0, $this->showBuilder->getBaseList()->getElements());
     }
+
+    public function testAddFieldAppendsToList(): void
+    {
+        // Locks the trailing `$list->add($fieldDescription)` — without it
+        // addShowFieldDescription would still fire on the admin but the
+        // collection passed by the caller would silently come back empty.
+        $admin = static::createStub(AdminInterface::class);
+
+        $fieldDescription = new FieldDescription('appended');
+        $fieldDescription->setAdmin($admin);
+
+        $list = new FieldDescriptionCollection();
+        $this->showBuilder->addField($list, 'someType', $fieldDescription);
+
+        static::assertTrue($list->has('appended'));
+        static::assertSame($fieldDescription, $list->get('appended'));
+    }
 }

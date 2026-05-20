@@ -97,6 +97,29 @@ final class FilterTypeGuesserTest extends RegistryTestCase
         static::assertSame($targetDocument, $options['field_options']['class']);
     }
 
+    public function testGuessTypeWithToManyAssociation(): void
+    {
+        $property = 'manyAssociation';
+        $targetDocument = 'App\\Document\\Target';
+
+        $fieldDescription = static::createStub(FieldDescriptionInterface::class);
+        $fieldDescription->method('getAssociationMapping')->willReturn(['fieldName' => $property]);
+        $fieldDescription->method('getMappingType')->willReturn(ClassMetadata::MANY);
+        $fieldDescription->method('getFieldName')->willReturn($property);
+        $fieldDescription->method('getTargetModel')->willReturn($targetDocument);
+        $fieldDescription->method('getParentAssociationMappings')->willReturn([]);
+
+        $result = $this->guesser->guess($fieldDescription);
+
+        $options = $result->getOptions();
+
+        static::assertSame(ModelFilter::class, $result->getType());
+        static::assertSame(Guess::HIGH_CONFIDENCE, $result->getConfidence());
+        static::assertSame(ClassMetadata::MANY, $options['mapping_type']);
+        static::assertSame($property, $options['field_name']);
+        static::assertSame($targetDocument, $options['field_options']['class']);
+    }
+
     #[DataProvider('provideGuessTypeNoAssociationCases')]
     public function testGuessTypeNoAssociation(string $type, string $resultType, int $confidence, ?string $fieldType = null): void
     {
@@ -123,6 +146,11 @@ final class FilterTypeGuesserTest extends RegistryTestCase
 
         static::assertSame($resultType, $result->getType());
         static::assertSame($confidence, $result->getConfidence());
+
+        $options = $result->getOptions();
+        static::assertArrayHasKey('field_name', $options);
+        static::assertSame($property, $options['field_name']);
+        static::assertSame([], $options['parent_association_mappings']);
     }
 
     /**
@@ -139,6 +167,12 @@ final class FilterTypeGuesserTest extends RegistryTestCase
             Guess::HIGH_CONFIDENCE,
             BooleanType::class,
         ];
+        yield Type::BOOL => [
+            Type::BOOL,
+            BooleanFilter::class,
+            Guess::HIGH_CONFIDENCE,
+            BooleanType::class,
+        ];
         yield Type::TIMESTAMP => [
             'timestamp',
             DateTimeFilter::class,
@@ -146,6 +180,11 @@ final class FilterTypeGuesserTest extends RegistryTestCase
         ];
         yield Type::DATE => [
             'date',
+            DateFilter::class,
+            Guess::HIGH_CONFIDENCE,
+        ];
+        yield Type::DATE_IMMUTABLE => [
+            Type::DATE_IMMUTABLE,
             DateFilter::class,
             Guess::HIGH_CONFIDENCE,
         ];
@@ -157,6 +196,12 @@ final class FilterTypeGuesserTest extends RegistryTestCase
         ];
         yield Type::INT => [
             'int',
+            NumberFilter::class,
+            Guess::MEDIUM_CONFIDENCE,
+            NumberType::class,
+        ];
+        yield Type::INTEGER => [
+            Type::INTEGER,
             NumberFilter::class,
             Guess::MEDIUM_CONFIDENCE,
             NumberType::class,

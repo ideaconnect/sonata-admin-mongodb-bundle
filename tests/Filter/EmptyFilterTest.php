@@ -32,6 +32,35 @@ final class EmptyFilterTest extends FilterWithQueryBuilderTestCase
         static::assertSame(HiddenType::class, $options['operator_type']);
     }
 
+    public function testGetDefaultOptions(): void
+    {
+        static::assertSame(
+            [
+                'field_type' => BooleanType::class,
+                'operator_type' => HiddenType::class,
+                'operator_options' => [],
+            ],
+            new EmptyFilter()->getDefaultOptions(),
+        );
+    }
+
+    public function testGetFormOptionsHasExactShape(): void
+    {
+        $filter = new EmptyFilter();
+        $filter->initialize('field_name', ['field_name' => self::DEFAULT_FIELD_NAME]);
+
+        static::assertSame(
+            [
+                'field_type' => BooleanType::class,
+                'field_options' => [],
+                'operator_type' => HiddenType::class,
+                'operator_options' => [],
+                'label' => null,
+            ],
+            $filter->getFormOptions(),
+        );
+    }
+
     public function testFilterIsInactiveWithoutValue(): void
     {
         $filter = new EmptyFilter();

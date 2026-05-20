@@ -117,6 +117,11 @@ final class CallbackFilterTest extends FilterWithQueryBuilderTestCase
 
         $this->expectException(\UnexpectedValueException::class);
         $this->expectExceptionMessageMatches('/should return a boolean/');
+        // Lock the literal "<type>" form (with both surrounding quotes).
+        // Five Concat / ConcatOperandRemoval mutants on the quoting expression
+        // all change either the order or drop one of the quote-string operands;
+        // matching the exact `"string"` token kills the lot.
+        $this->expectExceptionMessageMatches('/"string"/');
 
         $filter->apply($builder, FilterData::fromArray(['value' => 'x']));
     }
@@ -164,5 +169,24 @@ final class CallbackFilterTest extends FilterWithQueryBuilderTestCase
         static::assertSame(TextType::class, $options['field_type']);
         static::assertSame(HiddenType::class, $options['operator_type']);
         static::assertSame([], $options['operator_options']);
+    }
+
+    public function testGetFormOptionsHasExactShape(): void
+    {
+        $filter = new CallbackFilter();
+        $filter->initialize('field_name', [
+            'field_name' => self::DEFAULT_FIELD_NAME,
+        ]);
+
+        static::assertSame(
+            [
+                'field_type' => TextType::class,
+                'field_options' => [],
+                'operator_type' => HiddenType::class,
+                'operator_options' => [],
+                'label' => null,
+            ],
+            $filter->getFormOptions(),
+        );
     }
 }

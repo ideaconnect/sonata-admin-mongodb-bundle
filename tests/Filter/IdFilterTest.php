@@ -135,6 +135,24 @@ final class IdFilterTest extends FilterWithQueryBuilderTestCase
         static::assertSame(EqualOperatorType::class, $options['operator_type']);
     }
 
+    public function testGetFormOptionsHasExactShape(): void
+    {
+        $filter = new IdFilter();
+        $filter->initialize('field_name', [
+            'field_name' => self::DEFAULT_FIELD_NAME,
+        ]);
+
+        static::assertSame(
+            [
+                'field_type' => TextType::class,
+                'field_options' => [],
+                'operator_type' => EqualOperatorType::class,
+                'label' => null,
+            ],
+            $filter->getFormOptions(),
+        );
+    }
+
     public function testItIgnoresValueThatIsOnlyWhitespace(): void
     {
         $filter = new IdFilter();
@@ -148,5 +166,29 @@ final class IdFilterTest extends FilterWithQueryBuilderTestCase
         $filter->apply(new ProxyQuery($queryBuilder), FilterData::fromArray(['value' => '   ']));
 
         static::assertFalse($filter->isActive());
+    }
+
+    public function testItTrimsSurroundingWhitespaceOnValidObjectId(): void
+    {
+        // Dropping the trim() would leave the padded string in place, the
+        // ObjectId constructor would throw, and the filter would silently
+        // become inactive — exactly the regression we want to catch.
+        $filter = new IdFilter();
+        $filter->initialize('field_name', [
+            'field_name' => self::DEFAULT_FIELD_NAME,
+        ]);
+
+        $queryBuilder = $this->getQueryBuilder();
+        $queryBuilder
+            ->expects(static::once())
+            ->method('equals')
+            ->with(new ObjectId('507f1f77bcf86cd799439011'));
+
+        $filter->apply(
+            new ProxyQuery($queryBuilder),
+            FilterData::fromArray(['value' => '  507f1f77bcf86cd799439011  ']),
+        );
+
+        static::assertTrue($filter->isActive());
     }
 }

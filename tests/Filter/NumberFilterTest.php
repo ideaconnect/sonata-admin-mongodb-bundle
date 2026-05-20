@@ -105,6 +105,29 @@ final class NumberFilterTest extends FilterWithQueryBuilderTestCase
         static::assertSame(NumberOperatorType::class, $options['operator_type']);
     }
 
+    public function testGetDefaultOptions(): void
+    {
+        static::assertSame(
+            ['field_type' => NumberType::class],
+            new NumberFilter()->getDefaultOptions(),
+        );
+    }
+
+    public function testGetFormOptionsHasExactShape(): void
+    {
+        $filter = $this->createFilter();
+
+        static::assertSame(
+            [
+                'field_type' => NumberType::class,
+                'field_options' => ['class' => 'FooBar'],
+                'label' => null,
+                'operator_type' => NumberOperatorType::class,
+            ],
+            $filter->getFormOptions(),
+        );
+    }
+
     public function testFilterIsInactiveWhenValueIsNonNumeric(): void
     {
         $filter = $this->createFilter();

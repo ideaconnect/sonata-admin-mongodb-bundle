@@ -103,14 +103,36 @@ final class PagerTest extends TestCase
         // R3: post-init the proxy's first/maxResults should be null (proxy's
         // "no pagination" state), not 0. Previously init() reset to 0, which
         // forced a useless skip(0)/limit(0) on every subsequent execute().
+        // Pre-seed both with non-null values so a missing reset would leave
+        // them intact (otherwise a fresh proxy already has null defaults and
+        // the assertions can't distinguish "reset" from "untouched").
         $this->persistNames(['A', 'B']);
 
-        $pager = $this->createInitializedPager(maxPerPage: 0, page: 1);
+        $queryBuilder = $this->dm->createQueryBuilder(DocumentWithReferences::class);
+        $proxyQuery = new ProxyQuery($queryBuilder);
+        $proxyQuery->setFirstResult(123);
+        $proxyQuery->setMaxResults(456);
 
-        $query = $pager->getQuery();
-        static::assertNotNull($query);
-        static::assertNull($query->getFirstResult());
-        static::assertNull($query->getMaxResults());
+        $pager = new Pager();
+        $pager->setMaxPerPage(0);
+        $pager->setPage(1);
+        $pager->setQuery($proxyQuery);
+        $pager->init();
+
+        static::assertNull($proxyQuery->getFirstResult());
+        static::assertNull($proxyQuery->getMaxResults());
+    }
+
+    public function testInitRoundsUpPartialLastPage(): void
+    {
+        // 11 results / 10 per page → ceil = 2, round = 1. Locks ceil semantics
+        // so the last partial page is always reachable.
+        $this->persistNames(['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K']);
+
+        $pager = $this->createInitializedPager(maxPerPage: 10, page: 1);
+
+        static::assertSame(11, $pager->countResults());
+        static::assertSame(2, $pager->getLastPage());
     }
 
     public function testCloneResetsResultsCount(): void

@@ -59,11 +59,35 @@ final class DateFilterTest extends FilterWithQueryBuilderTestCase
             ->method('lt')
             ->with($datePlusOneDay);
 
+        // Locks the post-whole-day `return;`: dropping it would chain a third
+        // applyType(equals) call below using $value.
+        $queryBuilder->expects(static::never())->method('equals');
+
         $builder = new ProxyQuery($queryBuilder);
 
         $filter->apply($builder, FilterData::fromArray(['value' => $date]));
 
         static::assertTrue($filter->isActive());
+    }
+
+    public function testFilterWholeDayDoesNotMutateInputDateTime(): void
+    {
+        // CloneRemoval on the `$endValue = clone $value` line would let the
+        // +1 day step mutate the caller's DateTime, since the gte/lt calls
+        // happen after the mutation. Pin the input timestamp to lock the
+        // clone barrier.
+        $filter = $this->createFilter();
+
+        $date = new \DateTime('2016-08-31 12:00:00');
+        $originalTimestamp = $date->getTimestamp();
+
+        $filter->apply(new ProxyQuery($this->getQueryBuilder()), FilterData::fromArray(['value' => $date]));
+
+        static::assertSame(
+            $originalTimestamp,
+            $date->getTimestamp(),
+            'Whole-day filter must not mutate the caller\'s DateTime.',
+        );
     }
 
     public function testFilterRecordsWholeDayWithImmutableDate(): void
@@ -107,6 +131,10 @@ final class DateFilterTest extends FilterWithQueryBuilderTestCase
 
         $this->expectException(\InvalidArgumentException::class);
         $this->expectExceptionMessage('not valid');
+        // The supported-types list must contain the int *keys* of the operator
+        // map (TYPE_GREATER_EQUAL = 1, TYPE_EQUAL = 3, …) — not the Mongo
+        // operator strings ('equals', 'gte', …) the keys map to.
+        $this->expectExceptionMessageMatches('/"3", "1", "2", "4", "5"/');
 
         $filter->apply(
             new ProxyQuery($this->getQueryBuilder()),

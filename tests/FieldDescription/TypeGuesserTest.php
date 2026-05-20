@@ -114,6 +114,11 @@ final class TypeGuesserTest extends AbstractModelManagerTestCase
             FieldDescriptionInterface::TYPE_BOOLEAN,
             Guess::HIGH_CONFIDENCE,
         ];
+        yield 'boolean' => [
+            Type::BOOLEAN,
+            FieldDescriptionInterface::TYPE_BOOLEAN,
+            Guess::HIGH_CONFIDENCE,
+        ];
         yield 'timestamp' => [
             Type::TIMESTAMP,
             FieldDescriptionInterface::TYPE_DATETIME,
@@ -134,13 +139,23 @@ final class TypeGuesserTest extends AbstractModelManagerTestCase
             FieldDescriptionInterface::TYPE_FLOAT,
             Guess::MEDIUM_CONFIDENCE,
         ];
-        yield 'integer' => [
+        yield 'int' => [
             Type::INT,
+            FieldDescriptionInterface::TYPE_INTEGER,
+            Guess::MEDIUM_CONFIDENCE,
+        ];
+        yield 'integer' => [
+            Type::INTEGER,
             FieldDescriptionInterface::TYPE_INTEGER,
             Guess::MEDIUM_CONFIDENCE,
         ];
         yield 'string' => [
             Type::STRING,
+            FieldDescriptionInterface::TYPE_STRING,
+            Guess::MEDIUM_CONFIDENCE,
+        ];
+        yield 'id' => [
+            Type::ID,
             FieldDescriptionInterface::TYPE_STRING,
             Guess::MEDIUM_CONFIDENCE,
         ];

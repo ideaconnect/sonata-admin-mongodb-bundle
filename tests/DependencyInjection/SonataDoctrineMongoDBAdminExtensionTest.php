@@ -57,6 +57,50 @@ final class SonataDoctrineMongoDBAdminExtensionTest extends AbstractExtensionTes
         );
     }
 
+    public function testLoadWiresCustomTemplatesIntoBuildersAndParameter(): void
+    {
+        $this->container->setParameter('kernel.bundles', []);
+
+        $this->load([
+            'templates' => [
+                'types' => [
+                    'list' => ['custom_marker' => 'custom/list_array.twig.html'],
+                    'show' => ['custom_marker' => 'custom/show_array.twig.html'],
+                ],
+            ],
+        ]);
+
+        // sonata_doctrine_mongodb_admin.templates parameter must be exposed
+        // (kills the setParameter MethodCallRemoval mutant on line 41).
+        $this->assertContainerBuilderHasParameter('sonata_doctrine_mongodb_admin.templates');
+
+        // fixTemplatesConfiguration merges defaults under types.list / types.show
+        // so we can't pre-compute the full expected map. Instead, fetch the
+        // post-merge value from the parameter and assert the builder
+        // definitions point at the SAME, post-merge per-type array.
+        $templates = $this->container->getParameter('sonata_doctrine_mongodb_admin.templates');
+        \assert(\is_array($templates) && \is_array($templates['types']));
+
+        // Our custom marker must survive the merge — otherwise we'd be
+        // asserting equality against an empty default in the next two checks.
+        static::assertSame('custom/list_array.twig.html', $templates['types']['list']['custom_marker']);
+        static::assertSame('custom/show_array.twig.html', $templates['types']['show']['custom_marker']);
+
+        // The list/show builder definitions must have their *index-1* argument
+        // replaced with the configured per-type templates. Mutating the index
+        // to 0 or dropping the call must not pass.
+        $this->assertContainerBuilderHasServiceDefinitionWithArgument(
+            'sonata.admin.builder.doctrine_mongodb_list',
+            1,
+            $templates['types']['list'],
+        );
+        $this->assertContainerBuilderHasServiceDefinitionWithArgument(
+            'sonata.admin.builder.doctrine_mongodb_show',
+            1,
+            $templates['types']['show'],
+        );
+    }
+
     protected function getContainerExtensions(): array
     {
         return [
