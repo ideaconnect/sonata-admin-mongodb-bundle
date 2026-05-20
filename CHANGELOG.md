@@ -2,6 +2,48 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## [5.2.0](https://github.com/ideaconnect/sonata-admin-mongodb-bundle/releases/tag/v5.2.0) - 2026-05-20
+
+### Added
+- **Mutation testing with [Infection](https://infection.github.io/)**. The
+  framework is now wired into the project as a dev-dependency and configured
+  via [`infection.json5.dist`](infection.json5.dist) (mutates `src/`,
+  excludes `Resources` and `DI/Compiler`, logs to `build/infection/`,
+  `@default` mutator set, runs against the `unit` testsuite so MongoDB /
+  Panther aren't required for a mutation pass).
+- New composer scripts: `composer infection` (interactive, shows escaped
+  mutant diffs), `composer infection-ci` (GitHub annotations), and a unified
+  `composer test:everything` that chains the full quality gate
+  (cs → rector → phpstan → phpunit → infection). Individual `test:cs`,
+  `test:rector`, `test:phpstan`, `test:phpunit`, `test:infection` aliases
+  ship alongside.
+- Two PHPUnit testsuites — `unit` (excludes `tests/Functional`) and
+  `functional` — replacing the single legacy suite. Running PHPUnit without
+  `--testsuite` continues to execute everything; Infection scopes to `unit`.
+- **74 new test assertions** killing 74 of the 89 originally-escaped mutants
+  reported on the 5.1.1 baseline. **Covered MSI: 86% → 97%**. Suite grew
+  from ~295 → 342 unit tests, 543 → 1031 assertions. The work is documented
+  per-tier in
+  [`WAR_AGAINST_THE_MUTANTS.md`](WAR_AGAINST_THE_MUTANTS.md), including the
+  4 mutants identified as equivalent (no observable behavior difference) and
+  the 11 remaining escapes in `Util/ObjectAclManipulator.php` flagged for a
+  follow-up pass.
+
+### Fixed
+- `tests/Util/ObjectAclManipulatorTest::setUp()` now resets the DB at the
+  start of each test, not only after. Surfaced by Infection's random test
+  order — the suite previously had a hidden ordering dependency that masked
+  one mutant cluster.
+
+### Notes for upgraders
+- No production code change in this release; the `src/` tree is identical
+  to 5.1.1 (verify with `git diff v5.1.1 -- src/`).
+- Running `composer test:everything` locally requires a live MongoDB only
+  for the ACL-manipulator tests under `tests/Util/`. The Functional tests
+  (`tests/Functional/`) still need MongoDB + Selenium / Firefox per the
+  5.0.0 setup; they are not included in the `unit` testsuite Infection runs
+  against.
+
 ## [5.0.0](https://github.com/ideaconnect/sonata-admin-mongodb-bundle/releases/tag/5.0.0) - 2026-05-15
 
 This is the first release of `idct/sonata-admin-mongodb-bundle`, a friendly
