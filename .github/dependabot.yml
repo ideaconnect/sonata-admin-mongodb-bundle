@@ -1,0 +1,50 @@
+# Dependabot keeps our Composer packages and GitHub Actions up to date.
+# Docs: https://docs.github.com/code-security/dependabot/dependabot-version-updates/configuration-options-for-the-dependabot.yml-file
+version: 2
+
+updates:
+    # -------------------------------------------------------------------------
+    # PHP dependencies (composer.json). composer.lock is gitignored (this is a
+    # library), so Dependabot proposes updates to the version constraints.
+    # Targets the repository default branch (5.x).
+    # -------------------------------------------------------------------------
+    - package-ecosystem: composer
+      directory: "/"
+      schedule:
+          interval: weekly
+          day: monday
+      open-pull-requests-limit: 10
+      labels:
+          - dependencies
+      # Batch related packages so we get a handful of PRs instead of dozens.
+      # A package lands in the first group it matches, so the vendor patterns
+      # (which also catch their dev packages) are listed before the catch-all
+      # development group.
+      groups:
+          symfony:
+              patterns:
+                  - "symfony/*"
+          doctrine:
+              patterns:
+                  - "doctrine/*"
+          sonata:
+              patterns:
+                  - "sonata-project/*"
+          dev-dependencies:
+              dependency-type: development
+
+    # -------------------------------------------------------------------------
+    # GitHub Actions used by the workflows under .github/workflows.
+    # Grouped into a single weekly PR.
+    # -------------------------------------------------------------------------
+    - package-ecosystem: github-actions
+      directory: "/"
+      schedule:
+          interval: weekly
+          day: monday
+      labels:
+          - dependencies
+      groups:
+          actions:
+              patterns:
+                  - "*"

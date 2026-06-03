@@ -20,6 +20,20 @@ jobs:
 
         timeout-minutes: 20
 
+        # The PHPUnit bootstrap (tests/custom_bootstrap.php) loads MongoDB
+        # fixtures before any suite runs, so Infection's initial test run needs
+        # a live MongoDB — the same service test.yaml uses.
+        services:
+            mongo:
+                image: mongo:latest
+                ports:
+                    - 27017:27017
+                options: >-
+                    --health-cmd "mongosh --quiet --eval 'db.runCommand({ping:1}).ok' | grep -q ^1$"
+                    --health-interval 5s
+                    --health-timeout 3s
+                    --health-retries 20
+
         steps:
             - name: Checkout
               uses: actions/checkout@v5
@@ -39,9 +53,9 @@ jobs:
               with:
                   dependency-versions: highest
 
-            # Runs only the "unit" suite (per infection.json5.dist), so no MongoDB
-            # service is required. Aborts automatically if the suite isn't green.
-            # min-msi/min-covered-msi are 0, so escaped mutants are reported as
-            # GitHub annotations (--logger-github) without failing the build.
+            # Runs only the "unit" suite (per infection.json5.dist) and aborts
+            # automatically if it isn't green. min-msi/min-covered-msi are 0, so
+            # escaped mutants are reported as GitHub annotations (--logger-github)
+            # without failing the build.
             - name: Infection
               run: composer infection-ci
