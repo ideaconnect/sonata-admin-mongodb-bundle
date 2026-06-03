@@ -19,7 +19,7 @@ jobs:
 
         steps:
             - name: Checkout
-              uses: actions/checkout@v5
+              uses: actions/checkout@v6
 
             - name: Install PHP with extensions
               uses: shivammathur/setup-php@v2
@@ -30,7 +30,7 @@ jobs:
                   extensions: mongodb
 
             - name: Install Composer dependencies (highest)
-              uses: ramsey/composer-install@v3
+              uses: ramsey/composer-install@v4
               with:
                   dependency-versions: highest
 
@@ -44,7 +44,7 @@ jobs:
 
         steps:
             - name: Checkout
-              uses: actions/checkout@v5
+              uses: actions/checkout@v6
 
             - name: Install PHP with extensions
               uses: shivammathur/setup-php@v2
@@ -65,7 +65,7 @@ jobs:
 
         steps:
             - name: Checkout
-              uses: actions/checkout@v5
+              uses: actions/checkout@v6
 
             - name: Install yamllint
               run: sudo apt-get update && sudo apt-get install -y yamllint
@@ -80,7 +80,7 @@ jobs:
 
         steps:
             - name: Checkout
-              uses: actions/checkout@v5
+              uses: actions/checkout@v6
 
             - name: Install required dependencies
               run: sudo apt-get update && sudo apt-get install -y libxml2-utils
