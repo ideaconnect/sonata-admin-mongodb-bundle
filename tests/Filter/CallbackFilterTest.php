@@ -90,9 +90,6 @@ final class CallbackFilterTest extends FilterWithQueryBuilderTestCase
         return $data->hasValue();
     }
 
-    /**
-     * @psalm-suppress InvalidArgument
-     */
     public function testFilterException(): void
     {
         $builder = new ProxyQuery($this->getQueryBuilder());
@@ -102,7 +99,7 @@ final class CallbackFilterTest extends FilterWithQueryBuilderTestCase
 
         $this->expectException(\RuntimeException::class);
 
-        $filter->apply($builder, FilterData::fromArray(['myValue']));
+        $filter->apply($builder, FilterData::fromArray(['value' => 'myValue']));
     }
 
     public function testFilterThrowsWhenCallbackReturnsNonBoolScalar(): void

@@ -36,6 +36,7 @@ final class AppKernel extends Kernel
 {
     use MicroKernelTrait;
 
+    #[\Override]
     public function registerBundles(): iterable
     {
         return [

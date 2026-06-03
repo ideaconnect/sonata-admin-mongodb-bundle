@@ -13,9 +13,24 @@ permissions:
 
 jobs:
     phpstan:
-        name: PHPStan
+        name: PHPStan (Symfony ${{ matrix.symfony-require || 'highest' }})
 
         runs-on: ubuntu-latest
+
+        env:
+            SYMFONY_REQUIRE: ${{ matrix.symfony-require }}
+
+        # Static analysis must hold against every supported Symfony line, not
+        # just the highest: type signatures differ between majors (e.g. the 8.x
+        # Kernel pulls registerBundles() from a trait while 7.4 only declares it
+        # on KernelInterface), so analysing a single version leaves the other
+        # unchecked. We pin via Flex + SYMFONY_REQUIRE, mirroring test.yaml.
+        strategy:
+            fail-fast: false
+            matrix:
+                symfony-require:
+                    - ''       # highest supported (Symfony 8.x today)
+                    - '7.4.*'  # lowest supported line (LTS)
 
         steps:
             - name: Checkout
@@ -26,7 +41,7 @@ jobs:
               with:
                   php-version: '8.5'
                   coverage: none
-                  tools: composer:v2
+                  tools: composer:v2, flex
                   extensions: mongodb
 
             - name: Install Composer dependencies (highest)
@@ -38,9 +53,21 @@ jobs:
               run: vendor/bin/phpstan --no-progress --memory-limit=1G analyse --error-format=github
 
     rector:
-        name: Rector
+        name: Rector (Symfony ${{ matrix.symfony-require || 'highest' }})
 
         runs-on: ubuntu-latest
+
+        env:
+            SYMFONY_REQUIRE: ${{ matrix.symfony-require }}
+
+        # Rector refactor suggestions can depend on the installed class shapes
+        # (the #[\Override] rule, for one), so gate the dry-run on both lines.
+        strategy:
+            fail-fast: false
+            matrix:
+                symfony-require:
+                    - ''       # highest supported (Symfony 8.x today)
+                    - '7.4.*'  # lowest supported line (LTS)
 
         steps:
             - name: Checkout
@@ -51,7 +78,7 @@ jobs:
               with:
                   php-version: '8.5'
                   coverage: none
-                  tools: composer:v2
+                  tools: composer:v2, flex
                   extensions: mongodb
 
             - name: Install Composer dependencies (highest)
