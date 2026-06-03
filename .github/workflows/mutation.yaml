@@ -1,0 +1,47 @@
+name: Mutation tests
+
+on:
+    # Mutation testing is heavy, so we run it nightly rather than on every push
+    # / pull request. Offset from qa.yaml and test.yaml (00:30 UTC) so the three
+    # scheduled workflows don't all contend for runners at once.
+    schedule:
+        - cron: '30 2 * * *'
+    # Allow on-demand runs from the Actions tab.
+    workflow_dispatch:
+
+permissions:
+    contents: read
+
+jobs:
+    infection:
+        name: Infection
+
+        runs-on: ubuntu-latest
+
+        timeout-minutes: 20
+
+        steps:
+            - name: Checkout
+              uses: actions/checkout@v5
+
+            - name: Install PHP with extensions
+              uses: shivammathur/setup-php@v2
+              with:
+                  php-version: '8.5'
+                  # Infection needs a coverage driver to build the initial
+                  # coverage map; pcov is faster than xdebug for this.
+                  coverage: pcov
+                  tools: composer:v2
+                  extensions: mongodb
+
+            - name: Install Composer dependencies (highest)
+              uses: ramsey/composer-install@v3
+              with:
+                  dependency-versions: highest
+
+            # Runs only the "unit" suite (per infection.json5.dist), so no MongoDB
+            # service is required. Aborts automatically if the suite isn't green.
+            # min-msi/min-covered-msi are 0, so escaped mutants are reported as
+            # GitHub annotations (--logger-github) without failing the build.
+            - name: Infection
+              run: composer infection-ci
