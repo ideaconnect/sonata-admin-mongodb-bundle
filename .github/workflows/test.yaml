@@ -101,7 +101,7 @@ jobs:
               # what regressed. Skip only when there's literally no file to
               # upload (e.g. setup-php / composer install bailed earlier).
               if: ${{ !cancelled() && hashFiles('build/logs/clover.xml') != '' }}
-              uses: codecov/codecov-action@v6
+              uses: codecov/codecov-action@v7
               with:
                   token: ${{ secrets.CODECOV_TOKEN }}
                   slug: ideaconnect/sonata-admin-mongodb-bundle
