@@ -70,7 +70,7 @@ jobs:
 
         steps:
             - name: Checkout
-              uses: actions/checkout@v6
+              uses: actions/checkout@v7
 
             - name: Install PHP with extensions
               uses: shivammathur/setup-php@v2
@@ -101,7 +101,7 @@ jobs:
               # what regressed. Skip only when there's literally no file to
               # upload (e.g. setup-php / composer install bailed earlier).
               if: ${{ !cancelled() && hashFiles('build/logs/clover.xml') != '' }}
-              uses: codecov/codecov-action@v6
+              uses: codecov/codecov-action@v7
               with:
                   token: ${{ secrets.CODECOV_TOKEN }}
                   slug: ideaconnect/sonata-admin-mongodb-bundle
