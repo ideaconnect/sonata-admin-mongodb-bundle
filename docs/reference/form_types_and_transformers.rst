@@ -10,14 +10,14 @@ Form types
     - ``Sonata\AdminBundle\Form\Type\AdminType``: this type is linked to an Admin class and the field construction is
       delegated to an Admin class.
 
-    - ``Sonata\Form\Type\CollectionType``: this type works like the native ``CollectionType`` but contains two extra
+    - ``Sonata\AdminBundle\Form\Type\CollectionType``: this type works like the native ``CollectionType`` but contains two extra
       features : the data layer is abstracted to work with any implemented layer and a delete option is added
       so a collection entry can be deleted.
 
     - ``Sonata\AdminBundle\Form\Type\ModelType``: this type works like the native ``EntityType`` but this internal is abstracted
       to work with any implemented layer.
 
-    - ``Sonata\Form\Type\ImmutableArrayType``: this type allows to edit a fixed array, like a settings array.
+    - ``Sonata\AdminBundle\Form\Type\ImmutableArrayType``: this type allows to edit a fixed array, like a settings array.
 
 Let's say, the object has settings properties::
 
@@ -36,7 +36,7 @@ Now you can edit the settings array with::
 
     use Sonata\AdminBundle\Admin\AbstractAdmin;
     use Sonata\AdminBundle\Form\FormMapper;
-    use Sonata\Form\Type\ImmutableArrayType;
+    use Sonata\AdminBundle\Form\Type\ImmutableArrayType;
 
     final class PageAdmin extends AbstractAdmin
     {

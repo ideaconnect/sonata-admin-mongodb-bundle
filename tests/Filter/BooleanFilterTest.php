@@ -15,9 +15,9 @@ namespace Sonata\DoctrineMongoDBAdminBundle\Tests\Filter;
 
 use PHPUnit\Framework\Attributes\DataProvider;
 use Sonata\AdminBundle\Filter\Model\FilterData;
+use Sonata\AdminBundle\Form\Type\BooleanType;
 use Sonata\DoctrineMongoDBAdminBundle\Datagrid\ProxyQuery;
 use Sonata\DoctrineMongoDBAdminBundle\Filter\BooleanFilter;
-use Sonata\Form\Type\BooleanType;
 use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 
 final class BooleanFilterTest extends FilterWithQueryBuilderTestCase

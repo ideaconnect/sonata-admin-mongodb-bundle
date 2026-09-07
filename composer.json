@@ -1,6 +1,6 @@
 {
     "name": "idct/sonata-admin-mongodb-bundle",
-    "description": "Symfony Sonata / Integrate Doctrine MongoDB ODM into the SonataAdminBundle",
+    "description": "Doctrine MongoDB ODM persistence backend for Adminata, the Tailwind CSS fork of Sonata Admin. A hard fork of sonata-project/doctrine-mongodb-admin-bundle.",
     "license": "MIT",
     "type": "symfony-bundle",
     "keywords": [
@@ -312,14 +312,12 @@
     "homepage": "https://github.com/ideaconnect/sonata-admin-mongodb-bundle",
     "require": {
         "php": "^8.4",
-        "ext-mongodb": "*",
         "doctrine/collections": "^2.0",
         "doctrine/mongodb-odm": "^2.6",
         "doctrine/mongodb-odm-bundle": "^5.0",
         "doctrine/persistence": "^4.0",
-        "sonata-project/admin-bundle": "^4.39",
-        "sonata-project/exporter": "^3.0",
-        "sonata-project/form-extensions": "^2.0",
+        "ext-mongodb": "*",
+        "idct/adminata": "^1.0@dev",
         "symfony/config": "^7.4 || ^8.0",
         "symfony/dependency-injection": "^7.4 || ^8.0",
         "symfony/doctrine-bridge": "^7.4 || ^8.0",
@@ -342,16 +340,12 @@
         "phpstan/phpstan-symfony": "^1.0 || ^2.0",
         "phpunit/phpunit": "^11.5.38 || ^12.3.10",
         "rector/rector": "^1.1 || ^2.0",
-        "sonata-project/block-bundle": "^5.0",
         "symfony/browser-kit": "^7.4 || ^8.0",
         "symfony/css-selector": "^7.4 || ^8.0",
         "symfony/dom-crawler": "^7.4 || ^8.0",
         "symfony/panther": "^2.4",
         "symfony/security-acl": "^3.3.4",
         "symfony/twig-bridge": "^7.4 || ^8.0"
-    },
-    "conflict": {
-        "sonata-project/block-bundle": "<4.2"
     },
     "minimum-stability": "dev",
     "prefer-stable": true,
@@ -375,7 +369,7 @@
     },
     "extra": {
         "branch-alias": {
-            "dev-master": "5.x-dev"
+            "dev-6.x": "6.x-dev"
         }
     },
     "scripts": {
@@ -403,5 +397,18 @@
         "test:phpstan": "Run static analysis (PHPStan).",
         "test:phpunit": "Run the full PHPUnit suite.",
         "test:rector": "Check Rector refactor suggestions (dry-run)."
-    }
+    },
+    "repositories": [
+        {
+            "type": "path",
+            "url": "../adminata",
+            "options": {
+                "symlink": true
+            }
+        },
+        {
+            "type": "vcs",
+            "url": "https://github.com/ideaconnect/adminata.git"
+        }
+    ]
 }

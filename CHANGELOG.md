@@ -2,6 +2,36 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## [6.0.0](https://github.com/ideaconnect/sonata-admin-mongodb-bundle/releases/tag/v6.0.0) - 2026-09-07
+
+### Changed
+- **This bundle is built against [`idct/adminata`](https://github.com/ideaconnect/adminata)
+  instead of `sonata-project/admin-bundle`.** Adminata is our hard fork of the Sonata Admin
+  stack with the Twig templates, CSS and JavaScript replaced by a Tailwind CSS v4 / TailAdmin
+  interface: **Bootstrap, AdminLTE and jQuery are gone**, with no compatibility layer. A project
+  that styles admin screens with Bootstrap class names or scripts them with jQuery ports that
+  markup once. See [UPGRADE-6.0.md](UPGRADE-6.0.md).
+- Imports follow adminata's merges: `Sonata\Form\Type\` is
+  `Sonata\AdminBundle\Form\Type\`, `Sonata\Exporter\Source\DoctrineODMQuerySourceIterator`
+  is `Sonata\AdminBundle\Exporter\Source\DoctrineODMQuerySourceIterator`. Watch
+  `CollectionType`: adminata renamed *its own* to `NativeCollectionType` and gave the plain name
+  to the form stack's, so the old spelling still compiles and renders the other widget.
+- The test kernel no longer registers `SonataBlockBundle`, `SonataFormBundle`, `SonataTwigBundle`
+  or `SonataDoctrineBundle`; adminata's `SonataAdminBundle` carries all four stacks and registers
+  their extensions itself. `tests/App/config/config_sonata_block_v4.yaml` went with them.
+
+### Removed
+- `sonata-project/exporter` and `sonata-project/form-extensions` as direct requirements, and the
+  `sonata-project/block-bundle` dev requirement and `conflict` entry. Adminata provides all three
+  and conflicts with them.
+
+### Fixed
+- The four browser scenarios that click through the replaced Bootstrap interface are marked
+  `#[Group('legacy-ui')]` and excluded by default, the way adminata and
+  `idct/adminata-doctrine-orm-admin-bundle` already exclude theirs. They failed for the reason
+  they are meant to; the group comes back when adminata's milestones M3 and M4 rewrite those
+  templates. The suite is 347 tests and 1041 assertions green without them.
+
 ## [5.2.0](https://github.com/ideaconnect/sonata-admin-mongodb-bundle/releases/tag/v5.2.0) - 2026-05-20
 
 ### Added

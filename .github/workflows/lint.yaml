@@ -5,6 +5,7 @@ on:
         - cron: '30 0 * * *'
     push:
         branches:
+            - 6.x
             - 5.x
     pull_request:
 
@@ -13,6 +14,13 @@ permissions:
 
 jobs:
     php-cs-fixer:
+
+        # idct/adminata is installed from a VCS repository, which Composer resolves through the
+        # GitHub API. Unauthenticated calls share a per-runner hourly budget, and the failure is an
+        # install that stops with "Could not authenticate against github.com". The built-in token
+        # lifts the limit and needs no secret.
+        env:
+            COMPOSER_AUTH: '{"github-oauth":{"github.com":"${{ github.token }}"}}'
         name: PHP-CS-Fixer
 
         runs-on: ubuntu-latest

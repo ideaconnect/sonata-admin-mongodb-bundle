@@ -191,7 +191,7 @@ Let's say you have a ``Gallery`` that links to some ``Media``s with a join table
     use Sonata\AdminBundle\Form\FormMapper;
     use Sonata\AdminBundle\Datagrid\DatagridMapper;
     use Sonata\AdminBundle\Datagrid\ListMapper;
-    use Sonata\Form\Type\CollectionType;
+    use Sonata\AdminBundle\Form\Type\CollectionType;
 
     final class GalleryAdmin extends AbstractAdmin
     {
@@ -225,7 +225,7 @@ After choosing your action, your admin would llok like this::
     use Sonata\AdminBundle\Form\FormMapper;
     use Sonata\AdminBundle\Datagrid\DatagridMapper;
     use Sonata\AdminBundle\Datagrid\ListMapper;
-    use Sonata\Form\Type\CollectionType;
+    use Sonata\AdminBundle\Form\Type\CollectionType;
 
     final class GalleryAdmin extends AbstractAdmin
     {

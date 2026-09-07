@@ -17,3 +17,6 @@ tests/App/config/reference.php
 /infection.json5
 /infection.log
 /.infection.cache
+
+# Local agent scratch, not part of the package.
+/.claude/

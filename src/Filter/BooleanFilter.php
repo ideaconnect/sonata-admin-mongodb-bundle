@@ -14,8 +14,8 @@ declare(strict_types=1);
 namespace Sonata\DoctrineMongoDBAdminBundle\Filter;
 
 use Sonata\AdminBundle\Filter\Model\FilterData;
+use Sonata\AdminBundle\Form\Type\BooleanType;
 use Sonata\DoctrineMongoDBAdminBundle\Datagrid\ProxyQueryInterface;
-use Sonata\Form\Type\BooleanType;
 use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 
 final class BooleanFilter extends Filter

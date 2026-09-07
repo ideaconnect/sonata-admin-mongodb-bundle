@@ -13,7 +13,6 @@ declare(strict_types=1);
 
 use Rector\Config\RectorConfig;
 use Rector\Php70\Rector\FunctionLike\ExceptionHandlerTypehintRector;
-use Rector\Php81\Rector\FuncCall\NullToStrictStringFuncCallArgRector;
 use Rector\Php81\Rector\Property\ReadOnlyPropertyRector;
 use Rector\PHPUnit\CodeQuality\Rector\Class_\NarrowUnusedSetUpDefinedPropertyRector;
 use Rector\PHPUnit\CodeQuality\Rector\Class_\PreferPHPUnitThisCallRector;
@@ -28,9 +27,10 @@ return static function (RectorConfig $rectorConfig): void {
     ]);
 
     // Track the project's PHP 8.4 / PHPUnit 12 floor.
+    // Rector 2.6 no longer ships versioned PHPUnit sets (PHPUNIT_100 … PHPUNIT_120);
+    // PHPUNIT_CODE_QUALITY covers the same ground against the installed PHPUnit.
     $rectorConfig->sets([
         LevelSetList::UP_TO_PHP_84,
-        PHPUnitSetList::PHPUNIT_120,
         PHPUnitSetList::PHPUNIT_CODE_QUALITY,
     ]);
 
@@ -42,7 +42,6 @@ return static function (RectorConfig $rectorConfig): void {
         // it's safe; auto-applying it across the board collides with the
         // PHPStan bleedingEdge stance on readonly + __clone (see ProxyQuery).
         ReadOnlyPropertyRector::class,
-        NullToStrictStringFuncCallArgRector::class,
         PreferPHPUnitThisCallRector::class,
         NarrowUnusedSetUpDefinedPropertyRector::class,
         RemoveNeverUsedMockPropertyRector::class,

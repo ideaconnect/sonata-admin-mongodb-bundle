@@ -16,12 +16,7 @@ namespace Sonata\DoctrineMongoDBAdminBundle\Tests\App;
 use Doctrine\Bundle\MongoDBBundle\DoctrineMongoDBBundle;
 use Knp\Bundle\MenuBundle\KnpMenuBundle;
 use Sonata\AdminBundle\SonataAdminBundle;
-use Sonata\BlockBundle\Cache\HttpCacheHandler;
-use Sonata\BlockBundle\SonataBlockBundle;
-use Sonata\Doctrine\Bridge\Symfony\SonataDoctrineBundle;
 use Sonata\DoctrineMongoDBAdminBundle\SonataDoctrineMongoDBAdminBundle;
-use Sonata\Form\Bridge\Symfony\SonataFormBundle;
-use Sonata\Twig\Bridge\Symfony\SonataTwigBundle;
 use Symfony\Bundle\FrameworkBundle\FrameworkBundle;
 use Symfony\Bundle\FrameworkBundle\Kernel\MicroKernelTrait;
 use Symfony\Bundle\SecurityBundle\SecurityBundle;
@@ -45,11 +40,7 @@ final class AppKernel extends Kernel
             new KnpMenuBundle(),
             new SecurityBundle(),
             new SonataAdminBundle(),
-            new SonataBlockBundle(),
-            new SonataDoctrineBundle(),
             new SonataDoctrineMongoDBAdminBundle(),
-            new SonataFormBundle(),
-            new SonataTwigBundle(),
             new TwigBundle(),
             new StimulusBundle(),
         ];
@@ -82,11 +73,6 @@ final class AppKernel extends Kernel
     {
         $loader->load(__DIR__.'/config/config.yaml');
         $loader->load(__DIR__.'/config/config_symfony.yaml');
-
-        if (class_exists(HttpCacheHandler::class)) {
-            $loader->load(__DIR__.'/config/config_sonata_block_v4.yaml');
-        }
-
         $loader->load(__DIR__.'/config/services.php');
     }
 

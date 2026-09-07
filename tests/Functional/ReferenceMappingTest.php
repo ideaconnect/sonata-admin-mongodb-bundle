@@ -13,10 +13,17 @@ declare(strict_types=1);
 
 namespace Sonata\DoctrineMongoDBAdminBundle\Tests\Functional;
 
+use PHPUnit\Framework\Attributes\Group;
 use Symfony\Component\DomCrawler\Form;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Panther\DomCrawler\Crawler;
 
+/**
+ * These scenarios click through the inherited Bootstrap interface. adminata replaced the
+ * stylesheet and the JavaScript that made it interactive, and rewrites the templates themselves
+ * in its milestones M3 and M4; the group is dropped again there.
+ */
+#[Group('legacy-ui')]
 final class ReferenceMappingTest extends BasePantherTestCase
 {
     public function testCreateDocumentWithReferences(): void

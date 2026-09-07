@@ -99,7 +99,7 @@ Tighter than upstream and tighter than 4.x: drop any constraint on persistence 3
 
 - `Sonata\DoctrineMongoDBAdminBundle\Filter\EmptyFilter` is registered as
   `sonata.admin.odm.filter.type.empty`. It accepts the boolean YES/NO output from
-  `Sonata\Form\Type\BooleanType` and maps YES to "field is null or missing"
+  `Sonata\AdminBundle\Form\Type\BooleanType` and maps YES to "field is null or missing"
   (`field == null` in Mongo) and NO to the negation.
 
 ## Configuration

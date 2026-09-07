@@ -34,6 +34,17 @@
         outside src/.  Combined they leave only deprecations our own code
         is responsible for.
     -->
+    <!-- Browser scenarios that click through the inherited Bootstrap interface. adminata
+         replaced its CSS and JavaScript, and rewrites the templates in its milestones M3 and M4;
+         the group is dropped again there. Excluded by default for the same reason adminata and
+         idct/adminata-doctrine-orm-admin-bundle exclude it — running them proves nothing until
+         those templates exist. -->
+    <groups>
+        <exclude>
+            <group>legacy-ui</group>
+        </exclude>
+    </groups>
+
     <source ignoreSuppressionOfDeprecations="true"
             ignoreDirectDeprecations="true"
             ignoreIndirectDeprecations="true"

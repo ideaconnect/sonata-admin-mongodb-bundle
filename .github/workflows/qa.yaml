@@ -5,6 +5,7 @@ on:
         - cron: '30 0 * * *'
     push:
         branches:
+            - 6.x
             - 5.x
     pull_request:
 
@@ -18,6 +19,11 @@ jobs:
         runs-on: ubuntu-latest
 
         env:
+            # idct/adminata is installed from a VCS repository, which Composer resolves through the
+            # GitHub API. Unauthenticated calls share a per-runner hourly budget, and the failure is an
+            # install that stops with "Could not authenticate against github.com". The built-in token
+            # lifts the limit and needs no secret.
+            COMPOSER_AUTH: '{"github-oauth":{"github.com":"${{ github.token }}"}}'
             SYMFONY_REQUIRE: ${{ matrix.symfony-require }}
 
         # Static analysis must hold against every supported Symfony line, not
@@ -58,6 +64,11 @@ jobs:
         runs-on: ubuntu-latest
 
         env:
+            # idct/adminata is installed from a VCS repository, which Composer resolves through the
+            # GitHub API. Unauthenticated calls share a per-runner hourly budget, and the failure is an
+            # install that stops with "Could not authenticate against github.com". The built-in token
+            # lifts the limit and needs no secret.
+            COMPOSER_AUTH: '{"github-oauth":{"github.com":"${{ github.token }}"}}'
             SYMFONY_REQUIRE: ${{ matrix.symfony-require }}
 
         # Rector refactor suggestions can depend on the installed class shapes

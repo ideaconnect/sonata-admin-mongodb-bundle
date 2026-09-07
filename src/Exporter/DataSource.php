@@ -15,8 +15,8 @@ namespace Sonata\DoctrineMongoDBAdminBundle\Exporter;
 
 use Sonata\AdminBundle\Datagrid\ProxyQueryInterface as BaseProxyQueryInterface;
 use Sonata\AdminBundle\Exporter\DataSourceInterface;
+use Sonata\AdminBundle\Exporter\Source\DoctrineODMQuerySourceIterator;
 use Sonata\DoctrineMongoDBAdminBundle\Datagrid\ProxyQueryInterface;
-use Sonata\Exporter\Source\DoctrineODMQuerySourceIterator;
 
 final readonly class DataSource implements DataSourceInterface
 {

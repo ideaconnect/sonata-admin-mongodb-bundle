@@ -15,10 +15,10 @@ namespace Sonata\DoctrineMongoDBAdminBundle\Tests\Filter;
 
 use PHPUnit\Framework\Attributes\DataProvider;
 use Sonata\AdminBundle\Filter\Model\FilterData;
+use Sonata\AdminBundle\Form\Type\DateTimeRangeType;
 use Sonata\AdminBundle\Form\Type\Operator\DateRangeOperatorType;
 use Sonata\DoctrineMongoDBAdminBundle\Datagrid\ProxyQuery;
 use Sonata\DoctrineMongoDBAdminBundle\Filter\DateTimeRangeFilter;
-use Sonata\Form\Type\DateTimeRangeType;
 
 final class DateTimeRangeFilterTest extends FilterWithQueryBuilderTestCase
 {

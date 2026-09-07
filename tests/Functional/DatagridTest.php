@@ -13,8 +13,15 @@ declare(strict_types=1);
 
 namespace Sonata\DoctrineMongoDBAdminBundle\Tests\Functional;
 
+use PHPUnit\Framework\Attributes\Group;
 use Symfony\Component\HttpFoundation\Request;
 
+/**
+ * These scenarios click through the inherited Bootstrap interface. adminata replaced the
+ * stylesheet and the JavaScript that made it interactive, and rewrites the templates themselves
+ * in its milestones M3 and M4; the group is dropped again there.
+ */
+#[Group('legacy-ui')]
 final class DatagridTest extends BasePantherTestCase
 {
     public function testFilter(): void

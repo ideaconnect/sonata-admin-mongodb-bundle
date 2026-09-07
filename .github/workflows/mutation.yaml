@@ -14,6 +14,13 @@ permissions:
 
 jobs:
     infection:
+
+        # idct/adminata is installed from a VCS repository, which Composer resolves through the
+        # GitHub API. Unauthenticated calls share a per-runner hourly budget, and the failure is an
+        # install that stops with "Could not authenticate against github.com". The built-in token
+        # lifts the limit and needs no secret.
+        env:
+            COMPOSER_AUTH: '{"github-oauth":{"github.com":"${{ github.token }}"}}'
         name: Infection
 
         runs-on: ubuntu-latest

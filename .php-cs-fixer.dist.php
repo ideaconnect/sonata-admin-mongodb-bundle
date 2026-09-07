@@ -70,7 +70,10 @@ $finder = PhpCsFixer\Finder::create()
     ->exclude('node_modules')
     ->exclude('Resources/skeleton')
     ->exclude('Resources/public/vendor')
-    ->exclude('var');
+    ->exclude('var')
+    // Symfony writes this IDE helper into the test application's config directory on every
+    // debug-mode build. It is generated, gitignored, and not ours to format.
+    ->notPath('tests/App/config/reference.php');
 
 $config = new PhpCsFixer\Config();
 $config

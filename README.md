@@ -1,23 +1,55 @@
 # idct/sonata-admin-mongodb-bundle
 
-Doctrine MongoDB ODM persistence backend for **Sonata Admin** — full CRUD,
-filtering, sorting, pagination, exports and ACL management for MongoDB
-documents, the same way `sonata-project/doctrine-orm-admin-bundle` provides
-it for relational databases.
+Doctrine MongoDB ODM persistence backend for **[Adminata][adminata]** — full
+CRUD, filtering, sorting, pagination, exports and ACL management for MongoDB
+documents, the same way
+[`idct/adminata-doctrine-orm-admin-bundle`][orm] provides it for relational
+databases.
+
+[adminata]: https://github.com/ideaconnect/adminata
+[orm]: https://github.com/ideaconnect/adminata-doctrine-orm-admin-bundle
 
 [![Latest Stable Version](https://img.shields.io/packagist/v/idct/sonata-admin-mongodb-bundle.svg?label=stable)](https://packagist.org/packages/idct/sonata-admin-mongodb-bundle)
 [![License](https://img.shields.io/packagist/l/idct/sonata-admin-mongodb-bundle.svg)](LICENSE)
 [![PHP](https://img.shields.io/badge/PHP-8.4%20%7C%208.5-777BB4?logo=php&logoColor=white)](https://www.php.net/supported-versions.php)
 [![Symfony](https://img.shields.io/badge/Symfony-7.4%20%7C%208.0-000000?logo=symfony&logoColor=white)](https://symfony.com/releases)
 [![Doctrine MongoDB ODM](https://img.shields.io/badge/Doctrine%20MongoDB%20ODM-%5E2.6-orange)](https://www.doctrine-project.org/projects/mongodb-odm.html)
-[![Sonata Admin](https://img.shields.io/badge/Sonata%20Admin-%5E4.39-blue)](https://docs.sonata-project.org/projects/admin-bundle)
+[![Adminata](https://img.shields.io/badge/Adminata-%5E1.0-blue)](https://github.com/ideaconnect/adminata)
 
-[![codecov](https://codecov.io/gh/ideaconnect/sonata-admin-mongodb-bundle/branch/5.x/graph/badge.svg?token=yUdY2iB1AV)](https://codecov.io/gh/ideaconnect/sonata-admin-mongodb-bundle)
+[![codecov](https://codecov.io/gh/ideaconnect/sonata-admin-mongodb-bundle/branch/6.x/graph/badge.svg?token=yUdY2iB1AV)](https://codecov.io/gh/ideaconnect/sonata-admin-mongodb-bundle)
 [![Test](https://github.com/ideaconnect/sonata-admin-mongodb-bundle/actions/workflows/test.yaml/badge.svg)](https://github.com/ideaconnect/sonata-admin-mongodb-bundle/actions/workflows/test.yaml)
 [![Quality assurance](https://github.com/ideaconnect/sonata-admin-mongodb-bundle/actions/workflows/qa.yaml/badge.svg)](https://github.com/ideaconnect/sonata-admin-mongodb-bundle/actions/workflows/qa.yaml)
 [![Lint](https://github.com/ideaconnect/sonata-admin-mongodb-bundle/actions/workflows/lint.yaml/badge.svg)](https://github.com/ideaconnect/sonata-admin-mongodb-bundle/actions/workflows/lint.yaml)
 [![Symfony Lint](https://github.com/ideaconnect/sonata-admin-mongodb-bundle/actions/workflows/symfony-lint.yaml/badge.svg)](https://github.com/ideaconnect/sonata-admin-mongodb-bundle/actions/workflows/symfony-lint.yaml)
 [![Documentation](https://github.com/ideaconnect/sonata-admin-mongodb-bundle/actions/workflows/documentation.yaml/badge.svg)](https://github.com/ideaconnect/sonata-admin-mongodb-bundle/actions/workflows/documentation.yaml)
+
+---
+
+## 🚨 6.0 moves to Adminata
+
+**6.0 is built against [`idct/adminata`][adminata], not
+`sonata-project/admin-bundle`.** Adminata is our hard fork of the Sonata Admin
+stack with the Twig templates, CSS and JavaScript replaced by a Tailwind CSS v4
+/ TailAdmin interface: **Bootstrap, AdminLTE and jQuery are gone**, and there is
+no compatibility layer for them. If your project styles admin screens with
+Bootstrap class names or scripts them with jQuery, that markup stops working
+and has to be ported once.
+
+What does *not* change: the `Sonata\DoctrineMongoDBAdminBundle` namespace, the
+bundle class, the `sonata_doctrine_mongo_db_admin` configuration root and every
+service id. On the PHP side only the imports move, because adminata merged the
+block, exporter, form and Twig packages into its admin bundle —
+`Sonata\Form\Type\` is `Sonata\AdminBundle\Form\Type\`, `Sonata\Exporter\`
+is `Sonata\AdminBundle\Exporter\`, and `SonataBlockBundle`, `SonataFormBundle`
+and `SonataTwigBundle` are no longer registered in `config/bundles.php`.
+
+Adminata is not on Packagist yet — it is still in development and this release
+requires it at `^1.0@dev`, which is exactly what that marker says. Install it
+from a VCS or path repository; the `repositories` block of
+[composer.json](composer.json) shows both.
+
+**Staying on Sonata Admin 4.x?** Use the `5.x` line. It is the last release
+series built against `sonata-project/admin-bundle` and it keeps working.
 
 ---
 
@@ -39,7 +71,8 @@ not a soft fork or a temporary patch:
   replacing parts that aren't worth keeping, dropping things upstream still
   ships. Upstream changes are pulled in selectively, not merged.
 - We do **not** sync release numbers with upstream. Our `5.0.0` is the
-  fork's first release; the upstream lineage we forked from is 4.12.0.
+  fork's first release; the upstream lineage we forked from is 4.12.0. `6.0.0`
+  is the move to Adminata, described above.
 
 **If you need exact upstream behaviour**, stay on
 `sonata-project/doctrine-mongodb-admin-bundle`. **If you want a modernised
@@ -54,9 +87,8 @@ contributor's attribution are preserved — see [LICENSE](LICENSE) and the
 
 ## What this bundle does
 
-Installs next to `sonata-project/admin-bundle` and provides every
-persistence-layer concern Sonata Admin needs in order to drive an admin UI
-against a MongoDB collection:
+Installs next to `idct/adminata` and provides every persistence-layer concern
+it needs in order to drive an admin UI against a MongoDB collection:
 
 - **CRUD** — `ModelManager` implements every CRUD path Sonata calls
   (`create`, `update`, `delete`, `find`, `findBy`, `findOneBy`,
@@ -86,8 +118,9 @@ against a MongoDB collection:
   (`author.publisher.name`) against ODM `ClassMetadata` and surfaces
   clear errors when a segment isn't actually an association.
 
-If Sonata Admin can do it for SQL via the ORM bundle, this bundle is the
-piece that lets you do the same for MongoDB.
+If Adminata can do it for SQL via
+[`idct/adminata-doctrine-orm-admin-bundle`][orm], this bundle is the piece that
+lets you do the same for MongoDB.
 
 ---
 
@@ -97,7 +130,7 @@ piece that lets you do the same for MongoDB.
 |---|---|---|
 | PHP | 8.4 | 8.5 |
 | Symfony | 7.4 | 8.0 |
-| Sonata Admin Bundle | 4.39 | latest 4.x |
+| Adminata | 1.0@dev | `dev-main` |
 | Doctrine MongoDB ODM | 2.6 | latest 2.x |
 | Doctrine MongoDB ODM Bundle | 5.0 | latest 5.x |
 | Doctrine Persistence | 4.0 | latest 4.x |
@@ -114,12 +147,22 @@ supported Symfony lines.
 
 ### Prerequisites
 
-You should already have a Symfony 7.4+ application with **Sonata Admin
-Bundle** and **Doctrine MongoDB ODM Bundle** installed — this bundle is
-the glue between them, not a replacement for either.
+You should already have a Symfony 7.4+ application with **Adminata** and
+**Doctrine MongoDB ODM Bundle** installed — this bundle is the glue between
+them, not a replacement for either.
 
 ```bash
-composer require sonata-project/admin-bundle doctrine/mongodb-odm-bundle
+composer require idct/adminata doctrine/mongodb-odm-bundle
+```
+
+Neither Adminata nor this bundle is on Packagist yet, so declare where they
+come from first:
+
+```json
+"repositories": [
+    { "type": "vcs", "url": "https://github.com/ideaconnect/adminata.git" },
+    { "type": "vcs", "url": "https://github.com/ideaconnect/sonata-admin-mongodb-bundle.git" }
+]
 ```
 
 ### Install
@@ -140,8 +183,8 @@ return [
 
 ### Declare an admin
 
-Tag any Sonata Admin service with `manager_type: doctrine_mongodb` and
-Sonata will resolve it through this bundle's implementations:
+Tag any admin service with `manager_type: doctrine_mongodb` and Adminata will
+resolve it through this bundle's implementations:
 
 ```php
 // config/services.php (Symfony 7+ PHP config)
@@ -188,6 +231,11 @@ The test suite has three layers:
 
 Layers 2 and 3 need a MongoDB server. Layer 3 additionally needs a
 Firefox WebDriver.
+
+The `legacy-ui` group is excluded by default. Those scenarios click through the
+Bootstrap markup Adminata replaced, and they pass again once its milestones M3
+and M4 rewrite the templates; `vendor/bin/phpunit --group legacy-ui` shows where
+that stands.
 
 ### Quick start (recommended)
 
@@ -251,6 +299,7 @@ Fork-specific material:
 
 - [AGENTS.md](AGENTS.md) — architectural overview, where each piece lives,
   how it fits next to Sonata Admin, contribution rules.
+- [UPGRADE-6.0.md](UPGRADE-6.0.md) — 5.x → 6.0: the move to Adminata.
 - [UPGRADE-5.0.md](UPGRADE-5.0.md) — 4.x → 5.0 break list (per-class).
 - [CHANGELOG.md](CHANGELOG.md) — per-release notes.
 
