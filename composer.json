@@ -401,7 +401,7 @@
     "repositories": [
         {
             "type": "path",
-            "url": "../adminata",
+            "url": "../{adminata}",
             "options": {
                 "symlink": true
             }
