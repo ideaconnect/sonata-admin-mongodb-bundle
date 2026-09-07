@@ -312,11 +312,11 @@
     "homepage": "https://github.com/ideaconnect/sonata-admin-mongodb-bundle",
     "require": {
         "php": "^8.4",
+        "ext-mongodb": "*",
         "doctrine/collections": "^2.0",
         "doctrine/mongodb-odm": "^2.6",
         "doctrine/mongodb-odm-bundle": "^5.0",
         "doctrine/persistence": "^4.0",
-        "ext-mongodb": "*",
         "idct/adminata": "dev-main",
         "symfony/config": "^7.4 || ^8.0",
         "symfony/dependency-injection": "^7.4 || ^8.0",
@@ -347,6 +347,19 @@
         "symfony/security-acl": "^3.3.4",
         "symfony/twig-bridge": "^7.4 || ^8.0"
     },
+    "repositories": [
+        {
+            "type": "path",
+            "url": "../{adminata}",
+            "options": {
+                "symlink": true
+            }
+        },
+        {
+            "type": "vcs",
+            "url": "https://github.com/ideaconnect/adminata.git"
+        }
+    ],
     "minimum-stability": "dev",
     "prefer-stable": true,
     "autoload": {
@@ -397,18 +410,5 @@
         "test:phpstan": "Run static analysis (PHPStan).",
         "test:phpunit": "Run the full PHPUnit suite.",
         "test:rector": "Check Rector refactor suggestions (dry-run)."
-    },
-    "repositories": [
-        {
-            "type": "path",
-            "url": "../{adminata}",
-            "options": {
-                "symlink": true
-            }
-        },
-        {
-            "type": "vcs",
-            "url": "https://github.com/ideaconnect/adminata.git"
-        }
-    ]
+    }
 }
