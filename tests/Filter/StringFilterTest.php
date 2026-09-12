@@ -11,17 +11,17 @@ declare(strict_types=1);
  * file that was distributed with this source code.
  */
 
-namespace Sonata\DoctrineMongoDBAdminBundle\Tests\Filter;
+namespace IDCT\Adminata\DoctrineMongoDB\Tests\Filter;
 
 use Doctrine\ODM\MongoDB\Query\Builder;
 use MongoDB\BSON\Regex;
 use PHPUnit\Framework\Attributes\DataProvider;
-use Sonata\AdminBundle\Filter\FilterInterface;
-use Sonata\AdminBundle\Filter\Model\FilterData;
-use Sonata\AdminBundle\Form\Type\Operator\ContainsOperatorType;
-use Sonata\AdminBundle\Form\Type\Operator\StringOperatorType;
-use Sonata\DoctrineMongoDBAdminBundle\Datagrid\ProxyQuery;
-use Sonata\DoctrineMongoDBAdminBundle\Filter\StringFilter;
+use IDCT\Adminata\Filter\FilterInterface;
+use IDCT\Adminata\Filter\Model\FilterData;
+use IDCT\Adminata\Form\Type\Operator\ContainsOperatorType;
+use IDCT\Adminata\Form\Type\Operator\StringOperatorType;
+use IDCT\Adminata\DoctrineMongoDB\Datagrid\ProxyQuery;
+use IDCT\Adminata\DoctrineMongoDB\Filter\StringFilter;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 
 final class StringFilterTest extends FilterWithQueryBuilderTestCase

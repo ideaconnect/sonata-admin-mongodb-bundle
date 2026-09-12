@@ -11,18 +11,18 @@ declare(strict_types=1);
  * file that was distributed with this source code.
  */
 
-namespace Sonata\DoctrineMongoDBAdminBundle\Tests\Builder;
+namespace IDCT\Adminata\DoctrineMongoDB\Tests\Builder;
 
 use PHPUnit\Framework\MockObject\Stub;
-use Sonata\AdminBundle\Admin\AdminInterface;
-use Sonata\AdminBundle\Datagrid\ListMapper;
-use Sonata\AdminBundle\FieldDescription\FieldDescriptionInterface;
-use Sonata\AdminBundle\FieldDescription\TypeGuesserInterface;
-use Sonata\DoctrineMongoDBAdminBundle\Builder\ListBuilder;
-use Sonata\DoctrineMongoDBAdminBundle\FieldDescription\FieldDescription;
-use Sonata\DoctrineMongoDBAdminBundle\Tests\AbstractModelManagerTestCase;
-use Sonata\DoctrineMongoDBAdminBundle\Tests\ClassMetadataAnnotationTrait;
-use Sonata\DoctrineMongoDBAdminBundle\Tests\Fixtures\Document\DocumentWithReferences;
+use IDCT\Adminata\Admin\AdminInterface;
+use IDCT\Adminata\Datagrid\ListMapper;
+use IDCT\Adminata\FieldDescription\FieldDescriptionInterface;
+use IDCT\Adminata\FieldDescription\TypeGuesserInterface;
+use IDCT\Adminata\DoctrineMongoDB\Builder\ListBuilder;
+use IDCT\Adminata\DoctrineMongoDB\FieldDescription\FieldDescription;
+use IDCT\Adminata\DoctrineMongoDB\Tests\AbstractModelManagerTestCase;
+use IDCT\Adminata\DoctrineMongoDB\Tests\ClassMetadataAnnotationTrait;
+use IDCT\Adminata\DoctrineMongoDB\Tests\Fixtures\Document\DocumentWithReferences;
 use Symfony\Component\Form\Guess\Guess;
 use Symfony\Component\Form\Guess\TypeGuess;
 
@@ -54,7 +54,7 @@ final class ListBuilderTest extends AbstractModelManagerTestCase
 
         $this->listBuilder = new ListBuilder($this->typeGuesser, [
             'fakeTemplate' => 'fake',
-            FieldDescriptionInterface::TYPE_STRING => '@SonataAdmin/CRUD/list_string.html.twig',
+            FieldDescriptionInterface::TYPE_STRING => '@Adminata/CRUD/list_string.html.twig',
         ]);
     }
 
@@ -75,7 +75,7 @@ final class ListBuilderTest extends AbstractModelManagerTestCase
             ->addField($list, 'actions', $fieldDescription);
 
         static::assertSame(
-            '@SonataAdmin/CRUD/list__action.html.twig',
+            '@Adminata/CRUD/list__action.html.twig',
             $list->get('foo')->getTemplate(),
             'Custom list action field has a default list action template assigned'
         );
@@ -128,7 +128,7 @@ final class ListBuilderTest extends AbstractModelManagerTestCase
 
         $this->listBuilder->fixFieldDescription($fieldDescription);
 
-        static::assertSame('@SonataAdmin/CRUD/list_string.html.twig', $fieldDescription->getTemplate());
+        static::assertSame('@Adminata/CRUD/list_string.html.twig', $fieldDescription->getTemplate());
         static::assertSame($classMetadata->getFieldMapping('name'), $fieldDescription->getFieldMapping());
     }
 
@@ -175,7 +175,7 @@ final class ListBuilderTest extends AbstractModelManagerTestCase
         $this->listBuilder->fixFieldDescription($fieldDescription);
 
         static::assertSame('embeddedDocument', $fieldDescription->getOption('label'));
-        static::assertSame('@SonataAdmin/CRUD/list_string.html.twig', $fieldDescription->getTemplate());
+        static::assertSame('@Adminata/CRUD/list_string.html.twig', $fieldDescription->getTemplate());
     }
 
     public function testFixFieldDescriptionSortableOptionFalseDoesNotPopulateSortDetails(): void
@@ -288,7 +288,7 @@ final class ListBuilderTest extends AbstractModelManagerTestCase
         $this->listBuilder->fixFieldDescription($fieldDescription);
 
         $actions = $fieldDescription->getOption('actions');
-        static::assertSame('@SonataAdmin/CRUD/list__action_edit.html.twig', $actions['edit']['template']);
+        static::assertSame('@Adminata/CRUD/list__action_edit.html.twig', $actions['edit']['template']);
         static::assertSame('custom.html.twig', $actions['delete']['template'], 'Pre-set template must not be overwritten');
         static::assertSame('Action', $fieldDescription->getOption('name'));
     }

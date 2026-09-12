@@ -11,7 +11,7 @@ declare(strict_types=1);
  * file that was distributed with this source code.
  */
 
-namespace Sonata\DoctrineMongoDBAdminBundle\Tests\Fixtures\Document;
+namespace IDCT\Adminata\DoctrineMongoDB\Tests\Fixtures\Document;
 
 /**
  * @psalm-suppress ClassMustBeFinal

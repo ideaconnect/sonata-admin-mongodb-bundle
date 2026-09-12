@@ -11,13 +11,13 @@ declare(strict_types=1);
  * file that was distributed with this source code.
  */
 
-namespace Sonata\DoctrineMongoDBAdminBundle\Tests\Filter;
+namespace IDCT\Adminata\DoctrineMongoDB\Tests\Filter;
 
 use PHPUnit\Framework\Attributes\DataProvider;
-use Sonata\AdminBundle\Filter\Model\FilterData;
-use Sonata\AdminBundle\Form\Type\Operator\NumberOperatorType;
-use Sonata\DoctrineMongoDBAdminBundle\Datagrid\ProxyQuery;
-use Sonata\DoctrineMongoDBAdminBundle\Filter\NumberFilter;
+use IDCT\Adminata\Filter\Model\FilterData;
+use IDCT\Adminata\Form\Type\Operator\NumberOperatorType;
+use IDCT\Adminata\DoctrineMongoDB\Datagrid\ProxyQuery;
+use IDCT\Adminata\DoctrineMongoDB\Filter\NumberFilter;
 use Symfony\Component\Form\Extension\Core\Type\NumberType;
 
 final class NumberFilterTest extends FilterWithQueryBuilderTestCase

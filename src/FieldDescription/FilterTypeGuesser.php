@@ -11,20 +11,20 @@ declare(strict_types=1);
  * file that was distributed with this source code.
  */
 
-namespace Sonata\DoctrineMongoDBAdminBundle\FieldDescription;
+namespace IDCT\Adminata\DoctrineMongoDB\FieldDescription;
 
 use Doctrine\ODM\MongoDB\Mapping\ClassMetadata;
 use Doctrine\ODM\MongoDB\Types\Type;
-use Sonata\AdminBundle\FieldDescription\FieldDescriptionInterface;
-use Sonata\AdminBundle\FieldDescription\TypeGuesserInterface;
-use Sonata\DoctrineMongoDBAdminBundle\Filter\BooleanFilter;
-use Sonata\DoctrineMongoDBAdminBundle\Filter\DateFilter;
-use Sonata\DoctrineMongoDBAdminBundle\Filter\DateTimeFilter;
-use Sonata\DoctrineMongoDBAdminBundle\Filter\IdFilter;
-use Sonata\DoctrineMongoDBAdminBundle\Filter\ModelFilter;
-use Sonata\DoctrineMongoDBAdminBundle\Filter\NumberFilter;
-use Sonata\DoctrineMongoDBAdminBundle\Filter\StringFilter;
-use Sonata\DoctrineMongoDBAdminBundle\Model\MissingPropertyMetadataException;
+use IDCT\Adminata\FieldDescription\FieldDescriptionInterface;
+use IDCT\Adminata\FieldDescription\TypeGuesserInterface;
+use IDCT\Adminata\DoctrineMongoDB\Filter\BooleanFilter;
+use IDCT\Adminata\DoctrineMongoDB\Filter\DateFilter;
+use IDCT\Adminata\DoctrineMongoDB\Filter\DateTimeFilter;
+use IDCT\Adminata\DoctrineMongoDB\Filter\IdFilter;
+use IDCT\Adminata\DoctrineMongoDB\Filter\ModelFilter;
+use IDCT\Adminata\DoctrineMongoDB\Filter\NumberFilter;
+use IDCT\Adminata\DoctrineMongoDB\Filter\StringFilter;
+use IDCT\Adminata\DoctrineMongoDB\Model\MissingPropertyMetadataException;
 use Symfony\Component\Form\Guess\Guess;
 use Symfony\Component\Form\Guess\TypeGuess;
 

@@ -8,12 +8,12 @@ Example
 
     namespace Sonata\NewsBundle\Admin;
 
-    use Sonata\AdminBundle\Admin\AbstractAdmin;
-    use Sonata\AdminBundle\Form\FormMapper;
-    use Sonata\AdminBundle\Form\Type\ModelType;
-    use Sonata\AdminBundle\Datagrid\DatagridMapper;
-    use Sonata\AdminBundle\Datagrid\ListMapper;
-    use Sonata\AdminBundle\Show\ShowMapper;
+    use IDCT\Adminata\Admin\AbstractAdmin;
+    use IDCT\Adminata\Form\FormMapper;
+    use IDCT\Adminata\Form\Type\ModelType;
+    use IDCT\Adminata\Datagrid\DatagridMapper;
+    use IDCT\Adminata\Datagrid\ListMapper;
+    use IDCT\Adminata\Show\ShowMapper;
 
     final class PostAdmin extends AbstractAdmin
     {
@@ -62,9 +62,9 @@ you can use the corresponding option in the form field definition::
 
     namespace Sonata\NewsBundle\Admin;
 
-    use Sonata\AdminBundle\Admin\AbstractAdmin;
-    use Sonata\AdminBundle\Form\FormMapper;
-    use Sonata\AdminBundle\Form\Type\ModelListType;
+    use IDCT\Adminata\Admin\AbstractAdmin;
+    use IDCT\Adminata\Form\FormMapper;
+    use IDCT\Adminata\Form\Type\ModelListType;
 
     final class PostAdmin extends AbstractAdmin
     {
@@ -80,7 +80,7 @@ you can use the corresponding option in the form field definition::
         }
     }
 
-This placeholder is translated using the SonataAdminBundle catalogue.
+This placeholder is translated using the AdminataBundle catalogue.
 
 Advanced Usage: File Management
 -------------------------------
@@ -91,8 +91,8 @@ model definition)::
 
     namespace Sonata\MediaBundle\Admin;
 
-    use Sonata\AdminBundle\Admin\AbstractAdmin;
-    use Sonata\AdminBundle\Form\FormMapper;
+    use IDCT\Adminata\Admin\AbstractAdmin;
+    use IDCT\Adminata\Form\FormMapper;
 
     final class MediaAdmin extends AbstractAdmin
     {
@@ -121,7 +121,7 @@ Advanced Usage: Many-to-One
 If you have many ``Post``s linked to one ``User``, then the ``Post`` form should
 display a ``User`` field.
 
-SonataAdminBundle provides 3 edit options:
+AdminataBundle provides 3 edit options:
 
  - ``standard``: default value, the ``User`` list is set in a select widget
  - ``list``: the ``User`` list is set in a model where you can search and select a user
@@ -131,13 +131,13 @@ With the ``standard`` and ``list`` options, you can create a new ``User`` by cli
 
     namespace Sonata\NewsBundle\Admin;
 
-    use Sonata\AdminBundle\Admin\AbstractAdmin;
-    use Sonata\AdminBundle\Form\FormMapper;
-    use Sonata\AdminBundle\Form\Type\ModelListType;
-    use Sonata\AdminBundle\Form\Type\ModelType;
-    use Sonata\AdminBundle\Datagrid\DatagridMapper;
-    use Sonata\AdminBundle\Datagrid\ListMapper;
-    use Sonata\AdminBundle\Show\ShowMapper;
+    use IDCT\Adminata\Admin\AbstractAdmin;
+    use IDCT\Adminata\Form\FormMapper;
+    use IDCT\Adminata\Form\Type\ModelListType;
+    use IDCT\Adminata\Form\Type\ModelType;
+    use IDCT\Adminata\Datagrid\DatagridMapper;
+    use IDCT\Adminata\Datagrid\ListMapper;
+    use IDCT\Adminata\Show\ShowMapper;
     use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 
     final class PostAdmin extends AbstractAdmin
@@ -187,11 +187,11 @@ Let's say you have a ``Gallery`` that links to some ``Media``s with a join table
 
     namespace Sonata\MediaBundle\Admin;
 
-    use Sonata\AdminBundle\Admin\AbstractAdmin;
-    use Sonata\AdminBundle\Form\FormMapper;
-    use Sonata\AdminBundle\Datagrid\DatagridMapper;
-    use Sonata\AdminBundle\Datagrid\ListMapper;
-    use Sonata\AdminBundle\Form\Type\CollectionType;
+    use IDCT\Adminata\Admin\AbstractAdmin;
+    use IDCT\Adminata\Form\FormMapper;
+    use IDCT\Adminata\Datagrid\DatagridMapper;
+    use IDCT\Adminata\Datagrid\ListMapper;
+    use IDCT\Adminata\Form\Type\CollectionType;
 
     final class GalleryAdmin extends AbstractAdmin
     {
@@ -221,11 +221,11 @@ After choosing your action, your admin would llok like this::
 
     namespace Sonata\MediaBundle\Admin;
 
-    use Sonata\AdminBundle\Admin\AbstractAdmin;
-    use Sonata\AdminBundle\Form\FormMapper;
-    use Sonata\AdminBundle\Datagrid\DatagridMapper;
-    use Sonata\AdminBundle\Datagrid\ListMapper;
-    use Sonata\AdminBundle\Form\Type\CollectionType;
+    use IDCT\Adminata\Admin\AbstractAdmin;
+    use IDCT\Adminata\Form\FormMapper;
+    use IDCT\Adminata\Datagrid\DatagridMapper;
+    use IDCT\Adminata\Datagrid\ListMapper;
+    use IDCT\Adminata\Form\Type\CollectionType;
 
     final class GalleryAdmin extends AbstractAdmin
     {

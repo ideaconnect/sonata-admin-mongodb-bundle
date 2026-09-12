@@ -11,7 +11,7 @@ declare(strict_types=1);
  * file that was distributed with this source code.
  */
 
-namespace Sonata\DoctrineMongoDBAdminBundle\Tests\Functional;
+namespace IDCT\Adminata\DoctrineMongoDB\Tests\Functional;
 
 use PHPUnit\Framework\Attributes\Group;
 use Symfony\Component\HttpFoundation\Request;
@@ -37,7 +37,7 @@ final class EmbeddedMappingTest extends BasePantherTestCase
             'filter[phoneNumbers__number][value]' => '666-666-666',
         ]);
 
-        self::assertSelectorTextContains('.sonata-link-identifier', 'Miguel de Cervantes');
+        self::assertSelectorTextContains('.adminata-link-identifier', 'Miguel de Cervantes');
     }
 
     public function testCreateDocumentWithEmbedded(): void
@@ -56,7 +56,7 @@ final class EmbeddedMappingTest extends BasePantherTestCase
         $form[$attributeName] = 'A wonderful author';
         $form[$attributeAddressStreet] = 'A wonderful street to live';
 
-        $crawler->filter('.field-container .sonata-ba-action[title="Add new"]')->click();
+        $crawler->filter('.field-container .adminata-action[title="Add new"]')->click();
         $crawler = $this->client->waitFor('.phone_number_number');
 
         $attributePhoneNumber = $crawler->filter('.phone_number_number')->attr('name');

@@ -11,16 +11,16 @@ declare(strict_types=1);
  * file that was distributed with this source code.
  */
 
-namespace Sonata\DoctrineMongoDBAdminBundle\Tests\FieldDescription;
+namespace IDCT\Adminata\DoctrineMongoDB\Tests\FieldDescription;
 
 use Doctrine\ODM\MongoDB\DocumentManager;
 use Doctrine\Persistence\ManagerRegistry;
 use PHPUnit\Framework\MockObject\Stub;
 use PHPUnit\Framework\TestCase;
-use Sonata\DoctrineMongoDBAdminBundle\Tests\ClassMetadataAnnotationTrait;
-use Sonata\DoctrineMongoDBAdminBundle\Tests\Fixtures\Document\AssociatedDocument;
-use Sonata\DoctrineMongoDBAdminBundle\Tests\Fixtures\Document\ContainerDocument;
-use Sonata\DoctrineMongoDBAdminBundle\Tests\Fixtures\Document\EmbeddedDocument;
+use IDCT\Adminata\DoctrineMongoDB\Tests\ClassMetadataAnnotationTrait;
+use IDCT\Adminata\DoctrineMongoDB\Tests\Fixtures\Document\AssociatedDocument;
+use IDCT\Adminata\DoctrineMongoDB\Tests\Fixtures\Document\ContainerDocument;
+use IDCT\Adminata\DoctrineMongoDB\Tests\Fixtures\Document\EmbeddedDocument;
 
 abstract class RegistryTestCase extends TestCase
 {

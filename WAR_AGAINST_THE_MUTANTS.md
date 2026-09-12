@@ -130,15 +130,15 @@ go.
 
 ## Tier 4 — DI extension & bundle wiring (7 mutants) ✅ DONE
 
-### `tests/SonataDoctrineMongoDBAdminBundleTest.php`
+### `tests/AdminataDoctrineMongoDBBundleTest.php`
 
 - [x] `testAddTemplatesCompilerPassRegistersAtPriorityMinusOne` — reflects
       on `PassConfig::$beforeOptimizationPasses` to pull the priority bucket *(88, 89)*
 
-### `tests/DependencyInjection/SonataDoctrineMongoDBAdminExtensionTest.php`
+### `tests/DependencyInjection/AdminataDoctrineMongoDBExtensionTest.php`
 
 - [x] `testLoadWiresCustomTemplatesIntoBuildersAndParameter` — asserts the
-      `sonata_doctrine_mongodb_admin.templates` parameter is set, and the
+      `adminata_doctrine_mongodb_admin.templates` parameter is set, and the
       list/show builder definitions get the per-type templates as argument
       index `1` *(26, 27, 28, 29, 30)*
 

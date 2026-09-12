@@ -11,15 +11,15 @@ declare(strict_types=1);
  * file that was distributed with this source code.
  */
 
-namespace Sonata\DoctrineMongoDBAdminBundle\Tests\Filter;
+namespace IDCT\Adminata\DoctrineMongoDB\Tests\Filter;
 
 use Doctrine\ODM\MongoDB\Mapping\ClassMetadata;
 use Doctrine\ODM\MongoDB\Query\Builder;
 use PHPUnit\Framework\TestCase;
-use Sonata\AdminBundle\Filter\Model\FilterData;
-use Sonata\DoctrineMongoDBAdminBundle\Datagrid\ProxyQuery;
-use Sonata\DoctrineMongoDBAdminBundle\Datagrid\ProxyQueryInterface;
-use Sonata\DoctrineMongoDBAdminBundle\Filter\Filter;
+use IDCT\Adminata\Filter\Model\FilterData;
+use IDCT\Adminata\DoctrineMongoDB\Datagrid\ProxyQuery;
+use IDCT\Adminata\DoctrineMongoDB\Datagrid\ProxyQueryInterface;
+use IDCT\Adminata\DoctrineMongoDB\Filter\Filter;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 
 final class TestFilter extends Filter
@@ -88,7 +88,7 @@ final class FilterTest extends TestCase
         $this->expectExceptionMessage('MUST implement');
 
         $filter->apply(
-            static::createStub(\Sonata\AdminBundle\Datagrid\ProxyQueryInterface::class),
+            static::createStub(\IDCT\Adminata\Datagrid\ProxyQueryInterface::class),
             FilterData::fromArray(['value' => 'x']),
         );
     }

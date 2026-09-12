@@ -11,19 +11,19 @@ declare(strict_types=1);
  * file that was distributed with this source code.
  */
 
-namespace Sonata\DoctrineMongoDBAdminBundle\Tests\Util;
+namespace IDCT\Adminata\DoctrineMongoDB\Tests\Util;
 
 use Doctrine\ODM\MongoDB\Configuration;
 use Doctrine\ODM\MongoDB\DocumentManager;
 use Doctrine\ODM\MongoDB\Mapping\Driver\AttributeDriver;
 use PHPUnit\Framework\TestCase;
-use Sonata\AdminBundle\Admin\AdminInterface;
-use Sonata\AdminBundle\Exception\ModelManagerException;
-use Sonata\AdminBundle\Model\ModelManagerInterface;
-use Sonata\AdminBundle\Security\Handler\AclSecurityHandlerInterface;
-use Sonata\AdminBundle\Security\Handler\NoopSecurityHandler;
-use Sonata\DoctrineMongoDBAdminBundle\Tests\Fixtures\Document\DocumentForAcl;
-use Sonata\DoctrineMongoDBAdminBundle\Util\ObjectAclManipulator;
+use IDCT\Adminata\Admin\AdminInterface;
+use IDCT\Adminata\Exception\ModelManagerException;
+use IDCT\Adminata\Model\ModelManagerInterface;
+use IDCT\Adminata\Security\Handler\AclSecurityHandlerInterface;
+use IDCT\Adminata\Security\Handler\NoopSecurityHandler;
+use IDCT\Adminata\DoctrineMongoDB\Tests\Fixtures\Document\DocumentForAcl;
+use IDCT\Adminata\DoctrineMongoDB\Util\ObjectAclManipulator;
 use Symfony\Bridge\Doctrine\ManagerRegistry;
 use Symfony\Component\Console\Output\BufferedOutput;
 use Symfony\Component\Security\Acl\Domain\UserSecurityIdentity;

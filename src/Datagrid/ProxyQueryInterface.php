@@ -11,10 +11,10 @@ declare(strict_types=1);
  * file that was distributed with this source code.
  */
 
-namespace Sonata\DoctrineMongoDBAdminBundle\Datagrid;
+namespace IDCT\Adminata\DoctrineMongoDB\Datagrid;
 
 use Doctrine\ODM\MongoDB\Query\Builder;
-use Sonata\AdminBundle\Datagrid\ProxyQueryInterface as BaseProxyQueryInterface;
+use IDCT\Adminata\Datagrid\ProxyQueryInterface as BaseProxyQueryInterface;
 
 /**
  * @phpstan-template-covariant T of object

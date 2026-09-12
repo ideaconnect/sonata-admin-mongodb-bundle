@@ -11,12 +11,12 @@ declare(strict_types=1);
  * file that was distributed with this source code.
  */
 
-namespace Sonata\DoctrineMongoDBAdminBundle\Tests\App;
+namespace IDCT\Adminata\DoctrineMongoDB\Tests\App;
 
 use Doctrine\Bundle\MongoDBBundle\DoctrineMongoDBBundle;
 use Knp\Bundle\MenuBundle\KnpMenuBundle;
-use Sonata\AdminBundle\SonataAdminBundle;
-use Sonata\DoctrineMongoDBAdminBundle\SonataDoctrineMongoDBAdminBundle;
+use IDCT\Adminata\AdminataBundle;
+use IDCT\Adminata\DoctrineMongoDB\AdminataDoctrineMongoDBBundle;
 use Symfony\Bundle\FrameworkBundle\FrameworkBundle;
 use Symfony\Bundle\FrameworkBundle\Kernel\MicroKernelTrait;
 use Symfony\Bundle\SecurityBundle\SecurityBundle;
@@ -39,8 +39,8 @@ final class AppKernel extends Kernel
             new FrameworkBundle(),
             new KnpMenuBundle(),
             new SecurityBundle(),
-            new SonataAdminBundle(),
-            new SonataDoctrineMongoDBAdminBundle(),
+            new AdminataBundle(),
+            new AdminataDoctrineMongoDBBundle(),
             new TwigBundle(),
             new StimulusBundle(),
         ];
@@ -80,6 +80,6 @@ final class AppKernel extends Kernel
     {
         // Include the PID so parallel test runners (ParaTest, multiple CI
         // workers on the same host) don't trample each other's caches.
-        return sys_get_temp_dir().'/sonata-doctrine-mongodb-admin-bundle-'.getmypid().'/var/';
+        return sys_get_temp_dir().'/adminata-doctrine-mongodb-admin-bundle-'.getmypid().'/var/';
     }
 }

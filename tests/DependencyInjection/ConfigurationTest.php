@@ -11,11 +11,11 @@ declare(strict_types=1);
  * file that was distributed with this source code.
  */
 
-namespace Sonata\DoctrineMongoDBAdminBundle\Tests\DependencyInjection;
+namespace IDCT\Adminata\DoctrineMongoDB\Tests\DependencyInjection;
 
 use Matthias\SymfonyConfigTest\PhpUnit\ConfigurationTestCaseTrait;
 use PHPUnit\Framework\TestCase;
-use Sonata\DoctrineMongoDBAdminBundle\DependencyInjection\Configuration;
+use IDCT\Adminata\DoctrineMongoDB\DependencyInjection\Configuration;
 
 final class ConfigurationTest extends TestCase
 {

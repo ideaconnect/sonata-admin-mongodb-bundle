@@ -11,13 +11,13 @@ declare(strict_types=1);
  * file that was distributed with this source code.
  */
 
-namespace Sonata\DoctrineMongoDBAdminBundle\Tests\App\DataFixtures\MongoDB;
+namespace IDCT\Adminata\DoctrineMongoDB\Tests\App\DataFixtures\MongoDB;
 
 use Doctrine\Bundle\MongoDBBundle\Fixture\Fixture;
 use Doctrine\Persistence\ObjectManager;
-use Sonata\DoctrineMongoDBAdminBundle\Tests\App\Document\Address;
-use Sonata\DoctrineMongoDBAdminBundle\Tests\App\Document\Author;
-use Sonata\DoctrineMongoDBAdminBundle\Tests\App\Document\PhoneNumber;
+use IDCT\Adminata\DoctrineMongoDB\Tests\App\Document\Address;
+use IDCT\Adminata\DoctrineMongoDB\Tests\App\Document\Author;
+use IDCT\Adminata\DoctrineMongoDB\Tests\App\Document\PhoneNumber;
 
 final class AuthorFixtures extends Fixture
 {

@@ -11,7 +11,7 @@ declare(strict_types=1);
  * file that was distributed with this source code.
  */
 
-namespace Sonata\DoctrineMongoDBAdminBundle\Filter;
+namespace IDCT\Adminata\DoctrineMongoDB\Filter;
 
 use Symfony\Component\Form\Extension\Core\Type\DateType;
 

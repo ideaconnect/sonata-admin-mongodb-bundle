@@ -7,17 +7,17 @@ to handle the different model's workflows and lifecycle.
 Form types
 ----------
 
-    - ``Sonata\AdminBundle\Form\Type\AdminType``: this type is linked to an Admin class and the field construction is
+    - ``IDCT\Adminata\Form\Type\AdminType``: this type is linked to an Admin class and the field construction is
       delegated to an Admin class.
 
-    - ``Sonata\AdminBundle\Form\Type\CollectionType``: this type works like the native ``CollectionType`` but contains two extra
+    - ``IDCT\Adminata\Form\Type\CollectionType``: this type works like the native ``CollectionType`` but contains two extra
       features : the data layer is abstracted to work with any implemented layer and a delete option is added
       so a collection entry can be deleted.
 
-    - ``Sonata\AdminBundle\Form\Type\ModelType``: this type works like the native ``EntityType`` but this internal is abstracted
+    - ``IDCT\Adminata\Form\Type\ModelType``: this type works like the native ``EntityType`` but this internal is abstracted
       to work with any implemented layer.
 
-    - ``Sonata\AdminBundle\Form\Type\ImmutableArrayType``: this type allows to edit a fixed array, like a settings array.
+    - ``IDCT\Adminata\Form\Type\ImmutableArrayType``: this type allows to edit a fixed array, like a settings array.
 
 Let's say, the object has settings properties::
 
@@ -34,9 +34,9 @@ Now you can edit the settings array with::
 
     namespace Sonata\PageBundle\Admin;
 
-    use Sonata\AdminBundle\Admin\AbstractAdmin;
-    use Sonata\AdminBundle\Form\FormMapper;
-    use Sonata\AdminBundle\Form\Type\ImmutableArrayType;
+    use IDCT\Adminata\Admin\AbstractAdmin;
+    use IDCT\Adminata\Form\FormMapper;
+    use IDCT\Adminata\Form\Type\ImmutableArrayType;
 
     final class PageAdmin extends AbstractAdmin
     {
@@ -56,7 +56,7 @@ Now you can edit the settings array with::
 
 the output will be :
 
-.. image:: ../images/sonata_type_immutable_array.png
+.. image:: ../images/adminata_type_immutable_array.png
            :alt: Immutable Array Type
            :width: 460
 
@@ -65,9 +65,9 @@ Other options::
     namespace Sonata\NewsBundle\Admin;
 
     use App\Entity\Comment;
-    use Sonata\AdminBundle\Admin\AbstractAdmin;
-    use Sonata\AdminBundle\Form\FormMapper;
-    use Sonata\AdminBundle\Form\Type\ModelType;
+    use IDCT\Adminata\Admin\AbstractAdmin;
+    use IDCT\Adminata\Form\FormMapper;
+    use IDCT\Adminata\Form\Type\ModelType;
     use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 
     final class PostAdmin extends AbstractAdmin

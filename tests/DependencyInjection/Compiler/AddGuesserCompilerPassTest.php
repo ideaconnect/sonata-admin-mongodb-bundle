@@ -11,11 +11,11 @@ declare(strict_types=1);
  * file that was distributed with this source code.
  */
 
-namespace Sonata\DoctrineMongoDBAdminBundle\Tests\DependencyInjection\Compiler;
+namespace IDCT\Adminata\DoctrineMongoDB\Tests\DependencyInjection\Compiler;
 
 use Matthias\SymfonyDependencyInjectionTest\PhpUnit\AbstractCompilerPassTestCase;
 use PHPUnit\Framework\Attributes\DataProvider;
-use Sonata\DoctrineMongoDBAdminBundle\DependencyInjection\Compiler\AddGuesserCompilerPass;
+use IDCT\Adminata\DoctrineMongoDB\DependencyInjection\Compiler\AddGuesserCompilerPass;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Definition;
 use Symfony\Component\DependencyInjection\Reference;
@@ -49,16 +49,16 @@ final class AddGuesserCompilerPassTest extends AbstractCompilerPassTestCase
     public static function provideAddsGuessersCases(): iterable
     {
         yield 'list_builder' => [
-            'sonata.admin.guesser.doctrine_mongodb_list_chain',
-            'sonata.admin.guesser.doctrine_mongodb_list',
+            'adminata.admin.guesser.doctrine_mongodb_list_chain',
+            'adminata.admin.guesser.doctrine_mongodb_list',
         ];
         yield 'datagrid_builder' => [
-            'sonata.admin.guesser.doctrine_mongodb_datagrid_chain',
-            'sonata.admin.guesser.doctrine_mongodb_datagrid',
+            'adminata.admin.guesser.doctrine_mongodb_datagrid_chain',
+            'adminata.admin.guesser.doctrine_mongodb_datagrid',
         ];
         yield 'show_builder' => [
-            'sonata.admin.guesser.doctrine_mongodb_show_chain',
-            'sonata.admin.guesser.doctrine_mongodb_show',
+            'adminata.admin.guesser.doctrine_mongodb_show_chain',
+            'adminata.admin.guesser.doctrine_mongodb_show',
         ];
     }
 

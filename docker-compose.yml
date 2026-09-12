@@ -1,14 +1,14 @@
 services:
     mongo:
         image: mongo:latest
-        container_name: sonata-mongodb-admin-test
+        container_name: adminata-mongodb-admin-test
         ports:
             - "27017:27017"
         restart: unless-stopped
 
     selenium:
         image: selenium/standalone-firefox:latest
-        container_name: sonata-mongodb-admin-selenium
+        container_name: adminata-mongodb-admin-selenium
         network_mode: host
         shm_size: 2g
         environment:

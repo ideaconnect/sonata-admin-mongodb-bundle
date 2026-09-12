@@ -11,7 +11,7 @@ declare(strict_types=1);
  * file that was distributed with this source code.
  */
 
-namespace Sonata\DoctrineMongoDBAdminBundle\Tests\Functional;
+namespace IDCT\Adminata\DoctrineMongoDB\Tests\Functional;
 
 use PHPUnit\Framework\Attributes\Group;
 use Symfony\Component\DomCrawler\Form;
@@ -39,7 +39,7 @@ final class ReferenceMappingTest extends BasePantherTestCase
         $form[$attributeId] = 'book_new_id';
         $form[$attributeName] = 'A wonderful book';
 
-        $crawler->filter('.field-container .sonata-ba-action[title="Add new"]')->click();
+        $crawler->filter('.field-container .adminata-action[title="Add new"]')->click();
         $crawler = $this->client->waitForVisibility('.author_id');
 
         $authorForm = $this->createAuthorForm($crawler);

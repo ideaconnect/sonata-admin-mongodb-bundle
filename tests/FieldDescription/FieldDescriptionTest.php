@@ -11,10 +11,10 @@ declare(strict_types=1);
  * file that was distributed with this source code.
  */
 
-namespace Sonata\DoctrineMongoDBAdminBundle\Tests\FieldDescription;
+namespace IDCT\Adminata\DoctrineMongoDB\Tests\FieldDescription;
 
 use PHPUnit\Framework\TestCase;
-use Sonata\DoctrineMongoDBAdminBundle\FieldDescription\FieldDescription;
+use IDCT\Adminata\DoctrineMongoDB\FieldDescription\FieldDescription;
 
 final class FieldDescriptionTest extends TestCase
 {

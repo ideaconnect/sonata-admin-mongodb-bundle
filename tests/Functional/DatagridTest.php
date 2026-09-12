@@ -11,7 +11,7 @@ declare(strict_types=1);
  * file that was distributed with this source code.
  */
 
-namespace Sonata\DoctrineMongoDBAdminBundle\Tests\Functional;
+namespace IDCT\Adminata\DoctrineMongoDB\Tests\Functional;
 
 use PHPUnit\Framework\Attributes\Group;
 use Symfony\Component\HttpFoundation\Request;
@@ -35,6 +35,6 @@ final class DatagridTest extends BasePantherTestCase
             'filter[name][value]' => 'Dystopian',
         ]);
 
-        self::assertSelectorTextContains('.sonata-link-identifier', 'Dystopian');
+        self::assertSelectorTextContains('.adminata-link-identifier', 'Dystopian');
     }
 }

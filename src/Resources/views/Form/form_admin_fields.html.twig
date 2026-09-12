@@ -10,56 +10,56 @@ file that was distributed with this source code.
 
 #}
 
-{% extends '@SonataAdmin/Form/form_admin_fields.html.twig' %}
+{% extends '@Adminata/Form/form_admin_fields.html.twig' %}
 
 
 {# Custom Sonata Admin Extension #}
-{% block sonata_admin_mongo_one_widget %}
-    {% include '@SonataAdmin/CRUD/Association/edit_many_to_one.html.twig' %}
+{% block adminata_admin_mongo_one_widget %}
+    {% include '@Adminata/CRUD/Association/edit_many_to_one.html.twig' %}
 {% endblock %}
 
-{% block sonata_admin_mongo_many_widget %}
-    {% include '@SonataAdmin/CRUD/Association/edit_many_to_many.html.twig' %}
+{% block adminata_admin_mongo_many_widget %}
+    {% include '@Adminata/CRUD/Association/edit_many_to_many.html.twig' %}
 {% endblock %}
 
-{% block sonata_admin_mongo_collection %}
-    {% include '@SonataAdmin/CRUD/Association/edit_one_to_many.html.twig' %}
+{% block adminata_admin_mongo_collection %}
+    {% include '@Adminata/CRUD/Association/edit_one_to_many.html.twig' %}
 {% endblock %}
 
-{% block sonata_type_model_widget %}
+{% block adminata_type_model_widget %}
     {#
         This is not the best way to do if
         TODO : improve this part
     #}
 
-    {#model {{ sonata_admin.field_description.mappingtype }}#}
+    {#model {{ adminata_admin.field_description.mappingtype }}#}
 
-    {% if sonata_admin.field_description is empty %}
+    {% if adminata_admin.field_description is empty %}
         {{ block('choice_widget') }}
-    {% elseif sonata_admin.field_description.mappingtype == 'one' %}
-        {{ block('sonata_admin_mongo_one_widget') }}
-    {% elseif sonata_admin.field_description.mappingtype == 'many' %}
-        {{ block('sonata_admin_mongo_many_widget') }}
+    {% elseif adminata_admin.field_description.mappingtype == 'one' %}
+        {{ block('adminata_admin_mongo_one_widget') }}
+    {% elseif adminata_admin.field_description.mappingtype == 'many' %}
+        {{ block('adminata_admin_mongo_many_widget') }}
     {% else %}
         {#INVALID MODE : {{ id }}#}
         {{ block('choice_widget') }}
     {% endif %}
 {% endblock %}
 
-{% block sonata_type_admin_widget %}
-    {#admin {{ sonata_admin.field_description.mappingtype }}#}
-    {% if sonata_admin.field_description.mappingtype == 'one' %}
-        {{ block('sonata_admin_mongo_one_widget') }}
-    {% elseif sonata_admin.field_description.mappingtype == 'many' %}
-        {{ block('sonata_admin_mongo_many_widget') }}
+{% block adminata_type_admin_widget %}
+    {#admin {{ adminata_admin.field_description.mappingtype }}#}
+    {% if adminata_admin.field_description.mappingtype == 'one' %}
+        {{ block('adminata_admin_mongo_one_widget') }}
+    {% elseif adminata_admin.field_description.mappingtype == 'many' %}
+        {{ block('adminata_admin_mongo_many_widget') }}
     {% else %}
         INVALID MODE : {{ id }}
     {% endif %}
 {% endblock %}
 
-{% block sonata_type_collection_widget %}
-    {% if sonata_admin.field_description.mappingtype == 'many' %}
-        {{ block('sonata_admin_mongo_collection') }}
+{% block adminata_type_collection_widget %}
+    {% if adminata_admin.field_description.mappingtype == 'many' %}
+        {{ block('adminata_admin_mongo_collection') }}
     {% else %}
         INVALID MODE : {{ id }}
     {% endif %}

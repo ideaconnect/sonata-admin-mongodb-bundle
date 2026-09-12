@@ -323,7 +323,7 @@ If the deprecated thing is a service, you **MUST** specify it on the service def
 
 ```xml
 <!-- NEXT_MAJOR: Remove this service -->
-<service id="sonata.block.old" class="Sonata\Block\Old">
+<service id="adminata.block.old" class="Sonata\Block\Old">
     <argument type="service" id="security.token_storage" />
     <deprecated>The "%service_id%" service is deprecated since sonata-project/bar-bundle 42.x and will be removed in 43.0.</deprecated>
  </service>

@@ -11,26 +11,26 @@ declare(strict_types=1);
  * file that was distributed with this source code.
  */
 
-namespace Sonata\DoctrineMongoDBAdminBundle\Tests\FieldDescription;
+namespace IDCT\Adminata\DoctrineMongoDB\Tests\FieldDescription;
 
 use Doctrine\ODM\MongoDB\Mapping\ClassMetadata;
 use Doctrine\ODM\MongoDB\Types\Type;
 use PHPUnit\Framework\Attributes\DataProvider;
-use Sonata\AdminBundle\Admin\AdminInterface;
-use Sonata\AdminBundle\FieldDescription\FieldDescriptionInterface;
-use Sonata\AdminBundle\Form\Type\BooleanType;
-use Sonata\DoctrineMongoDBAdminBundle\FieldDescription\FieldDescriptionFactory;
-use Sonata\DoctrineMongoDBAdminBundle\FieldDescription\FilterTypeGuesser;
-use Sonata\DoctrineMongoDBAdminBundle\Filter\BooleanFilter;
-use Sonata\DoctrineMongoDBAdminBundle\Filter\DateFilter;
-use Sonata\DoctrineMongoDBAdminBundle\Filter\DateTimeFilter;
-use Sonata\DoctrineMongoDBAdminBundle\Filter\IdFilter;
-use Sonata\DoctrineMongoDBAdminBundle\Filter\ModelFilter;
-use Sonata\DoctrineMongoDBAdminBundle\Filter\NumberFilter;
-use Sonata\DoctrineMongoDBAdminBundle\Filter\StringFilter;
-use Sonata\DoctrineMongoDBAdminBundle\Model\MissingPropertyMetadataException;
-use Sonata\DoctrineMongoDBAdminBundle\Tests\Fixtures\Document\AssociatedDocument;
-use Sonata\DoctrineMongoDBAdminBundle\Tests\Fixtures\Document\ContainerDocument;
+use IDCT\Adminata\Admin\AdminInterface;
+use IDCT\Adminata\FieldDescription\FieldDescriptionInterface;
+use IDCT\Adminata\Form\Type\BooleanType;
+use IDCT\Adminata\DoctrineMongoDB\FieldDescription\FieldDescriptionFactory;
+use IDCT\Adminata\DoctrineMongoDB\FieldDescription\FilterTypeGuesser;
+use IDCT\Adminata\DoctrineMongoDB\Filter\BooleanFilter;
+use IDCT\Adminata\DoctrineMongoDB\Filter\DateFilter;
+use IDCT\Adminata\DoctrineMongoDB\Filter\DateTimeFilter;
+use IDCT\Adminata\DoctrineMongoDB\Filter\IdFilter;
+use IDCT\Adminata\DoctrineMongoDB\Filter\ModelFilter;
+use IDCT\Adminata\DoctrineMongoDB\Filter\NumberFilter;
+use IDCT\Adminata\DoctrineMongoDB\Filter\StringFilter;
+use IDCT\Adminata\DoctrineMongoDB\Model\MissingPropertyMetadataException;
+use IDCT\Adminata\DoctrineMongoDB\Tests\Fixtures\Document\AssociatedDocument;
+use IDCT\Adminata\DoctrineMongoDB\Tests\Fixtures\Document\ContainerDocument;
 use Symfony\Component\Form\Extension\Core\Type\NumberType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Guess\Guess;

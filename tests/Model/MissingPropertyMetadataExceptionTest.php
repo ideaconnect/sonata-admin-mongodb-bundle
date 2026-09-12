@@ -11,10 +11,10 @@ declare(strict_types=1);
  * file that was distributed with this source code.
  */
 
-namespace Sonata\DoctrineMongoDBAdminBundle\Tests\Model;
+namespace IDCT\Adminata\DoctrineMongoDB\Tests\Model;
 
 use PHPUnit\Framework\TestCase;
-use Sonata\DoctrineMongoDBAdminBundle\Model\MissingPropertyMetadataException;
+use IDCT\Adminata\DoctrineMongoDB\Model\MissingPropertyMetadataException;
 
 final class MissingPropertyMetadataExceptionTest extends TestCase
 {

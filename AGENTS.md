@@ -44,17 +44,17 @@ persistence stack:
 
 | Sonata Admin contract | Our implementation |
 |---|---|
-| `Sonata\AdminBundle\Model\ModelManagerInterface` | `Sonata\DoctrineMongoDBAdminBundle\Model\ModelManager` |
-| `Sonata\AdminBundle\Datagrid\PagerInterface` | `Sonata\DoctrineMongoDBAdminBundle\Datagrid\Pager` |
-| `Sonata\AdminBundle\Datagrid\ProxyQueryInterface` | `Sonata\DoctrineMongoDBAdminBundle\Datagrid\ProxyQuery` (and our extended sub-interface of the same name) |
-| `Sonata\AdminBundle\FieldDescription\FieldDescriptionFactoryInterface` | `Sonata\DoctrineMongoDBAdminBundle\FieldDescription\FieldDescriptionFactory` |
-| `Sonata\AdminBundle\FieldDescription\TypeGuesserInterface` | `Sonata\DoctrineMongoDBAdminBundle\FieldDescription\TypeGuesser` (list/show) + `FilterTypeGuesser` (datagrid filters) |
-| `Sonata\AdminBundle\Builder\{Datagrid,List,Show,Form}BuilderInterface` | `Sonata\DoctrineMongoDBAdminBundle\Builder\{Datagrid,List,Show}Builder` + `FormContractor` |
-| `Sonata\AdminBundle\Filter\Filter` (base class) | `Sonata\DoctrineMongoDBAdminBundle\Filter\Filter` (intermediate base) and concrete filters |
-| `Sonata\AdminBundle\Util\ObjectAclManipulator` | `Sonata\DoctrineMongoDBAdminBundle\Util\ObjectAclManipulator` |
-| `Sonata\AdminBundle\Exporter\DataSourceInterface` | `Sonata\DoctrineMongoDBAdminBundle\Exporter\DataSource` |
+| `IDCT\Adminata\Model\ModelManagerInterface` | `IDCT\Adminata\DoctrineMongoDB\Model\ModelManager` |
+| `IDCT\Adminata\Datagrid\PagerInterface` | `IDCT\Adminata\DoctrineMongoDB\Datagrid\Pager` |
+| `IDCT\Adminata\Datagrid\ProxyQueryInterface` | `IDCT\Adminata\DoctrineMongoDB\Datagrid\ProxyQuery` (and our extended sub-interface of the same name) |
+| `IDCT\Adminata\FieldDescription\FieldDescriptionFactoryInterface` | `IDCT\Adminata\DoctrineMongoDB\FieldDescription\FieldDescriptionFactory` |
+| `IDCT\Adminata\FieldDescription\TypeGuesserInterface` | `IDCT\Adminata\DoctrineMongoDB\FieldDescription\TypeGuesser` (list/show) + `FilterTypeGuesser` (datagrid filters) |
+| `IDCT\Adminata\Builder\{Datagrid,List,Show,Form}BuilderInterface` | `IDCT\Adminata\DoctrineMongoDB\Builder\{Datagrid,List,Show}Builder` + `FormContractor` |
+| `IDCT\Adminata\Filter\Filter` (base class) | `IDCT\Adminata\DoctrineMongoDB\Filter\Filter` (intermediate base) and concrete filters |
+| `IDCT\Adminata\Util\ObjectAclManipulator` | `IDCT\Adminata\DoctrineMongoDB\Util\ObjectAclManipulator` |
+| `IDCT\Adminata\Exporter\DataSourceInterface` | `IDCT\Adminata\DoctrineMongoDB\Exporter\DataSource` |
 
-Every concrete service id starts with `sonata.admin.*` (Sonata's namespace,
+Every concrete service id starts with `adminata.admin.*` (Sonata's namespace,
 because Sonata's compiler passes look them up by id) and ends in
 `doctrine_mongodb` (the discriminator that pairs them with admins declared
 `manager_type: doctrine_mongodb`). See
@@ -231,9 +231,9 @@ file.
 
 Tagged services:
 
-- `sonata.admin.guesser.doctrine_mongodb_list`
-- `sonata.admin.guesser.doctrine_mongodb_show`
-- `sonata.admin.guesser.doctrine_mongodb_datagrid`
+- `adminata.admin.guesser.doctrine_mongodb_list`
+- `adminata.admin.guesser.doctrine_mongodb_show`
+- `adminata.admin.guesser.doctrine_mongodb_datagrid`
 
 The `AddGuesserCompilerPass` (`src/DependencyInjection/Compiler/`)
 collects each tag and feeds them into the right `TypeGuesserChain`. Add
@@ -262,11 +262,11 @@ Current set:
 
 When adding a filter:
 
-1. Subclass `Sonata\DoctrineMongoDBAdminBundle\Filter\Filter` (not
+1. Subclass `IDCT\Adminata\DoctrineMongoDB\Filter\Filter` (not
    Sonata's base — ours adds the type guard).
 2. Implement `getDefaultOptions()` and `getFormOptions()` and the
    protected `filter()` method.
-3. Register it as a `sonata.admin.filter.type`-tagged service in
+3. Register it as a `adminata.admin.filter.type`-tagged service in
    [`src/Resources/config/doctrine_mongodb_filter_types.php`](src/Resources/config/doctrine_mongodb_filter_types.php).
 4. Add a corresponding case to `FilterTypeGuesser::guess()` if it should
    be auto-selected for some ODM mapping type.
@@ -274,7 +274,7 @@ When adding a filter:
    `FilterWithQueryBuilderTestCase` mocks an ODM Builder + Expr stub for
    you.
 
-Filter input always arrives as `Sonata\AdminBundle\Filter\Model\FilterData`;
+Filter input always arrives as `IDCT\Adminata\Filter\Model\FilterData`;
 always check `$data->hasValue()` before reading and guard against malformed
 shapes (non-scalar, wrong type) — silent skip is preferred over throwing
 in `filter()` since users hit these via the admin UI.
@@ -282,7 +282,7 @@ in `filter()` since users hit these via the admin UI.
 ### 5.8 DataSource — exports
 
 [`src/Exporter/DataSource.php`](src/Exporter/DataSource.php) — implements
-`Sonata\AdminBundle\Exporter\DataSourceInterface`. Hands a Panther-friendly
+`IDCT\Adminata\Exporter\DataSourceInterface`. Hands a Panther-friendly
 `\Iterator` (via `DoctrineODMQuerySourceIterator`) to Sonata's exporter
 for CSV/XML/JSON export of the current datagrid query.
 
@@ -304,9 +304,9 @@ the partial-batch tail).
 
 ### 5.10 DI plumbing
 
-- [`src/SonataDoctrineMongoDBAdminBundle.php`](src/SonataDoctrineMongoDBAdminBundle.php)
+- [`src/AdminataDoctrineMongoDBBundle.php`](src/AdminataDoctrineMongoDBBundle.php)
   registers the two compiler passes.
-- [`src/DependencyInjection/SonataDoctrineMongoDBAdminExtension.php`](src/DependencyInjection/SonataDoctrineMongoDBAdminExtension.php)
+- [`src/DependencyInjection/AdminataDoctrineMongoDBExtension.php`](src/DependencyInjection/AdminataDoctrineMongoDBExtension.php)
   loads the three service config files (`doctrine_mongodb.php`,
   `doctrine_mongodb_filter_types.php`, `security.php`) and threads the
   user-configured template overrides into the list/show builders.
@@ -316,7 +316,7 @@ the partial-batch tail).
   attaches the bundle's form / filter Twig themes to every Mongo-managed
   Admin service.
 - [`src/DependencyInjection/Configuration.php`](src/DependencyInjection/Configuration.php)
-  declares the `sonata_doctrine_mongo_db_admin` config tree (just the
+  declares the `adminata_doctrine_mongodb` config tree (just the
   per-type template overrides).
 
 ---

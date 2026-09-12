@@ -11,13 +11,13 @@ declare(strict_types=1);
  * file that was distributed with this source code.
  */
 
-namespace Sonata\DoctrineMongoDBAdminBundle\Tests\Filter;
+namespace IDCT\Adminata\DoctrineMongoDB\Tests\Filter;
 
 use PHPUnit\Framework\Attributes\DataProvider;
-use Sonata\AdminBundle\Filter\Model\FilterData;
-use Sonata\AdminBundle\Form\Type\Operator\DateOperatorType;
-use Sonata\DoctrineMongoDBAdminBundle\Datagrid\ProxyQuery;
-use Sonata\DoctrineMongoDBAdminBundle\Filter\DateTimeFilter;
+use IDCT\Adminata\Filter\Model\FilterData;
+use IDCT\Adminata\Form\Type\Operator\DateOperatorType;
+use IDCT\Adminata\DoctrineMongoDB\Datagrid\ProxyQuery;
+use IDCT\Adminata\DoctrineMongoDB\Filter\DateTimeFilter;
 use Symfony\Component\Form\Extension\Core\Type\DateTimeType;
 
 final class DateTimeFilterTest extends FilterWithQueryBuilderTestCase

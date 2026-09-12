@@ -13,86 +13,86 @@ declare(strict_types=1);
 
 namespace Symfony\Component\DependencyInjection\Loader\Configurator;
 
-use Sonata\AdminBundle\FieldDescription\TypeGuesserChain;
-use Sonata\DoctrineMongoDBAdminBundle\Builder\DatagridBuilder;
-use Sonata\DoctrineMongoDBAdminBundle\Builder\FormContractor;
-use Sonata\DoctrineMongoDBAdminBundle\Builder\ListBuilder;
-use Sonata\DoctrineMongoDBAdminBundle\Builder\ShowBuilder;
-use Sonata\DoctrineMongoDBAdminBundle\Exporter\DataSource;
-use Sonata\DoctrineMongoDBAdminBundle\FieldDescription\FieldDescriptionFactory;
-use Sonata\DoctrineMongoDBAdminBundle\FieldDescription\FilterTypeGuesser;
-use Sonata\DoctrineMongoDBAdminBundle\FieldDescription\TypeGuesser;
-use Sonata\DoctrineMongoDBAdminBundle\Model\ModelManager;
+use IDCT\Adminata\FieldDescription\TypeGuesserChain;
+use IDCT\Adminata\DoctrineMongoDB\Builder\DatagridBuilder;
+use IDCT\Adminata\DoctrineMongoDB\Builder\FormContractor;
+use IDCT\Adminata\DoctrineMongoDB\Builder\ListBuilder;
+use IDCT\Adminata\DoctrineMongoDB\Builder\ShowBuilder;
+use IDCT\Adminata\DoctrineMongoDB\Exporter\DataSource;
+use IDCT\Adminata\DoctrineMongoDB\FieldDescription\FieldDescriptionFactory;
+use IDCT\Adminata\DoctrineMongoDB\FieldDescription\FilterTypeGuesser;
+use IDCT\Adminata\DoctrineMongoDB\FieldDescription\TypeGuesser;
+use IDCT\Adminata\DoctrineMongoDB\Model\ModelManager;
 
 return static function (ContainerConfigurator $containerConfigurator): void {
     $containerConfigurator->services()
 
-        ->set('sonata.admin.manager.doctrine_mongodb', ModelManager::class)
-            ->tag('sonata.admin.manager')
+        ->set('adminata.admin.manager.doctrine_mongodb', ModelManager::class)
+            ->tag('adminata.admin.manager')
             ->args([
                 service('doctrine_mongodb'),
                 service('property_accessor'),
             ])
 
-        ->set('sonata.admin.builder.doctrine_mongodb_form', FormContractor::class)
+        ->set('adminata.admin.builder.doctrine_mongodb_form', FormContractor::class)
             ->args([
                 service('form.factory'),
                 service('form.registry'),
             ])
 
-        ->set('sonata.admin.builder.doctrine_mongodb_list', ListBuilder::class)
+        ->set('adminata.admin.builder.doctrine_mongodb_list', ListBuilder::class)
             ->args([
-                service('sonata.admin.guesser.doctrine_mongodb_list_chain'),
+                service('adminata.admin.guesser.doctrine_mongodb_list_chain'),
                 abstract_arg('templates'),
             ])
 
-        ->set('sonata.admin.guesser.doctrine_mongodb_list', TypeGuesser::class)
-            ->tag('sonata.admin.guesser.doctrine_mongodb_list')
+        ->set('adminata.admin.guesser.doctrine_mongodb_list', TypeGuesser::class)
+            ->tag('adminata.admin.guesser.doctrine_mongodb_list')
 
-        ->set('sonata.admin.guesser.doctrine_mongodb_list_chain', TypeGuesserChain::class)
+        ->set('adminata.admin.guesser.doctrine_mongodb_list_chain', TypeGuesserChain::class)
             ->args([
                 [
-                    service('sonata.admin.guesser.doctrine_mongodb_list'),
+                    service('adminata.admin.guesser.doctrine_mongodb_list'),
                 ],
             ])
 
-        ->set('sonata.admin.builder.doctrine_mongodb_show', ShowBuilder::class)
+        ->set('adminata.admin.builder.doctrine_mongodb_show', ShowBuilder::class)
             ->args([
-                service('sonata.admin.guesser.doctrine_mongodb_show_chain'),
+                service('adminata.admin.guesser.doctrine_mongodb_show_chain'),
                 abstract_arg('templates'),
             ])
 
-        ->set('sonata.admin.guesser.doctrine_mongodb_show', TypeGuesser::class)
-            ->tag('sonata.admin.guesser.doctrine_mongodb_show')
+        ->set('adminata.admin.guesser.doctrine_mongodb_show', TypeGuesser::class)
+            ->tag('adminata.admin.guesser.doctrine_mongodb_show')
 
-        ->set('sonata.admin.guesser.doctrine_mongodb_show_chain', TypeGuesserChain::class)
+        ->set('adminata.admin.guesser.doctrine_mongodb_show_chain', TypeGuesserChain::class)
             ->args([
                 [
-                    service('sonata.admin.guesser.doctrine_mongodb_show'),
+                    service('adminata.admin.guesser.doctrine_mongodb_show'),
                 ],
             ])
 
-        ->set('sonata.admin.builder.doctrine_mongodb_datagrid', DatagridBuilder::class)
+        ->set('adminata.admin.builder.doctrine_mongodb_datagrid', DatagridBuilder::class)
             ->args([
                 service('form.factory'),
-                service('sonata.admin.builder.filter.factory'),
-                service('sonata.admin.guesser.doctrine_mongodb_datagrid_chain'),
+                service('adminata.admin.builder.filter.factory'),
+                service('adminata.admin.guesser.doctrine_mongodb_datagrid_chain'),
                 param('form.type_extension.csrf.enabled'),
             ])
 
-        ->set('sonata.admin.guesser.doctrine_mongodb_datagrid', FilterTypeGuesser::class)
-            ->tag('sonata.admin.guesser.doctrine_mongodb_datagrid')
+        ->set('adminata.admin.guesser.doctrine_mongodb_datagrid', FilterTypeGuesser::class)
+            ->tag('adminata.admin.guesser.doctrine_mongodb_datagrid')
 
-        ->set('sonata.admin.guesser.doctrine_mongodb_datagrid_chain', TypeGuesserChain::class)
+        ->set('adminata.admin.guesser.doctrine_mongodb_datagrid_chain', TypeGuesserChain::class)
             ->args([
                 [
-                    service('sonata.admin.guesser.doctrine_mongodb_datagrid'),
+                    service('adminata.admin.guesser.doctrine_mongodb_datagrid'),
                 ],
             ])
 
-        ->set('sonata.admin.data_source.doctrine_mongodb', DataSource::class)
+        ->set('adminata.admin.data_source.doctrine_mongodb', DataSource::class)
 
-        ->set('sonata.admin.field_description_factory.doctrine_mongodb', FieldDescriptionFactory::class)
+        ->set('adminata.admin.field_description_factory.doctrine_mongodb', FieldDescriptionFactory::class)
             ->args([
                 service('doctrine_mongodb'),
             ]);

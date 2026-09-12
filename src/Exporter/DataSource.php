@@ -11,12 +11,12 @@ declare(strict_types=1);
  * file that was distributed with this source code.
  */
 
-namespace Sonata\DoctrineMongoDBAdminBundle\Exporter;
+namespace IDCT\Adminata\DoctrineMongoDB\Exporter;
 
-use Sonata\AdminBundle\Datagrid\ProxyQueryInterface as BaseProxyQueryInterface;
-use Sonata\AdminBundle\Exporter\DataSourceInterface;
-use Sonata\AdminBundle\Exporter\Source\DoctrineODMQuerySourceIterator;
-use Sonata\DoctrineMongoDBAdminBundle\Datagrid\ProxyQueryInterface;
+use IDCT\Adminata\Datagrid\ProxyQueryInterface as BaseProxyQueryInterface;
+use IDCT\Adminata\Exporter\DataSourceInterface;
+use IDCT\Adminata\Exporter\Source\DoctrineODMQuerySourceIterator;
+use IDCT\Adminata\DoctrineMongoDB\Datagrid\ProxyQueryInterface;
 
 final readonly class DataSource implements DataSourceInterface
 {

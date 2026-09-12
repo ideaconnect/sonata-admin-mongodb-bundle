@@ -63,7 +63,7 @@
     <php>
         <ini name="precision" value="8" />
         <server name="PANTHER_WEB_SERVER_DIR" value="./tests/App/public/" />
-        <env name="KERNEL_CLASS" value="\Sonata\DoctrineMongoDBAdminBundle\Tests\App\AppKernel" />
+        <env name="KERNEL_CLASS" value="\IDCT\Adminata\DoctrineMongoDB\Tests\App\AppKernel" />
         <server name="APP_ENV" value="test" force="true" />
         <server name="APP_DEBUG" value="false" />
     </php>

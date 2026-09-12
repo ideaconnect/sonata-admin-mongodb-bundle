@@ -11,12 +11,12 @@ declare(strict_types=1);
  * file that was distributed with this source code.
  */
 
-namespace Sonata\DoctrineMongoDBAdminBundle\Tests\App\Admin;
+namespace IDCT\Adminata\DoctrineMongoDB\Tests\App\Admin;
 
-use Sonata\AdminBundle\Admin\AbstractAdmin;
-use Sonata\AdminBundle\Datagrid\ListMapper;
-use Sonata\AdminBundle\Form\FormMapper;
-use Sonata\DoctrineMongoDBAdminBundle\Tests\App\Document\PhoneNumber;
+use IDCT\Adminata\Admin\AbstractAdmin;
+use IDCT\Adminata\Datagrid\ListMapper;
+use IDCT\Adminata\Form\FormMapper;
+use IDCT\Adminata\DoctrineMongoDB\Tests\App\Document\PhoneNumber;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 
 /**

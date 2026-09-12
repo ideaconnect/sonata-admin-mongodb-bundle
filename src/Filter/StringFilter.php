@@ -11,15 +11,15 @@ declare(strict_types=1);
  * file that was distributed with this source code.
  */
 
-namespace Sonata\DoctrineMongoDBAdminBundle\Filter;
+namespace IDCT\Adminata\DoctrineMongoDB\Filter;
 
 use Doctrine\ODM\MongoDB\Query\Expr;
 use MongoDB\BSON\Regex;
-use Sonata\AdminBundle\Filter\Model\FilterData;
-use Sonata\AdminBundle\Form\Type\Operator\ContainsOperatorType;
-use Sonata\AdminBundle\Form\Type\Operator\StringOperatorType;
-use Sonata\AdminBundle\Search\SearchableFilterInterface;
-use Sonata\DoctrineMongoDBAdminBundle\Datagrid\ProxyQueryInterface;
+use IDCT\Adminata\Filter\Model\FilterData;
+use IDCT\Adminata\Form\Type\Operator\ContainsOperatorType;
+use IDCT\Adminata\Form\Type\Operator\StringOperatorType;
+use IDCT\Adminata\Search\SearchableFilterInterface;
+use IDCT\Adminata\DoctrineMongoDB\Datagrid\ProxyQueryInterface;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 
 final class StringFilter extends Filter implements SearchableFilterInterface

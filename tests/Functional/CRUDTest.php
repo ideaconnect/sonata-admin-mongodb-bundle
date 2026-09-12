@@ -11,10 +11,10 @@ declare(strict_types=1);
  * file that was distributed with this source code.
  */
 
-namespace Sonata\DoctrineMongoDBAdminBundle\Tests\Functional;
+namespace IDCT\Adminata\DoctrineMongoDB\Tests\Functional;
 
 use Doctrine\Persistence\ManagerRegistry;
-use Sonata\DoctrineMongoDBAdminBundle\Tests\App\Document\Category;
+use IDCT\Adminata\DoctrineMongoDB\Tests\App\Document\Category;
 use Symfony\Component\HttpFoundation\Request;
 
 final class CRUDTest extends BaseFunctionalTestCase
@@ -23,14 +23,14 @@ final class CRUDTest extends BaseFunctionalTestCase
     {
         $this->client->request(Request::METHOD_GET, '/admin/tests/app/category/list');
 
-        self::assertSelectorTextContains('.sonata-ba-list-field-string[objectid="category_novel"] .sonata-link-identifier', 'Novel');
+        self::assertSelectorTextContains('.adminata-list-field-string[objectid="category_novel"] .adminata-link-identifier', 'Novel');
     }
 
     public function testShow(): void
     {
         $this->client->request(Request::METHOD_GET, '/admin/tests/app/category/category_novel/show');
 
-        self::assertSelectorTextContains('.sonata-ba-view-container', 'category_novel');
+        self::assertSelectorTextContains('.adminata-view-container', 'category_novel');
     }
 
     public function testCreate(): void
@@ -74,6 +74,6 @@ final class CRUDTest extends BaseFunctionalTestCase
 
         $this->client->submitForm('Yes, delete');
 
-        self::assertSelectorNotExists('.sonata-ba-list-field-string[objectid="category_to_remove"] .sonata-link-identifier');
+        self::assertSelectorNotExists('.adminata-list-field-string[objectid="category_to_remove"] .adminata-link-identifier');
     }
 }

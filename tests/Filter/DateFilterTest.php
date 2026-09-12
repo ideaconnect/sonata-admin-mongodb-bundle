@@ -11,11 +11,11 @@ declare(strict_types=1);
  * file that was distributed with this source code.
  */
 
-namespace Sonata\DoctrineMongoDBAdminBundle\Tests\Filter;
+namespace IDCT\Adminata\DoctrineMongoDB\Tests\Filter;
 
-use Sonata\AdminBundle\Filter\Model\FilterData;
-use Sonata\DoctrineMongoDBAdminBundle\Datagrid\ProxyQuery;
-use Sonata\DoctrineMongoDBAdminBundle\Filter\DateFilter;
+use IDCT\Adminata\Filter\Model\FilterData;
+use IDCT\Adminata\DoctrineMongoDB\Datagrid\ProxyQuery;
+use IDCT\Adminata\DoctrineMongoDB\Filter\DateFilter;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
 
 final class DateFilterTest extends FilterWithQueryBuilderTestCase

@@ -11,12 +11,12 @@ declare(strict_types=1);
  * file that was distributed with this source code.
  */
 
-namespace Sonata\DoctrineMongoDBAdminBundle\Tests;
+namespace IDCT\Adminata\DoctrineMongoDB\Tests;
 
 use Doctrine\ODM\MongoDB\DocumentManager;
 use PHPUnit\Framework\MockObject\Stub;
 use PHPUnit\Framework\TestCase;
-use Sonata\DoctrineMongoDBAdminBundle\Model\ModelManager;
+use IDCT\Adminata\DoctrineMongoDB\Model\ModelManager;
 use Symfony\Bridge\Doctrine\ManagerRegistry;
 use Symfony\Component\PropertyAccess\PropertyAccess;
 

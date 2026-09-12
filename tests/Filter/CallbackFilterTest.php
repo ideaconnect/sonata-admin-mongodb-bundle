@@ -11,12 +11,12 @@ declare(strict_types=1);
  * file that was distributed with this source code.
  */
 
-namespace Sonata\DoctrineMongoDBAdminBundle\Tests\Filter;
+namespace IDCT\Adminata\DoctrineMongoDB\Tests\Filter;
 
-use Sonata\AdminBundle\Filter\Model\FilterData;
-use Sonata\DoctrineMongoDBAdminBundle\Datagrid\ProxyQuery;
-use Sonata\DoctrineMongoDBAdminBundle\Datagrid\ProxyQueryInterface;
-use Sonata\DoctrineMongoDBAdminBundle\Filter\CallbackFilter;
+use IDCT\Adminata\Filter\Model\FilterData;
+use IDCT\Adminata\DoctrineMongoDB\Datagrid\ProxyQuery;
+use IDCT\Adminata\DoctrineMongoDB\Datagrid\ProxyQueryInterface;
+use IDCT\Adminata\DoctrineMongoDB\Filter\CallbackFilter;
 use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 

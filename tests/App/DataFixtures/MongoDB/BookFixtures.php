@@ -11,14 +11,14 @@ declare(strict_types=1);
  * file that was distributed with this source code.
  */
 
-namespace Sonata\DoctrineMongoDBAdminBundle\Tests\App\DataFixtures\MongoDB;
+namespace IDCT\Adminata\DoctrineMongoDB\Tests\App\DataFixtures\MongoDB;
 
 use Doctrine\Bundle\MongoDBBundle\Fixture\Fixture;
 use Doctrine\Common\DataFixtures\DependentFixtureInterface;
 use Doctrine\Persistence\ObjectManager;
-use Sonata\DoctrineMongoDBAdminBundle\Tests\App\Document\Author;
-use Sonata\DoctrineMongoDBAdminBundle\Tests\App\Document\Book;
-use Sonata\DoctrineMongoDBAdminBundle\Tests\App\Document\Category;
+use IDCT\Adminata\DoctrineMongoDB\Tests\App\Document\Author;
+use IDCT\Adminata\DoctrineMongoDB\Tests\App\Document\Book;
+use IDCT\Adminata\DoctrineMongoDB\Tests\App\Document\Category;
 
 final class BookFixtures extends Fixture implements DependentFixtureInterface
 {

@@ -368,12 +368,12 @@
     "prefer-stable": true,
     "autoload": {
         "psr-4": {
-            "Sonata\\DoctrineMongoDBAdminBundle\\": "src/"
+            "IDCT\\Adminata\\DoctrineMongoDB\\": "src/"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "Sonata\\DoctrineMongoDBAdminBundle\\Tests\\": "tests/"
+            "IDCT\\Adminata\\DoctrineMongoDB\\Tests\\": "tests/"
         }
     },
     "config": {

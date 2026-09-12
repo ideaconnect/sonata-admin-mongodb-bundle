@@ -11,7 +11,7 @@ declare(strict_types=1);
  * file that was distributed with this source code.
  */
 
-namespace Sonata\DoctrineMongoDBAdminBundle\DependencyInjection\Compiler;
+namespace IDCT\Adminata\DoctrineMongoDB\DependencyInjection\Compiler;
 
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
@@ -28,20 +28,20 @@ final class AddGuesserCompilerPass implements CompilerPassInterface
     {
         $this->addGuessersToBuilder(
             $container,
-            'sonata.admin.guesser.doctrine_mongodb_list_chain',
-            'sonata.admin.guesser.doctrine_mongodb_list'
+            'adminata.admin.guesser.doctrine_mongodb_list_chain',
+            'adminata.admin.guesser.doctrine_mongodb_list'
         );
 
         $this->addGuessersToBuilder(
             $container,
-            'sonata.admin.guesser.doctrine_mongodb_datagrid_chain',
-            'sonata.admin.guesser.doctrine_mongodb_datagrid'
+            'adminata.admin.guesser.doctrine_mongodb_datagrid_chain',
+            'adminata.admin.guesser.doctrine_mongodb_datagrid'
         );
 
         $this->addGuessersToBuilder(
             $container,
-            'sonata.admin.guesser.doctrine_mongodb_show_chain',
-            'sonata.admin.guesser.doctrine_mongodb_show'
+            'adminata.admin.guesser.doctrine_mongodb_show_chain',
+            'adminata.admin.guesser.doctrine_mongodb_show'
         );
     }
 

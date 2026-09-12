@@ -11,10 +11,10 @@ declare(strict_types=1);
  * file that was distributed with this source code.
  */
 
-namespace Sonata\DoctrineMongoDBAdminBundle\Tests\DependencyInjection\Compiler;
+namespace IDCT\Adminata\DoctrineMongoDB\Tests\DependencyInjection\Compiler;
 
 use Matthias\SymfonyDependencyInjectionTest\PhpUnit\AbstractCompilerPassTestCase;
-use Sonata\DoctrineMongoDBAdminBundle\DependencyInjection\Compiler\AddTemplatesCompilerPass;
+use IDCT\Adminata\DoctrineMongoDB\DependencyInjection\Compiler\AddTemplatesCompilerPass;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Definition;
 
@@ -24,14 +24,14 @@ final class AddTemplatesCompilerPassTest extends AbstractCompilerPassTestCase
     {
         $adminServiceId = 'admin_id';
         $adminService = new Definition();
-        $adminService->addTag('sonata.admin', ['manager_type' => 'doctrine_mongodb']);
+        $adminService->addTag('adminata.admin', ['manager_type' => 'doctrine_mongodb']);
         $adminService->addMethodCall('setFormTheme', [['foo.html.twig']]);
         $adminService->addMethodCall('setFilterTheme', [['bar.html.twig']]);
         $this->setDefinition($adminServiceId, $adminService);
 
         $adminServiceNotManagedId = 'admin_not_managed_id';
         $adminServiceNotManaged = new Definition();
-        $adminServiceNotManaged->addTag('sonata.admin', ['manager_type' => 'type']);
+        $adminServiceNotManaged->addTag('adminata.admin', ['manager_type' => 'type']);
         $this->setDefinition($adminServiceNotManagedId, $adminServiceNotManaged);
 
         $this->compile();
@@ -40,7 +40,7 @@ final class AddTemplatesCompilerPassTest extends AbstractCompilerPassTestCase
             $adminServiceId,
             'setFormTheme',
             [
-                ['foo.html.twig', '@SonataDoctrineMongoDBAdmin/Form/form_admin_fields.html.twig'],
+                ['foo.html.twig', '@AdminataDoctrineMongoDB/Form/form_admin_fields.html.twig'],
             ]
         );
 
@@ -48,7 +48,7 @@ final class AddTemplatesCompilerPassTest extends AbstractCompilerPassTestCase
             $adminServiceId,
             'setFilterTheme',
             [
-                ['bar.html.twig', '@SonataDoctrineMongoDBAdmin/Form/filter_admin_fields.html.twig'],
+                ['bar.html.twig', '@AdminataDoctrineMongoDB/Form/filter_admin_fields.html.twig'],
             ]
         );
     }
@@ -59,7 +59,7 @@ final class AddTemplatesCompilerPassTest extends AbstractCompilerPassTestCase
         // branch of mergeMethodCall (the merge branch is exercised by testSetThemes).
         $adminServiceId = 'admin_id';
         $adminService = new Definition();
-        $adminService->addTag('sonata.admin', ['manager_type' => 'doctrine_mongodb']);
+        $adminService->addTag('adminata.admin', ['manager_type' => 'doctrine_mongodb']);
         $this->setDefinition($adminServiceId, $adminService);
 
         $this->compile();
@@ -67,12 +67,12 @@ final class AddTemplatesCompilerPassTest extends AbstractCompilerPassTestCase
         $this->assertContainerBuilderHasServiceDefinitionWithMethodCall(
             $adminServiceId,
             'setFormTheme',
-            [['@SonataDoctrineMongoDBAdmin/Form/form_admin_fields.html.twig']],
+            [['@AdminataDoctrineMongoDB/Form/form_admin_fields.html.twig']],
         );
         $this->assertContainerBuilderHasServiceDefinitionWithMethodCall(
             $adminServiceId,
             'setFilterTheme',
-            [['@SonataDoctrineMongoDBAdmin/Form/filter_admin_fields.html.twig']],
+            [['@AdminataDoctrineMongoDB/Form/filter_admin_fields.html.twig']],
         );
     }
 

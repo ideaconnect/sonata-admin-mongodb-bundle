@@ -11,9 +11,9 @@ declare(strict_types=1);
  * file that was distributed with this source code.
  */
 
-namespace Sonata\DoctrineMongoDBAdminBundle\Builder;
+namespace IDCT\Adminata\DoctrineMongoDB\Builder;
 
-use Sonata\AdminBundle\Builder\AbstractFormContractor;
+use IDCT\Adminata\Builder\AbstractFormContractor;
 
 /**
  * Mongo-flavoured form contractor.

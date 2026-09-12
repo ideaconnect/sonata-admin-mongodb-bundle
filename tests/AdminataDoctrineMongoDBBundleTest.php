@@ -11,23 +11,23 @@ declare(strict_types=1);
  * file that was distributed with this source code.
  */
 
-namespace Sonata\DoctrineMongoDBAdminBundle\Tests;
+namespace IDCT\Adminata\DoctrineMongoDB\Tests;
 
 use PHPUnit\Framework\TestCase;
-use Sonata\DoctrineMongoDBAdminBundle\DependencyInjection\Compiler\AddGuesserCompilerPass;
-use Sonata\DoctrineMongoDBAdminBundle\DependencyInjection\Compiler\AddTemplatesCompilerPass;
-use Sonata\DoctrineMongoDBAdminBundle\SonataDoctrineMongoDBAdminBundle;
+use IDCT\Adminata\DoctrineMongoDB\DependencyInjection\Compiler\AddGuesserCompilerPass;
+use IDCT\Adminata\DoctrineMongoDB\DependencyInjection\Compiler\AddTemplatesCompilerPass;
+use IDCT\Adminata\DoctrineMongoDB\AdminataDoctrineMongoDBBundle;
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\Compiler\PassConfig;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 
-final class SonataDoctrineMongoDBAdminBundleTest extends TestCase
+final class AdminataDoctrineMongoDBBundleTest extends TestCase
 {
     public function testBuild(): void
     {
         $containerBuilder = new ContainerBuilder();
 
-        $bundle = new SonataDoctrineMongoDBAdminBundle();
+        $bundle = new AdminataDoctrineMongoDBBundle();
         $bundle->build($containerBuilder);
 
         static::assertNotNull($this->findCompilerPass($containerBuilder, AddGuesserCompilerPass::class));
@@ -41,7 +41,7 @@ final class SonataDoctrineMongoDBAdminBundleTest extends TestCase
         // (-> 0) or decrement (-> -2) mutants would silently re-order the
         // compile pipeline.
         $containerBuilder = new ContainerBuilder();
-        new SonataDoctrineMongoDBAdminBundle()->build($containerBuilder);
+        new AdminataDoctrineMongoDBBundle()->build($containerBuilder);
 
         $passConfig = $containerBuilder->getCompiler()->getPassConfig();
         $buckets = new \ReflectionProperty(PassConfig::class, 'beforeOptimizationPasses')->getValue($passConfig);

@@ -42,12 +42,12 @@ no compatibility layer for them. If your project styles admin screens with
 Bootstrap class names or scripts them with jQuery, that markup stops working
 and has to be ported once.
 
-What does *not* change: the `Sonata\DoctrineMongoDBAdminBundle` namespace, the
-bundle class, the `sonata_doctrine_mongo_db_admin` configuration root and every
+What does *not* change: the `IDCT\Adminata\DoctrineMongoDB` namespace, the
+bundle class, the `adminata_doctrine_mongodb` configuration root and every
 service id. On the PHP side only the imports move, because adminata merged the
 block, exporter, form and Twig packages into its admin bundle —
-`Sonata\Form\Type\` is `Sonata\AdminBundle\Form\Type\`, `Sonata\Exporter\`
-is `Sonata\AdminBundle\Exporter\`, and `SonataBlockBundle`, `SonataFormBundle`
+`IDCT\Adminata\Form\Type\` is `IDCT\Adminata\Form\Type\`, `IDCT\Adminata\Exporter\`
+is `IDCT\Adminata\Exporter\`, and `SonataBlockBundle`, `SonataFormBundle`
 and `SonataTwigBundle` are no longer registered in `config/bundles.php`.
 
 Adminata is not on Packagist yet — it is still in development and this release
@@ -184,7 +184,7 @@ Flex, add it to `config/bundles.php` manually:
 ```php
 return [
     // ...
-    Sonata\DoctrineMongoDBAdminBundle\SonataDoctrineMongoDBAdminBundle::class => ['all' => true],
+    IDCT\Adminata\DoctrineMongoDB\AdminataDoctrineMongoDBBundle::class => ['all' => true],
 ];
 ```
 
@@ -196,7 +196,7 @@ resolve it through this bundle's implementations:
 ```php
 // config/services.php (Symfony 7+ PHP config)
 $services->set(App\Admin\BookAdmin::class)
-    ->tag('sonata.admin', [
+    ->tag('adminata.admin', [
         'manager_type' => 'doctrine_mongodb',
         'model_class'  => App\Document\Book::class,
         'label'        => 'Book',
@@ -209,8 +209,8 @@ The bundle ships sane defaults; the only config tree it owns is per-type
 template overrides for list and show columns:
 
 ```yaml
-# config/packages/sonata_doctrine_mongo_db_admin.yaml
-sonata_doctrine_mongo_db_admin:
+# config/packages/adminata_doctrine_mongodb.yaml
+adminata_doctrine_mongodb:
     templates:
         types:
             list:
@@ -300,7 +300,7 @@ All four must be green before a change can land — see
 
 For the public API and configuration shape, upstream Sonata's documentation
 applies as-is:
-[docs.sonata-project.org/projects/SonataDoctrineMongoDBAdminBundle](https://docs.sonata-project.org/projects/SonataDoctrineMongoDBAdminBundle).
+[docs.sonata-project.org/projects/AdminataDoctrineMongoDBBundle](https://docs.sonata-project.org/projects/AdminataDoctrineMongoDBBundle).
 
 Fork-specific material:
 

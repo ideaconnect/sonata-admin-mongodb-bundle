@@ -11,9 +11,9 @@ declare(strict_types=1);
  * file that was distributed with this source code.
  */
 
-namespace Sonata\DoctrineMongoDBAdminBundle\Datagrid;
+namespace IDCT\Adminata\DoctrineMongoDB\Datagrid;
 
-use Sonata\AdminBundle\Datagrid\Pager as BasePager;
+use IDCT\Adminata\Datagrid\Pager as BasePager;
 
 /**
  * Doctrine pager class.

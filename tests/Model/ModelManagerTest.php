@@ -11,7 +11,7 @@ declare(strict_types=1);
  * file that was distributed with this source code.
  */
 
-namespace Sonata\DoctrineMongoDBAdminBundle\Tests\Model;
+namespace IDCT\Adminata\DoctrineMongoDB\Tests\Model;
 
 use Doctrine\Common\EventManager;
 use Doctrine\ODM\MongoDB\Configuration;
@@ -31,15 +31,15 @@ use MongoDB\Driver\Exception\RuntimeException;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\MockObject\Stub;
 use PHPUnit\Framework\TestCase;
-use Sonata\AdminBundle\Datagrid\ProxyQueryInterface;
-use Sonata\AdminBundle\Exception\ModelManagerException;
-use Sonata\DoctrineMongoDBAdminBundle\Datagrid\ProxyQuery;
-use Sonata\DoctrineMongoDBAdminBundle\Model\ModelManager;
-use Sonata\DoctrineMongoDBAdminBundle\Tests\ClassMetadataAnnotationTrait;
-use Sonata\DoctrineMongoDBAdminBundle\Tests\Fixtures\Document\DocumentWithReferences;
-use Sonata\DoctrineMongoDBAdminBundle\Tests\Fixtures\Document\EmbeddedDocument;
-use Sonata\DoctrineMongoDBAdminBundle\Tests\Fixtures\Document\SimpleDocumentWithPrivateSetter;
-use Sonata\DoctrineMongoDBAdminBundle\Tests\Fixtures\Document\TestDocument;
+use IDCT\Adminata\Datagrid\ProxyQueryInterface;
+use IDCT\Adminata\Exception\ModelManagerException;
+use IDCT\Adminata\DoctrineMongoDB\Datagrid\ProxyQuery;
+use IDCT\Adminata\DoctrineMongoDB\Model\ModelManager;
+use IDCT\Adminata\DoctrineMongoDB\Tests\ClassMetadataAnnotationTrait;
+use IDCT\Adminata\DoctrineMongoDB\Tests\Fixtures\Document\DocumentWithReferences;
+use IDCT\Adminata\DoctrineMongoDB\Tests\Fixtures\Document\EmbeddedDocument;
+use IDCT\Adminata\DoctrineMongoDB\Tests\Fixtures\Document\SimpleDocumentWithPrivateSetter;
+use IDCT\Adminata\DoctrineMongoDB\Tests\Fixtures\Document\TestDocument;
 use Symfony\Bridge\Doctrine\ManagerRegistry;
 use Symfony\Component\PropertyAccess\Exception\NoSuchPropertyException;
 use Symfony\Component\PropertyAccess\PropertyAccess;
@@ -535,7 +535,7 @@ final class ModelManagerTest extends TestCase
             $dm,
             $eventManager,
             sys_get_temp_dir(),
-            'Sonata\DoctrineMongoDBAdminBundle\Tests\Hydrator',
+            'IDCT\Adminata\DoctrineMongoDB\Tests\Hydrator',
             Configuration::AUTOGENERATE_FILE_NOT_EXISTS,
         );
         $dm->method('getUnitOfWork')->willReturn(new UnitOfWork($dm, $eventManager, $hydratorFactory));
@@ -710,21 +710,21 @@ final class ModelManagerTest extends TestCase
     public static function provideFailingBatchDeleteCases(): iterable
     {
         yield [
-            '#^Failed to delete object "Sonata\\\DoctrineMongoDBAdminBundle\\\Tests\\\Fixtures\\\Document\\\DocumentWithReferences"'
+            '#^Failed to delete object "IDCT\\\Adminata\\\DoctrineMongoDB\\\Tests\\\Fixtures\\\Document\\\DocumentWithReferences"'
             .' \(id: [a-z0-9]*\) while performing batch deletion \(20 objects were successfully deleted before this error\)$#',
             array_fill(0, 21, new DocumentWithReferences('test', new EmbeddedDocument())),
             [null, new RuntimeException()],
         ];
 
         yield [
-            '#^Failed to delete object "Sonata\\\DoctrineMongoDBAdminBundle\\\Tests\\\Fixtures\\\Document\\\DocumentWithReferences"'
+            '#^Failed to delete object "IDCT\\\Adminata\\\DoctrineMongoDB\\\Tests\\\Fixtures\\\Document\\\DocumentWithReferences"'
             .' \(id: [a-z0-9]*\) while performing batch deletion$#',
             [new DocumentWithReferences('test', new EmbeddedDocument()), new DocumentWithReferences('test', new EmbeddedDocument())],
             [new RuntimeException()],
         ];
 
         yield [
-            '#^Failed to perform batch deletion for "Sonata\\\DoctrineMongoDBAdminBundle\\\Tests\\\Fixtures\\\Document\\\DocumentWithReferences"'
+            '#^Failed to perform batch deletion for "IDCT\\\Adminata\\\DoctrineMongoDB\\\Tests\\\Fixtures\\\Document\\\DocumentWithReferences"'
             .' objects$#',
             [],
             [new RuntimeException()],
@@ -735,7 +735,7 @@ final class ModelManagerTest extends TestCase
         // flush, confirmedDeletionsCount is still 0 — the message must NOT
         // carry the `(N objects were successfully deleted…)` suffix.
         yield 'exactly one batch, fails on first flush, no confirmed-deletions suffix' => [
-            '#^Failed to delete object "Sonata\\\DoctrineMongoDBAdminBundle\\\Tests\\\Fixtures\\\Document\\\DocumentWithReferences"'
+            '#^Failed to delete object "IDCT\\\Adminata\\\DoctrineMongoDB\\\Tests\\\Fixtures\\\Document\\\DocumentWithReferences"'
             .' \(id: [a-z0-9]*\) while performing batch deletion$#',
             array_fill(0, 20, new DocumentWithReferences('test', new EmbeddedDocument())),
             [new RuntimeException()],
@@ -745,7 +745,7 @@ final class ModelManagerTest extends TestCase
         // Removing `|MongoDBException` would let this case propagate uncaught
         // instead of being wrapped into a ModelManagerException.
         yield 'odm-side MongoDBException is wrapped' => [
-            '#^Failed to perform batch deletion for "Sonata\\\DoctrineMongoDBAdminBundle\\\Tests\\\Fixtures\\\Document\\\DocumentWithReferences"'
+            '#^Failed to perform batch deletion for "IDCT\\\Adminata\\\DoctrineMongoDB\\\Tests\\\Fixtures\\\Document\\\DocumentWithReferences"'
             .' objects$#',
             [],
             [new MongoDBException('odm-side')],
@@ -938,7 +938,7 @@ final class ModelManagerTest extends TestCase
             $dm,
             $eventManager,
             sys_get_temp_dir(),
-            'Sonata\DoctrineMongoDBAdminBundle\Tests\Hydrator',
+            'IDCT\Adminata\DoctrineMongoDB\Tests\Hydrator',
             Configuration::AUTOGENERATE_FILE_NOT_EXISTS
         );
         $uow = new UnitOfWork($dm, $eventManager, $hydratorFactory);

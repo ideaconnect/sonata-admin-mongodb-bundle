@@ -11,12 +11,12 @@ declare(strict_types=1);
  * file that was distributed with this source code.
  */
 
-namespace Sonata\DoctrineMongoDBAdminBundle\Filter;
+namespace IDCT\Adminata\DoctrineMongoDB\Filter;
 
-use Sonata\AdminBundle\Datagrid\ProxyQueryInterface as BaseProxyQueryInterface;
-use Sonata\AdminBundle\Filter\Filter as BaseFilter;
-use Sonata\AdminBundle\Filter\Model\FilterData;
-use Sonata\DoctrineMongoDBAdminBundle\Datagrid\ProxyQueryInterface;
+use IDCT\Adminata\Datagrid\ProxyQueryInterface as BaseProxyQueryInterface;
+use IDCT\Adminata\Filter\Filter as BaseFilter;
+use IDCT\Adminata\Filter\Model\FilterData;
+use IDCT\Adminata\DoctrineMongoDB\Datagrid\ProxyQueryInterface;
 
 abstract class Filter extends BaseFilter
 {

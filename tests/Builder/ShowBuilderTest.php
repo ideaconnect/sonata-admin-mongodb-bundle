@@ -11,18 +11,18 @@ declare(strict_types=1);
  * file that was distributed with this source code.
  */
 
-namespace Sonata\DoctrineMongoDBAdminBundle\Tests\Builder;
+namespace IDCT\Adminata\DoctrineMongoDB\Tests\Builder;
 
 use Doctrine\ODM\MongoDB\Mapping\ClassMetadata;
 use PHPUnit\Framework\MockObject\Stub;
 use PHPUnit\Framework\TestCase;
-use Sonata\AdminBundle\Admin\AdminInterface;
-use Sonata\AdminBundle\FieldDescription\FieldDescriptionCollection;
-use Sonata\AdminBundle\FieldDescription\FieldDescriptionInterface;
-use Sonata\AdminBundle\FieldDescription\TypeGuesserInterface;
-use Sonata\DoctrineMongoDBAdminBundle\Builder\ShowBuilder;
-use Sonata\DoctrineMongoDBAdminBundle\FieldDescription\FieldDescription;
-use Sonata\DoctrineMongoDBAdminBundle\Tests\ClassMetadataAnnotationTrait;
+use IDCT\Adminata\Admin\AdminInterface;
+use IDCT\Adminata\FieldDescription\FieldDescriptionCollection;
+use IDCT\Adminata\FieldDescription\FieldDescriptionInterface;
+use IDCT\Adminata\FieldDescription\TypeGuesserInterface;
+use IDCT\Adminata\DoctrineMongoDB\Builder\ShowBuilder;
+use IDCT\Adminata\DoctrineMongoDB\FieldDescription\FieldDescription;
+use IDCT\Adminata\DoctrineMongoDB\Tests\ClassMetadataAnnotationTrait;
 use Symfony\Component\Form\Guess\TypeGuess;
 
 final class ShowBuilderTest extends TestCase
@@ -44,7 +44,7 @@ final class ShowBuilderTest extends TestCase
             $this->guesser,
             [
                 'fakeTemplate' => 'fake',
-                FieldDescriptionInterface::TYPE_MANY_TO_ONE => '@SonataAdmin/CRUD/Association/show_many_to_one.html.twig',
+                FieldDescriptionInterface::TYPE_MANY_TO_ONE => '@Adminata/CRUD/Association/show_many_to_one.html.twig',
             ]
         );
     }
@@ -129,7 +129,7 @@ final class ShowBuilderTest extends TestCase
 
         static::assertSame('FakeName', $fieldDescription->getOption('label'));
         static::assertSame(
-            '@SonataAdmin/CRUD/Association/show_many_to_one.html.twig',
+            '@Adminata/CRUD/Association/show_many_to_one.html.twig',
             $fieldDescription->getTemplate(),
         );
     }

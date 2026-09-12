@@ -11,14 +11,14 @@ declare(strict_types=1);
  * file that was distributed with this source code.
  */
 
-namespace Sonata\DoctrineMongoDBAdminBundle\Tests\FieldDescription;
+namespace IDCT\Adminata\DoctrineMongoDB\Tests\FieldDescription;
 
 use Doctrine\ODM\MongoDB\DocumentManager;
 use Doctrine\ODM\MongoDB\Mapping\ClassMetadata;
 use Doctrine\ODM\MongoDB\Types\Type;
 use Doctrine\Persistence\ManagerRegistry;
-use Sonata\DoctrineMongoDBAdminBundle\FieldDescription\FieldDescriptionFactory;
-use Sonata\DoctrineMongoDBAdminBundle\Tests\Fixtures\Document\ContainerDocument;
+use IDCT\Adminata\DoctrineMongoDB\FieldDescription\FieldDescriptionFactory;
+use IDCT\Adminata\DoctrineMongoDB\Tests\Fixtures\Document\ContainerDocument;
 
 final class FieldDescriptionFactoryTest extends RegistryTestCase
 {

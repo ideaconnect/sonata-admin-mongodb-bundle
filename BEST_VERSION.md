@@ -194,7 +194,7 @@ Same shape repeats four times in that method. The cleanup is purely readability 
 [tests/App/AppKernel.php:95-98](tests/App/AppKernel.php#L95-L98)
 
 ```php
-return sys_get_temp_dir().'/sonata-doctrine-mongodb-admin-bundle/var/';
+return sys_get_temp_dir().'/adminata-doctrine-mongodb-admin-bundle/var/';
 ```
 
 Predictable shared path — parallel CI workers (e.g. ParaTest) trample each other's caches. Include the PID or test token, or move the directory to `bin/.cache/{env}`.

@@ -13,12 +13,12 @@ declare(strict_types=1);
 
 namespace Symfony\Component\DependencyInjection\Loader\Configurator;
 
-use Sonata\DoctrineMongoDBAdminBundle\Util\ObjectAclManipulator;
+use IDCT\Adminata\DoctrineMongoDB\Util\ObjectAclManipulator;
 
 return static function (ContainerConfigurator $containerConfigurator): void {
     $containerConfigurator->services()
 
-        ->set('sonata.admin.manipulator.acl.object.doctrine_mongodb', ObjectAclManipulator::class)
+        ->set('adminata.admin.manipulator.acl.object.doctrine_mongodb', ObjectAclManipulator::class)
             ->args([
                 service('doctrine_mongodb'),
             ]);

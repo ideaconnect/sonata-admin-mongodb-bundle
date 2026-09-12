@@ -11,10 +11,10 @@ declare(strict_types=1);
  * file that was distributed with this source code.
  */
 
-namespace Sonata\DoctrineMongoDBAdminBundle\FieldDescription;
+namespace IDCT\Adminata\DoctrineMongoDB\FieldDescription;
 
 use Doctrine\ODM\MongoDB\Mapping\ClassMetadata;
-use Sonata\AdminBundle\FieldDescription\BaseFieldDescription;
+use IDCT\Adminata\FieldDescription\BaseFieldDescription;
 
 final class FieldDescription extends BaseFieldDescription
 {

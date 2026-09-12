@@ -11,14 +11,14 @@ declare(strict_types=1);
  * file that was distributed with this source code.
  */
 
-namespace Sonata\DoctrineMongoDBAdminBundle\Tests\FieldDescription;
+namespace IDCT\Adminata\DoctrineMongoDB\Tests\FieldDescription;
 
 use Doctrine\ODM\MongoDB\Mapping\ClassMetadata;
 use Doctrine\ODM\MongoDB\Types\Type;
 use PHPUnit\Framework\Attributes\DataProvider;
-use Sonata\AdminBundle\FieldDescription\FieldDescriptionInterface;
-use Sonata\DoctrineMongoDBAdminBundle\FieldDescription\TypeGuesser;
-use Sonata\DoctrineMongoDBAdminBundle\Tests\AbstractModelManagerTestCase;
+use IDCT\Adminata\FieldDescription\FieldDescriptionInterface;
+use IDCT\Adminata\DoctrineMongoDB\FieldDescription\TypeGuesser;
+use IDCT\Adminata\DoctrineMongoDB\Tests\AbstractModelManagerTestCase;
 use Symfony\Component\Form\Guess\Guess;
 
 /**

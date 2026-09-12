@@ -11,9 +11,9 @@ declare(strict_types=1);
  * file that was distributed with this source code.
  */
 
-namespace Sonata\DoctrineMongoDBAdminBundle\Filter;
+namespace IDCT\Adminata\DoctrineMongoDB\Filter;
 
-use Sonata\AdminBundle\Form\Type\DateTimeRangeType;
+use IDCT\Adminata\Form\Type\DateTimeRangeType;
 
 final class DateTimeRangeFilter extends AbstractDateFilter
 {

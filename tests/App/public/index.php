@@ -11,7 +11,7 @@ declare(strict_types=1);
  * file that was distributed with this source code.
  */
 
-use Sonata\DoctrineMongoDBAdminBundle\Tests\App\AppKernel;
+use IDCT\Adminata\DoctrineMongoDB\Tests\App\AppKernel;
 use Symfony\Component\HttpFoundation\Request;
 
 require __DIR__.'/../../../vendor/autoload.php';

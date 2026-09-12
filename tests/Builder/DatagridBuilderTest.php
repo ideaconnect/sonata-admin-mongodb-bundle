@@ -11,26 +11,26 @@ declare(strict_types=1);
  * file that was distributed with this source code.
  */
 
-namespace Sonata\DoctrineMongoDBAdminBundle\Tests\Builder;
+namespace IDCT\Adminata\DoctrineMongoDB\Tests\Builder;
 
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\MockObject\Stub;
 use PHPUnit\Framework\TestCase;
-use Sonata\AdminBundle\Admin\AdminInterface;
-use Sonata\AdminBundle\Datagrid\Datagrid;
-use Sonata\AdminBundle\Datagrid\DatagridInterface;
-use Sonata\AdminBundle\Datagrid\Pager;
-use Sonata\AdminBundle\Datagrid\SimplePager;
-use Sonata\AdminBundle\FieldDescription\FieldDescriptionCollection;
-use Sonata\AdminBundle\FieldDescription\TypeGuesserInterface;
-use Sonata\AdminBundle\Filter\FilterFactoryInterface;
-use Sonata\AdminBundle\Translator\FormLabelTranslatorStrategy;
-use Sonata\DoctrineMongoDBAdminBundle\Builder\DatagridBuilder;
-use Sonata\DoctrineMongoDBAdminBundle\Datagrid\ProxyQueryInterface;
-use Sonata\DoctrineMongoDBAdminBundle\FieldDescription\FieldDescription;
-use Sonata\DoctrineMongoDBAdminBundle\Filter\ModelFilter;
-use Sonata\DoctrineMongoDBAdminBundle\Tests\ClassMetadataAnnotationTrait;
-use Sonata\DoctrineMongoDBAdminBundle\Tests\Fixtures\Document\DocumentWithReferences;
+use IDCT\Adminata\Admin\AdminInterface;
+use IDCT\Adminata\Datagrid\Datagrid;
+use IDCT\Adminata\Datagrid\DatagridInterface;
+use IDCT\Adminata\Datagrid\Pager;
+use IDCT\Adminata\Datagrid\SimplePager;
+use IDCT\Adminata\FieldDescription\FieldDescriptionCollection;
+use IDCT\Adminata\FieldDescription\TypeGuesserInterface;
+use IDCT\Adminata\Filter\FilterFactoryInterface;
+use IDCT\Adminata\Translator\FormLabelTranslatorStrategy;
+use IDCT\Adminata\DoctrineMongoDB\Builder\DatagridBuilder;
+use IDCT\Adminata\DoctrineMongoDB\Datagrid\ProxyQueryInterface;
+use IDCT\Adminata\DoctrineMongoDB\FieldDescription\FieldDescription;
+use IDCT\Adminata\DoctrineMongoDB\Filter\ModelFilter;
+use IDCT\Adminata\DoctrineMongoDB\Tests\ClassMetadataAnnotationTrait;
+use IDCT\Adminata\DoctrineMongoDB\Tests\Fixtures\Document\DocumentWithReferences;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormFactoryInterface;
 use Symfony\Component\Form\Guess\Guess;
@@ -271,7 +271,7 @@ final class DatagridBuilderTest extends TestCase
         $admin->method('getPagerType')->willReturn(Pager::TYPE_DEFAULT);
         // Return a foreign ProxyQueryInterface, not ours — TypeError expected.
         $admin->method('createQuery')->willReturn(
-            static::createStub(\Sonata\AdminBundle\Datagrid\ProxyQueryInterface::class),
+            static::createStub(\IDCT\Adminata\Datagrid\ProxyQueryInterface::class),
         );
         $this->formFactory
             ->method('createNamedBuilder')

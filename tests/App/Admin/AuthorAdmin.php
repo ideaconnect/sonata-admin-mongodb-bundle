@@ -11,15 +11,15 @@ declare(strict_types=1);
  * file that was distributed with this source code.
  */
 
-namespace Sonata\DoctrineMongoDBAdminBundle\Tests\App\Admin;
+namespace IDCT\Adminata\DoctrineMongoDB\Tests\App\Admin;
 
-use Sonata\AdminBundle\Admin\AbstractAdmin;
-use Sonata\AdminBundle\Datagrid\DatagridMapper;
-use Sonata\AdminBundle\Datagrid\ListMapper;
-use Sonata\AdminBundle\Form\FormMapper;
-use Sonata\AdminBundle\Form\Type\AdminType;
-use Sonata\AdminBundle\Form\Type\CollectionType;
-use Sonata\DoctrineMongoDBAdminBundle\Tests\App\Document\Author;
+use IDCT\Adminata\Admin\AbstractAdmin;
+use IDCT\Adminata\Datagrid\DatagridMapper;
+use IDCT\Adminata\Datagrid\ListMapper;
+use IDCT\Adminata\Form\FormMapper;
+use IDCT\Adminata\Form\Type\AdminType;
+use IDCT\Adminata\Form\Type\CollectionType;
+use IDCT\Adminata\DoctrineMongoDB\Tests\App\Document\Author;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 
 /**

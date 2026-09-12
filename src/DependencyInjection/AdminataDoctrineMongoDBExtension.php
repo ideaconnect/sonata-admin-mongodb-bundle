@@ -11,9 +11,9 @@ declare(strict_types=1);
  * file that was distributed with this source code.
  */
 
-namespace Sonata\DoctrineMongoDBAdminBundle\DependencyInjection;
+namespace IDCT\Adminata\DoctrineMongoDB\DependencyInjection;
 
-use Sonata\AdminBundle\DependencyInjection\AbstractSonataAdminExtension;
+use IDCT\Adminata\DependencyInjection\AbstractAdminataExtension;
 use Symfony\Component\Config\Definition\Processor;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
@@ -23,7 +23,7 @@ use Symfony\Component\DependencyInjection\Loader\PhpFileLoader;
  * @author Thomas Rabaix <thomas.rabaix@sonata-project.org>
  * @author Michael Williams <michael.williams@funsational.com>
  */
-final class SonataDoctrineMongoDBAdminExtension extends AbstractSonataAdminExtension
+final class AdminataDoctrineMongoDBExtension extends AbstractAdminataExtension
 {
     public function load(array $configs, ContainerBuilder $container): void
     {
@@ -38,13 +38,13 @@ final class SonataDoctrineMongoDBAdminExtension extends AbstractSonataAdminExten
         $processor = new Processor();
         $config = $processor->processConfiguration($configuration, $configs);
 
-        $container->setParameter('sonata_doctrine_mongodb_admin.templates', $config['templates']);
+        $container->setParameter('adminata_doctrine_mongodb_admin.templates', $config['templates']);
 
         // define the templates
-        $container->getDefinition('sonata.admin.builder.doctrine_mongodb_list')
+        $container->getDefinition('adminata.admin.builder.doctrine_mongodb_list')
             ->replaceArgument(1, $config['templates']['types']['list']);
 
-        $container->getDefinition('sonata.admin.builder.doctrine_mongodb_show')
+        $container->getDefinition('adminata.admin.builder.doctrine_mongodb_show')
             ->replaceArgument(1, $config['templates']['types']['show']);
     }
 }
