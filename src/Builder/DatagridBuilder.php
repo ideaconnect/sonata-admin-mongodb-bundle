@@ -20,11 +20,11 @@ use IDCT\Adminata\Datagrid\DatagridInterface;
 use IDCT\Adminata\Datagrid\Pager as AdminPager;
 use IDCT\Adminata\Datagrid\PagerInterface;
 use IDCT\Adminata\Datagrid\SimplePager;
+use IDCT\Adminata\DoctrineMongoDB\Datagrid\Pager;
+use IDCT\Adminata\DoctrineMongoDB\Datagrid\ProxyQueryInterface;
 use IDCT\Adminata\FieldDescription\FieldDescriptionInterface;
 use IDCT\Adminata\FieldDescription\TypeGuesserInterface;
 use IDCT\Adminata\Filter\FilterFactoryInterface;
-use IDCT\Adminata\DoctrineMongoDB\Datagrid\Pager;
-use IDCT\Adminata\DoctrineMongoDB\Datagrid\ProxyQueryInterface;
 use Symfony\Component\Form\Extension\Core\Type\FormType;
 use Symfony\Component\Form\FormFactoryInterface;
 

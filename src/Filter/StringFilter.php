@@ -14,12 +14,12 @@ declare(strict_types=1);
 namespace IDCT\Adminata\DoctrineMongoDB\Filter;
 
 use Doctrine\ODM\MongoDB\Query\Expr;
-use MongoDB\BSON\Regex;
+use IDCT\Adminata\DoctrineMongoDB\Datagrid\ProxyQueryInterface;
 use IDCT\Adminata\Filter\Model\FilterData;
 use IDCT\Adminata\Form\Type\Operator\ContainsOperatorType;
 use IDCT\Adminata\Form\Type\Operator\StringOperatorType;
 use IDCT\Adminata\Search\SearchableFilterInterface;
-use IDCT\Adminata\DoctrineMongoDB\Datagrid\ProxyQueryInterface;
+use MongoDB\BSON\Regex;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 
 final class StringFilter extends Filter implements SearchableFilterInterface

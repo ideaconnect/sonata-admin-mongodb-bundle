@@ -13,8 +13,8 @@ declare(strict_types=1);
 
 namespace IDCT\Adminata\DoctrineMongoDB\Tests\DependencyInjection\Compiler;
 
-use Matthias\SymfonyDependencyInjectionTest\PhpUnit\AbstractCompilerPassTestCase;
 use IDCT\Adminata\DoctrineMongoDB\DependencyInjection\Compiler\AddTemplatesCompilerPass;
+use Matthias\SymfonyDependencyInjectionTest\PhpUnit\AbstractCompilerPassTestCase;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Definition;
 

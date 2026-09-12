@@ -16,10 +16,10 @@ namespace IDCT\Adminata\DoctrineMongoDB\Tests\App\Admin;
 use IDCT\Adminata\Admin\AbstractAdmin;
 use IDCT\Adminata\Datagrid\DatagridMapper;
 use IDCT\Adminata\Datagrid\ListMapper;
+use IDCT\Adminata\DoctrineMongoDB\Tests\App\Document\Author;
 use IDCT\Adminata\Form\FormMapper;
 use IDCT\Adminata\Form\Type\AdminType;
 use IDCT\Adminata\Form\Type\CollectionType;
-use IDCT\Adminata\DoctrineMongoDB\Tests\App\Document\Author;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 
 /**

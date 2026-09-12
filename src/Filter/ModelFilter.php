@@ -16,11 +16,11 @@ namespace IDCT\Adminata\DoctrineMongoDB\Filter;
 use Doctrine\Bundle\MongoDBBundle\Form\Type\DocumentType;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ODM\MongoDB\Mapping\ClassMetadata;
-use MongoDB\BSON\ObjectId;
-use MongoDB\Driver\Exception\InvalidArgumentException;
+use IDCT\Adminata\DoctrineMongoDB\Datagrid\ProxyQueryInterface;
 use IDCT\Adminata\Filter\Model\FilterData;
 use IDCT\Adminata\Form\Type\Operator\EqualOperatorType;
-use IDCT\Adminata\DoctrineMongoDB\Datagrid\ProxyQueryInterface;
+use MongoDB\BSON\ObjectId;
+use MongoDB\Driver\Exception\InvalidArgumentException;
 
 final class ModelFilter extends Filter
 {

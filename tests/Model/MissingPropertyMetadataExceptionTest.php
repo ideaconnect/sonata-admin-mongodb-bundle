@@ -13,8 +13,8 @@ declare(strict_types=1);
 
 namespace IDCT\Adminata\DoctrineMongoDB\Tests\Model;
 
-use PHPUnit\Framework\TestCase;
 use IDCT\Adminata\DoctrineMongoDB\Model\MissingPropertyMetadataException;
+use PHPUnit\Framework\TestCase;
 
 final class MissingPropertyMetadataExceptionTest extends TestCase
 {

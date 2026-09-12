@@ -16,13 +16,13 @@ namespace IDCT\Adminata\DoctrineMongoDB\Tests\Filter;
 use Doctrine\Bundle\MongoDBBundle\Form\Type\DocumentType;
 use Doctrine\ODM\MongoDB\Mapping\ClassMetadata;
 use Doctrine\ODM\MongoDB\Query\Builder;
+use IDCT\Adminata\DoctrineMongoDB\Datagrid\ProxyQuery;
+use IDCT\Adminata\DoctrineMongoDB\Filter\ModelFilter;
+use IDCT\Adminata\Filter\Model\FilterData;
+use IDCT\Adminata\Form\Type\Operator\EqualOperatorType;
 use MongoDB\BSON\ObjectId;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
-use IDCT\Adminata\Filter\Model\FilterData;
-use IDCT\Adminata\Form\Type\Operator\EqualOperatorType;
-use IDCT\Adminata\DoctrineMongoDB\Datagrid\ProxyQuery;
-use IDCT\Adminata\DoctrineMongoDB\Filter\ModelFilter;
 
 /**
  * @psalm-suppress ClassMustBeFinal

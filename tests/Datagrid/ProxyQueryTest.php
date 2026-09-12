@@ -17,10 +17,10 @@ use Doctrine\ODM\MongoDB\Configuration;
 use Doctrine\ODM\MongoDB\DocumentManager;
 use Doctrine\ODM\MongoDB\Mapping\Driver\AttributeDriver;
 use Doctrine\ODM\MongoDB\Query\Builder;
-use PHPUnit\Framework\TestCase;
 use IDCT\Adminata\DoctrineMongoDB\Datagrid\ProxyQuery;
 use IDCT\Adminata\DoctrineMongoDB\Tests\Fixtures\Document\DocumentWithReferences;
 use IDCT\Adminata\DoctrineMongoDB\Tests\Fixtures\Document\EmbeddedDocument;
+use PHPUnit\Framework\TestCase;
 
 final class ProxyQueryTest extends TestCase
 {

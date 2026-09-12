@@ -14,9 +14,9 @@ declare(strict_types=1);
 namespace IDCT\Adminata\DoctrineMongoDB\Tests;
 
 use Doctrine\ODM\MongoDB\DocumentManager;
+use IDCT\Adminata\DoctrineMongoDB\Model\ModelManager;
 use PHPUnit\Framework\MockObject\Stub;
 use PHPUnit\Framework\TestCase;
-use IDCT\Adminata\DoctrineMongoDB\Model\ModelManager;
 use Symfony\Bridge\Doctrine\ManagerRegistry;
 use Symfony\Component\PropertyAccess\PropertyAccess;
 

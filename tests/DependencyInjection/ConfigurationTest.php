@@ -13,9 +13,9 @@ declare(strict_types=1);
 
 namespace IDCT\Adminata\DoctrineMongoDB\Tests\DependencyInjection;
 
+use IDCT\Adminata\DoctrineMongoDB\DependencyInjection\Configuration;
 use Matthias\SymfonyConfigTest\PhpUnit\ConfigurationTestCaseTrait;
 use PHPUnit\Framework\TestCase;
-use IDCT\Adminata\DoctrineMongoDB\DependencyInjection\Configuration;
 
 final class ConfigurationTest extends TestCase
 {

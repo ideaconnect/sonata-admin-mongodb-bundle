@@ -13,11 +13,11 @@ declare(strict_types=1);
 
 namespace IDCT\Adminata\DoctrineMongoDB\Tests\Filter;
 
-use PHPUnit\Framework\Attributes\DataProvider;
-use IDCT\Adminata\Filter\Model\FilterData;
-use IDCT\Adminata\Form\Type\Operator\NumberOperatorType;
 use IDCT\Adminata\DoctrineMongoDB\Datagrid\ProxyQuery;
 use IDCT\Adminata\DoctrineMongoDB\Filter\NumberFilter;
+use IDCT\Adminata\Filter\Model\FilterData;
+use IDCT\Adminata\Form\Type\Operator\NumberOperatorType;
+use PHPUnit\Framework\Attributes\DataProvider;
 use Symfony\Component\Form\Extension\Core\Type\NumberType;
 
 final class NumberFilterTest extends FilterWithQueryBuilderTestCase

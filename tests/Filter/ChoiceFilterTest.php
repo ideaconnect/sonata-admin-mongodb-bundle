@@ -13,12 +13,12 @@ declare(strict_types=1);
 
 namespace IDCT\Adminata\DoctrineMongoDB\Tests\Filter;
 
-use PHPUnit\Framework\Attributes\DataProvider;
+use IDCT\Adminata\DoctrineMongoDB\Datagrid\ProxyQuery;
+use IDCT\Adminata\DoctrineMongoDB\Filter\ChoiceFilter;
 use IDCT\Adminata\Filter\Model\FilterData;
 use IDCT\Adminata\Form\Type\Operator\ContainsOperatorType;
 use IDCT\Adminata\Form\Type\Operator\EqualOperatorType;
-use IDCT\Adminata\DoctrineMongoDB\Datagrid\ProxyQuery;
-use IDCT\Adminata\DoctrineMongoDB\Filter\ChoiceFilter;
+use PHPUnit\Framework\Attributes\DataProvider;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 
 final class ChoiceFilterTest extends FilterWithQueryBuilderTestCase

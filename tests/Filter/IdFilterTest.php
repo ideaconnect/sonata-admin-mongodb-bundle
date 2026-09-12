@@ -13,12 +13,12 @@ declare(strict_types=1);
 
 namespace IDCT\Adminata\DoctrineMongoDB\Tests\Filter;
 
-use MongoDB\BSON\ObjectId;
-use PHPUnit\Framework\Attributes\DataProvider;
-use IDCT\Adminata\Filter\Model\FilterData;
-use IDCT\Adminata\Form\Type\Operator\EqualOperatorType;
 use IDCT\Adminata\DoctrineMongoDB\Datagrid\ProxyQuery;
 use IDCT\Adminata\DoctrineMongoDB\Filter\IdFilter;
+use IDCT\Adminata\Filter\Model\FilterData;
+use IDCT\Adminata\Form\Type\Operator\EqualOperatorType;
+use MongoDB\BSON\ObjectId;
+use PHPUnit\Framework\Attributes\DataProvider;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 
 final class IdFilterTest extends FilterWithQueryBuilderTestCase

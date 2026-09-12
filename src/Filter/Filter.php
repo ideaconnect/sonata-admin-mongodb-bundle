@@ -14,9 +14,9 @@ declare(strict_types=1);
 namespace IDCT\Adminata\DoctrineMongoDB\Filter;
 
 use IDCT\Adminata\Datagrid\ProxyQueryInterface as BaseProxyQueryInterface;
+use IDCT\Adminata\DoctrineMongoDB\Datagrid\ProxyQueryInterface;
 use IDCT\Adminata\Filter\Filter as BaseFilter;
 use IDCT\Adminata\Filter\Model\FilterData;
-use IDCT\Adminata\DoctrineMongoDB\Datagrid\ProxyQueryInterface;
 
 abstract class Filter extends BaseFilter
 {

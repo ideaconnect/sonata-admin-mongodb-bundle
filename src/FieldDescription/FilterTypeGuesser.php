@@ -15,8 +15,6 @@ namespace IDCT\Adminata\DoctrineMongoDB\FieldDescription;
 
 use Doctrine\ODM\MongoDB\Mapping\ClassMetadata;
 use Doctrine\ODM\MongoDB\Types\Type;
-use IDCT\Adminata\FieldDescription\FieldDescriptionInterface;
-use IDCT\Adminata\FieldDescription\TypeGuesserInterface;
 use IDCT\Adminata\DoctrineMongoDB\Filter\BooleanFilter;
 use IDCT\Adminata\DoctrineMongoDB\Filter\DateFilter;
 use IDCT\Adminata\DoctrineMongoDB\Filter\DateTimeFilter;
@@ -25,6 +23,8 @@ use IDCT\Adminata\DoctrineMongoDB\Filter\ModelFilter;
 use IDCT\Adminata\DoctrineMongoDB\Filter\NumberFilter;
 use IDCT\Adminata\DoctrineMongoDB\Filter\StringFilter;
 use IDCT\Adminata\DoctrineMongoDB\Model\MissingPropertyMetadataException;
+use IDCT\Adminata\FieldDescription\FieldDescriptionInterface;
+use IDCT\Adminata\FieldDescription\TypeGuesserInterface;
 use Symfony\Component\Form\Guess\Guess;
 use Symfony\Component\Form\Guess\TypeGuess;
 

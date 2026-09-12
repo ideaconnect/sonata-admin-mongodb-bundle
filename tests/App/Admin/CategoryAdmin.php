@@ -16,10 +16,10 @@ namespace IDCT\Adminata\DoctrineMongoDB\Tests\App\Admin;
 use IDCT\Adminata\Admin\AbstractAdmin;
 use IDCT\Adminata\Datagrid\DatagridMapper;
 use IDCT\Adminata\Datagrid\ListMapper;
-use IDCT\Adminata\Form\FormMapper;
-use IDCT\Adminata\Show\ShowMapper;
 use IDCT\Adminata\DoctrineMongoDB\Filter\ChoiceFilter;
 use IDCT\Adminata\DoctrineMongoDB\Tests\App\Document\Category;
+use IDCT\Adminata\Form\FormMapper;
+use IDCT\Adminata\Show\ShowMapper;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 

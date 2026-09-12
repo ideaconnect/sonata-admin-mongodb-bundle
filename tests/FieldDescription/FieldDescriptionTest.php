@@ -13,8 +13,8 @@ declare(strict_types=1);
 
 namespace IDCT\Adminata\DoctrineMongoDB\Tests\FieldDescription;
 
-use PHPUnit\Framework\TestCase;
 use IDCT\Adminata\DoctrineMongoDB\FieldDescription\FieldDescription;
+use PHPUnit\Framework\TestCase;
 
 final class FieldDescriptionTest extends TestCase
 {

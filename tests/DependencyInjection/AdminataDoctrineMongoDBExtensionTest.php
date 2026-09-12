@@ -13,8 +13,8 @@ declare(strict_types=1);
 
 namespace IDCT\Adminata\DoctrineMongoDB\Tests\DependencyInjection;
 
-use Matthias\SymfonyDependencyInjectionTest\PhpUnit\AbstractExtensionTestCase;
 use IDCT\Adminata\DoctrineMongoDB\DependencyInjection\AdminataDoctrineMongoDBExtension;
+use Matthias\SymfonyDependencyInjectionTest\PhpUnit\AbstractExtensionTestCase;
 use Symfony\Component\DependencyInjection\Reference;
 
 final class AdminataDoctrineMongoDBExtensionTest extends AbstractExtensionTestCase

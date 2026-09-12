@@ -19,12 +19,12 @@ use Doctrine\ODM\MongoDB\Mapping\ClassMetadata;
 use Doctrine\ODM\MongoDB\Mapping\Driver\AttributeDriver;
 use Doctrine\ODM\MongoDB\Query\Builder;
 use Doctrine\ODM\MongoDB\Query\Query;
-use MongoDB\Collection;
-use PHPUnit\Framework\TestCase;
 use IDCT\Adminata\Datagrid\ProxyQueryInterface;
 use IDCT\Adminata\DoctrineMongoDB\Datagrid\ProxyQuery;
 use IDCT\Adminata\DoctrineMongoDB\Exporter\DataSource;
 use IDCT\Adminata\DoctrineMongoDB\Tests\Fixtures\Document\DocumentWithReferences;
+use MongoDB\Collection;
+use PHPUnit\Framework\TestCase;
 
 final class DataSourceTest extends TestCase
 {

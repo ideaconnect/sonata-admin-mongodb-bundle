@@ -13,7 +13,6 @@ declare(strict_types=1);
 
 namespace Symfony\Component\DependencyInjection\Loader\Configurator;
 
-use IDCT\Adminata\FieldDescription\TypeGuesserChain;
 use IDCT\Adminata\DoctrineMongoDB\Builder\DatagridBuilder;
 use IDCT\Adminata\DoctrineMongoDB\Builder\FormContractor;
 use IDCT\Adminata\DoctrineMongoDB\Builder\ListBuilder;
@@ -23,6 +22,7 @@ use IDCT\Adminata\DoctrineMongoDB\FieldDescription\FieldDescriptionFactory;
 use IDCT\Adminata\DoctrineMongoDB\FieldDescription\FilterTypeGuesser;
 use IDCT\Adminata\DoctrineMongoDB\FieldDescription\TypeGuesser;
 use IDCT\Adminata\DoctrineMongoDB\Model\ModelManager;
+use IDCT\Adminata\FieldDescription\TypeGuesserChain;
 
 return static function (ContainerConfigurator $containerConfigurator): void {
     $containerConfigurator->services()

@@ -14,15 +14,15 @@ declare(strict_types=1);
 namespace IDCT\Adminata\DoctrineMongoDB\Tests\Builder;
 
 use Doctrine\ODM\MongoDB\Mapping\ClassMetadata;
-use PHPUnit\Framework\MockObject\Stub;
-use PHPUnit\Framework\TestCase;
 use IDCT\Adminata\Admin\AdminInterface;
-use IDCT\Adminata\FieldDescription\FieldDescriptionCollection;
-use IDCT\Adminata\FieldDescription\FieldDescriptionInterface;
-use IDCT\Adminata\FieldDescription\TypeGuesserInterface;
 use IDCT\Adminata\DoctrineMongoDB\Builder\ShowBuilder;
 use IDCT\Adminata\DoctrineMongoDB\FieldDescription\FieldDescription;
 use IDCT\Adminata\DoctrineMongoDB\Tests\ClassMetadataAnnotationTrait;
+use IDCT\Adminata\FieldDescription\FieldDescriptionCollection;
+use IDCT\Adminata\FieldDescription\FieldDescriptionInterface;
+use IDCT\Adminata\FieldDescription\TypeGuesserInterface;
+use PHPUnit\Framework\MockObject\Stub;
+use PHPUnit\Framework\TestCase;
 use Symfony\Component\Form\Guess\TypeGuess;
 
 final class ShowBuilderTest extends TestCase

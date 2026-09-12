@@ -16,10 +16,10 @@ namespace IDCT\Adminata\DoctrineMongoDB\Tests\Datagrid;
 use Doctrine\ODM\MongoDB\Configuration;
 use Doctrine\ODM\MongoDB\DocumentManager;
 use Doctrine\ODM\MongoDB\Mapping\Driver\AttributeDriver;
-use PHPUnit\Framework\TestCase;
 use IDCT\Adminata\DoctrineMongoDB\Datagrid\Pager;
 use IDCT\Adminata\DoctrineMongoDB\Datagrid\ProxyQuery;
 use IDCT\Adminata\DoctrineMongoDB\Tests\Fixtures\Document\DocumentWithReferences;
+use PHPUnit\Framework\TestCase;
 
 final class PagerTest extends TestCase
 {

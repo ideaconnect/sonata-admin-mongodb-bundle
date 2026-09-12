@@ -13,9 +13,9 @@ declare(strict_types=1);
 
 namespace IDCT\Adminata\DoctrineMongoDB\Filter;
 
+use IDCT\Adminata\DoctrineMongoDB\Datagrid\ProxyQueryInterface;
 use IDCT\Adminata\Filter\Model\FilterData;
 use IDCT\Adminata\Form\Type\Operator\NumberOperatorType;
-use IDCT\Adminata\DoctrineMongoDB\Datagrid\ProxyQueryInterface;
 use Symfony\Component\Form\Extension\Core\Type\NumberType as SymfonyNumberType;
 
 final class NumberFilter extends Filter

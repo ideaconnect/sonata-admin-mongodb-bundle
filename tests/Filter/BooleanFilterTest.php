@@ -13,11 +13,11 @@ declare(strict_types=1);
 
 namespace IDCT\Adminata\DoctrineMongoDB\Tests\Filter;
 
-use PHPUnit\Framework\Attributes\DataProvider;
-use IDCT\Adminata\Filter\Model\FilterData;
-use IDCT\Adminata\Form\Type\BooleanType;
 use IDCT\Adminata\DoctrineMongoDB\Datagrid\ProxyQuery;
 use IDCT\Adminata\DoctrineMongoDB\Filter\BooleanFilter;
+use IDCT\Adminata\Filter\Model\FilterData;
+use IDCT\Adminata\Form\Type\BooleanType;
+use PHPUnit\Framework\Attributes\DataProvider;
 use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 
 final class BooleanFilterTest extends FilterWithQueryBuilderTestCase

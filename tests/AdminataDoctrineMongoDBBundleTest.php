@@ -13,10 +13,10 @@ declare(strict_types=1);
 
 namespace IDCT\Adminata\DoctrineMongoDB\Tests;
 
-use PHPUnit\Framework\TestCase;
+use IDCT\Adminata\DoctrineMongoDB\AdminataDoctrineMongoDBBundle;
 use IDCT\Adminata\DoctrineMongoDB\DependencyInjection\Compiler\AddGuesserCompilerPass;
 use IDCT\Adminata\DoctrineMongoDB\DependencyInjection\Compiler\AddTemplatesCompilerPass;
-use IDCT\Adminata\DoctrineMongoDB\AdminataDoctrineMongoDBBundle;
+use PHPUnit\Framework\TestCase;
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\Compiler\PassConfig;
 use Symfony\Component\DependencyInjection\ContainerBuilder;

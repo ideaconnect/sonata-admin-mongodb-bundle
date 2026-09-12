@@ -15,8 +15,8 @@ namespace IDCT\Adminata\DoctrineMongoDB\Tests\App\Admin;
 
 use IDCT\Adminata\Admin\AbstractAdmin;
 use IDCT\Adminata\Datagrid\ListMapper;
-use IDCT\Adminata\Form\FormMapper;
 use IDCT\Adminata\DoctrineMongoDB\Tests\App\Document\Address;
+use IDCT\Adminata\Form\FormMapper;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 
 /**

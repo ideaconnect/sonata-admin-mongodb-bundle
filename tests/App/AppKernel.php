@@ -14,9 +14,9 @@ declare(strict_types=1);
 namespace IDCT\Adminata\DoctrineMongoDB\Tests\App;
 
 use Doctrine\Bundle\MongoDBBundle\DoctrineMongoDBBundle;
-use Knp\Bundle\MenuBundle\KnpMenuBundle;
 use IDCT\Adminata\AdminataBundle;
 use IDCT\Adminata\DoctrineMongoDB\AdminataDoctrineMongoDBBundle;
+use Knp\Bundle\MenuBundle\KnpMenuBundle;
 use Symfony\Bundle\FrameworkBundle\FrameworkBundle;
 use Symfony\Bundle\FrameworkBundle\Kernel\MicroKernelTrait;
 use Symfony\Bundle\SecurityBundle\SecurityBundle;

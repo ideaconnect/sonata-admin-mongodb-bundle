@@ -15,11 +15,11 @@ namespace IDCT\Adminata\DoctrineMongoDB\Tests\Filter;
 
 use Doctrine\ODM\MongoDB\Mapping\ClassMetadata;
 use Doctrine\ODM\MongoDB\Query\Builder;
-use PHPUnit\Framework\TestCase;
-use IDCT\Adminata\Filter\Model\FilterData;
 use IDCT\Adminata\DoctrineMongoDB\Datagrid\ProxyQuery;
 use IDCT\Adminata\DoctrineMongoDB\Datagrid\ProxyQueryInterface;
 use IDCT\Adminata\DoctrineMongoDB\Filter\Filter;
+use IDCT\Adminata\Filter\Model\FilterData;
+use PHPUnit\Framework\TestCase;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 
 final class TestFilter extends Filter

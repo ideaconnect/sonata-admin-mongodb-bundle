@@ -13,9 +13,9 @@ declare(strict_types=1);
 
 namespace IDCT\Adminata\DoctrineMongoDB\Tests\Filter;
 
-use IDCT\Adminata\Filter\Model\FilterData;
 use IDCT\Adminata\DoctrineMongoDB\Datagrid\ProxyQuery;
 use IDCT\Adminata\DoctrineMongoDB\Filter\DateFilter;
+use IDCT\Adminata\Filter\Model\FilterData;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
 
 final class DateFilterTest extends FilterWithQueryBuilderTestCase

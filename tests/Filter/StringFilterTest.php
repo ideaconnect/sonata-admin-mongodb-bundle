@@ -14,14 +14,14 @@ declare(strict_types=1);
 namespace IDCT\Adminata\DoctrineMongoDB\Tests\Filter;
 
 use Doctrine\ODM\MongoDB\Query\Builder;
-use MongoDB\BSON\Regex;
-use PHPUnit\Framework\Attributes\DataProvider;
+use IDCT\Adminata\DoctrineMongoDB\Datagrid\ProxyQuery;
+use IDCT\Adminata\DoctrineMongoDB\Filter\StringFilter;
 use IDCT\Adminata\Filter\FilterInterface;
 use IDCT\Adminata\Filter\Model\FilterData;
 use IDCT\Adminata\Form\Type\Operator\ContainsOperatorType;
 use IDCT\Adminata\Form\Type\Operator\StringOperatorType;
-use IDCT\Adminata\DoctrineMongoDB\Datagrid\ProxyQuery;
-use IDCT\Adminata\DoctrineMongoDB\Filter\StringFilter;
+use MongoDB\BSON\Regex;
+use PHPUnit\Framework\Attributes\DataProvider;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 
 final class StringFilterTest extends FilterWithQueryBuilderTestCase

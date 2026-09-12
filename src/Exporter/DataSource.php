@@ -14,9 +14,9 @@ declare(strict_types=1);
 namespace IDCT\Adminata\DoctrineMongoDB\Exporter;
 
 use IDCT\Adminata\Datagrid\ProxyQueryInterface as BaseProxyQueryInterface;
+use IDCT\Adminata\DoctrineMongoDB\Datagrid\ProxyQueryInterface;
 use IDCT\Adminata\Exporter\DataSourceInterface;
 use IDCT\Adminata\Exporter\Source\DoctrineODMQuerySourceIterator;
-use IDCT\Adminata\DoctrineMongoDB\Datagrid\ProxyQueryInterface;
 
 final readonly class DataSource implements DataSourceInterface
 {

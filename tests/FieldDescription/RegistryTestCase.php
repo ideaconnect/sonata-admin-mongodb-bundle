@@ -15,12 +15,12 @@ namespace IDCT\Adminata\DoctrineMongoDB\Tests\FieldDescription;
 
 use Doctrine\ODM\MongoDB\DocumentManager;
 use Doctrine\Persistence\ManagerRegistry;
-use PHPUnit\Framework\MockObject\Stub;
-use PHPUnit\Framework\TestCase;
 use IDCT\Adminata\DoctrineMongoDB\Tests\ClassMetadataAnnotationTrait;
 use IDCT\Adminata\DoctrineMongoDB\Tests\Fixtures\Document\AssociatedDocument;
 use IDCT\Adminata\DoctrineMongoDB\Tests\Fixtures\Document\ContainerDocument;
 use IDCT\Adminata\DoctrineMongoDB\Tests\Fixtures\Document\EmbeddedDocument;
+use PHPUnit\Framework\MockObject\Stub;
+use PHPUnit\Framework\TestCase;
 
 abstract class RegistryTestCase extends TestCase
 {

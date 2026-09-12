@@ -13,10 +13,10 @@ declare(strict_types=1);
 
 namespace IDCT\Adminata\DoctrineMongoDB\Filter;
 
+use IDCT\Adminata\DoctrineMongoDB\Datagrid\ProxyQueryInterface;
 use IDCT\Adminata\Filter\Model\FilterData;
 use IDCT\Adminata\Form\Type\Operator\DateOperatorType;
 use IDCT\Adminata\Form\Type\Operator\DateRangeOperatorType;
-use IDCT\Adminata\DoctrineMongoDB\Datagrid\ProxyQueryInterface;
 
 abstract class AbstractDateFilter extends Filter
 {
