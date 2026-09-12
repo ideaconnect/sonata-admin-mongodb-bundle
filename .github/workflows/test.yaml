@@ -110,7 +110,7 @@ jobs:
               uses: codecov/codecov-action@v6
               with:
                   token: ${{ secrets.CODECOV_TOKEN }}
-                  slug: ideaconnect/sonata-admin-mongodb-bundle
+                  slug: ideaconnect/adminata-admin-mongodb-bundle
                   files: ./build/logs/clover.xml
                   flags: php-${{ matrix.php-version }}-${{ matrix.dependencies }}${{ matrix.symfony-require && format('-symfony-{0}', matrix.symfony-require) || '' }}
                   name: php-${{ matrix.php-version }} ${{ matrix.dependencies }}${{ matrix.symfony-require && format(' (symfony {0})', matrix.symfony-require) || '' }}

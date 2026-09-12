@@ -9,6 +9,13 @@ databases.
 [adminata]: https://github.com/ideaconnect/adminata
 [orm]: https://github.com/ideaconnect/adminata-doctrine-orm-admin-bundle
 
+> **The repository moved on 2026-09-12** to
+> [ideaconnect/adminata-admin-mongodb-bundle](https://github.com/ideaconnect/adminata-admin-mongodb-bundle);
+> the old address redirects. On this `6.x` branch the Composer package keeps its name,
+> `idct/sonata-admin-mongodb-bundle`, so existing installs keep resolving from Packagist. The next
+> major, 7.0, is published as **`idct/adminata-admin-mongodb-bundle`** and carries adminata's
+> `IDCT\Adminata\` namespace ([adminata's UPGRADE.md](https://github.com/ideaconnect/adminata/blob/main/UPGRADE.md)).
+
 [![Latest Stable Version](https://img.shields.io/packagist/v/idct/sonata-admin-mongodb-bundle.svg?label=stable)](https://packagist.org/packages/idct/sonata-admin-mongodb-bundle)
 [![License](https://img.shields.io/packagist/l/idct/sonata-admin-mongodb-bundle.svg)](LICENSE)
 [![PHP](https://img.shields.io/badge/PHP-8.4%20%7C%208.5-777BB4?logo=php&logoColor=white)](https://www.php.net/supported-versions.php)
@@ -16,12 +23,12 @@ databases.
 [![Doctrine MongoDB ODM](https://img.shields.io/badge/Doctrine%20MongoDB%20ODM-%5E2.6-orange)](https://www.doctrine-project.org/projects/mongodb-odm.html)
 [![Adminata](https://img.shields.io/badge/Adminata-%5E1.0-blue)](https://github.com/ideaconnect/adminata)
 
-[![codecov](https://codecov.io/gh/ideaconnect/sonata-admin-mongodb-bundle/branch/6.x/graph/badge.svg?token=yUdY2iB1AV)](https://codecov.io/gh/ideaconnect/sonata-admin-mongodb-bundle)
-[![Test](https://github.com/ideaconnect/sonata-admin-mongodb-bundle/actions/workflows/test.yaml/badge.svg)](https://github.com/ideaconnect/sonata-admin-mongodb-bundle/actions/workflows/test.yaml)
-[![Quality assurance](https://github.com/ideaconnect/sonata-admin-mongodb-bundle/actions/workflows/qa.yaml/badge.svg)](https://github.com/ideaconnect/sonata-admin-mongodb-bundle/actions/workflows/qa.yaml)
-[![Lint](https://github.com/ideaconnect/sonata-admin-mongodb-bundle/actions/workflows/lint.yaml/badge.svg)](https://github.com/ideaconnect/sonata-admin-mongodb-bundle/actions/workflows/lint.yaml)
-[![Symfony Lint](https://github.com/ideaconnect/sonata-admin-mongodb-bundle/actions/workflows/symfony-lint.yaml/badge.svg)](https://github.com/ideaconnect/sonata-admin-mongodb-bundle/actions/workflows/symfony-lint.yaml)
-[![Documentation](https://github.com/ideaconnect/sonata-admin-mongodb-bundle/actions/workflows/documentation.yaml/badge.svg)](https://github.com/ideaconnect/sonata-admin-mongodb-bundle/actions/workflows/documentation.yaml)
+[![codecov](https://codecov.io/gh/ideaconnect/adminata-admin-mongodb-bundle/branch/6.x/graph/badge.svg?token=yUdY2iB1AV)](https://codecov.io/gh/ideaconnect/adminata-admin-mongodb-bundle)
+[![Test](https://github.com/ideaconnect/adminata-admin-mongodb-bundle/actions/workflows/test.yaml/badge.svg)](https://github.com/ideaconnect/adminata-admin-mongodb-bundle/actions/workflows/test.yaml)
+[![Quality assurance](https://github.com/ideaconnect/adminata-admin-mongodb-bundle/actions/workflows/qa.yaml/badge.svg)](https://github.com/ideaconnect/adminata-admin-mongodb-bundle/actions/workflows/qa.yaml)
+[![Lint](https://github.com/ideaconnect/adminata-admin-mongodb-bundle/actions/workflows/lint.yaml/badge.svg)](https://github.com/ideaconnect/adminata-admin-mongodb-bundle/actions/workflows/lint.yaml)
+[![Symfony Lint](https://github.com/ideaconnect/adminata-admin-mongodb-bundle/actions/workflows/symfony-lint.yaml/badge.svg)](https://github.com/ideaconnect/adminata-admin-mongodb-bundle/actions/workflows/symfony-lint.yaml)
+[![Documentation](https://github.com/ideaconnect/adminata-admin-mongodb-bundle/actions/workflows/documentation.yaml/badge.svg)](https://github.com/ideaconnect/adminata-admin-mongodb-bundle/actions/workflows/documentation.yaml)
 
 ---
 
@@ -161,7 +168,7 @@ come from first:
 ```json
 "repositories": [
     { "type": "vcs", "url": "https://github.com/ideaconnect/adminata.git" },
-    { "type": "vcs", "url": "https://github.com/ideaconnect/sonata-admin-mongodb-bundle.git" }
+    { "type": "vcs", "url": "https://github.com/ideaconnect/adminata-admin-mongodb-bundle.git" }
 ]
 ```
 
@@ -308,7 +315,7 @@ Fork-specific material:
 ## Support
 
 For bugs or feature ideas in this fork, open an issue on
-[the fork's repository](https://github.com/ideaconnect/sonata-admin-mongodb-bundle/issues).
+[the fork's repository](https://github.com/ideaconnect/adminata-admin-mongodb-bundle/issues).
 
 For general Sonata Admin questions, the upstream
 [StackOverflow tag](https://stackoverflow.com/questions/tagged/sonata)

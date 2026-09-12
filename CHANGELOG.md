@@ -2,6 +2,14 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## Unreleased
+
+### Changed
+- The repository is `ideaconnect/adminata-admin-mongodb-bundle` (2026-09-12); the old address
+  redirects. Every link, badge and the Codecov slug follow. The package name is unchanged on
+  `6.x`; 7.0 renames it to `idct/adminata-admin-mongodb-bundle` together with adminata's move to
+  the `IDCT\Adminata\` namespace.
+
 ## [6.0.0](https://github.com/ideaconnect/sonata-admin-mongodb-bundle/releases/tag/v6.0.0) - 2026-09-07
 
 ### Changed

@@ -6,7 +6,7 @@ Copyright (c) 2026 IDCT Bartosz Pachołek <bartosz+github@idct.tech>
 Note (2026-05-15): this codebase is maintained as a friendly fork of
 sonata-project/doctrine-mongodb-admin-bundle under the package name
 idct/sonata-admin-mongodb-bundle, hosted at
-https://github.com/ideaconnect/sonata-admin-mongodb-bundle. The original
+https://github.com/ideaconnect/adminata-admin-mongodb-bundle. The original
 MIT license, copyright, and contributions of every author listed in
 composer.json are preserved.
 

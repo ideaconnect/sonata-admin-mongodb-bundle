@@ -309,7 +309,11 @@
             "email": "omg.laci@gmail.com"
         }
     ],
-    "homepage": "https://github.com/ideaconnect/sonata-admin-mongodb-bundle",
+    "homepage": "https://github.com/ideaconnect/adminata-admin-mongodb-bundle",
+    "support": {
+        "issues": "https://github.com/ideaconnect/adminata-admin-mongodb-bundle/issues",
+        "source": "https://github.com/ideaconnect/adminata-admin-mongodb-bundle"
+    },
     "require": {
         "php": "^8.4",
         "ext-mongodb": "*",

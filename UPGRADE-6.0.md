@@ -40,7 +40,7 @@ from to your application's `composer.json`:
 ```json
 "repositories": [
     { "type": "vcs", "url": "https://github.com/ideaconnect/adminata.git" },
-    { "type": "vcs", "url": "https://github.com/ideaconnect/sonata-admin-mongodb-bundle.git" }
+    { "type": "vcs", "url": "https://github.com/ideaconnect/adminata-admin-mongodb-bundle.git" }
 ]
 ```
 
