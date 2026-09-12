@@ -322,7 +322,7 @@
         "doctrine/mongodb-odm": "^2.6",
         "doctrine/mongodb-odm-bundle": "^5.0",
         "doctrine/persistence": "^4.0",
-        "idct/adminata": "dev-main || dev-rename/idct",
+        "idct/adminata": "dev-main",
         "symfony/config": "^7.4 || ^8.0",
         "symfony/dependency-injection": "^7.4 || ^8.0",
         "symfony/doctrine-bridge": "^7.4 || ^8.0",
