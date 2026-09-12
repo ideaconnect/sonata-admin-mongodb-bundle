@@ -2,7 +2,7 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
-## 7.0.0 - unreleased
+## [7.0.0](https://github.com/ideaconnect/adminata-admin-mongodb-bundle/releases/tag/v7.0.0) - 2026-09-12
 
 The first release under adminata's own names, and the first published as
 `idct/adminata-admin-mongodb-bundle`. Everything up to commit `6fc2d1d` speaks the Sonata names;
