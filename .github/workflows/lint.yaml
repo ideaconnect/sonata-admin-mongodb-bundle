@@ -46,6 +46,9 @@ jobs:
             - name: Lint PHP files
               run: make lint-php
 
+            - name: Check that nothing carries a Sonata name
+              run: make check-names
+
     composer:
         name: Composer
 
@@ -66,9 +69,6 @@ jobs:
 
             - name: Lint Composer
               run: make lint-composer
-
-            - name: Check that nothing carries a Sonata name
-              run: make check-names
 
     yaml-files:
         name: YAML files
