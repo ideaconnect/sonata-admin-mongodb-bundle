@@ -54,10 +54,10 @@ The map, and the tool that applies it to an application:
 [adminata's UPGRADE.md](https://github.com/ideaconnect/adminata/blob/main/UPGRADE.md);
 this package's rows: [UPGRADE-7.0.md](UPGRADE-7.0.md).
 
-Adminata is not on Packagist yet — it is still in development and this release
-requires it at `^1.0@dev`, which is exactly what that marker says. Install it
-from a VCS or path repository; the `repositories` block of
-[composer.json](composer.json) shows both.
+Adminata is still in development: [`idct/adminata`](https://packagist.org/packages/idct/adminata)
+is on Packagist as `dev-main` only, and that is the constraint this release
+requires it at. Both packages install from Packagist; no `repositories` entry
+is needed.
 
 **Staying on Sonata Admin 4.x?** Use the `5.x` line. It is the last release
 series built against `sonata-project/admin-bundle` and it keeps working.
@@ -164,18 +164,12 @@ You should already have a Symfony 7.4+ application with **Adminata** and
 them, not a replacement for either.
 
 ```bash
-composer require idct/adminata doctrine/mongodb-odm-bundle
+composer require idct/adminata:dev-main doctrine/mongodb-odm-bundle
 ```
 
-Neither Adminata nor this bundle is on Packagist yet, so declare where they
-come from first:
-
-```json
-"repositories": [
-    { "type": "vcs", "url": "https://github.com/ideaconnect/adminata.git" },
-    { "type": "vcs", "url": "https://github.com/ideaconnect/adminata-admin-mongodb-bundle.git" }
-]
-```
+Both come from Packagist. Adminata has no tagged release yet, so `dev-main`
+is its only version there, and naming that constraint is what lets a project
+with `minimum-stability: stable` take it.
 
 ### Install
 

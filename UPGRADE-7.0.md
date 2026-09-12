@@ -9,7 +9,7 @@ that are this package's:
 
 | Before | After |
 |---|---|
-| `idct/sonata-admin-mongodb-bundle` `^6.0` | `idct/adminata-admin-mongodb-bundle` `^7.0` — `composer remove` the old name, `composer require` the new one; a `vcs` repository for `https://github.com/ideaconnect/adminata-admin-mongodb-bundle.git` until it is on Packagist |
+| `idct/sonata-admin-mongodb-bundle` `^6.0` | `idct/adminata-admin-mongodb-bundle` `^7.0` — `composer remove` the old name, `composer require` the new one; the package is on Packagist, so no `vcs` repository is needed and one you added for it can go |
 | `Sonata\DoctrineMongoDBAdminBundle\` | `IDCT\Adminata\DoctrineMongoDB\` |
 | `Sonata\DoctrineMongoDBAdminBundle\SonataDoctrineMongoDBAdminBundle` in `bundles.php` | `IDCT\Adminata\DoctrineMongoDB\AdminataDoctrineMongoDBBundle` |
 | `config/packages/sonata_doctrine_mongo_db_admin.yaml`, root `sonata_doctrine_mongo_db_admin:` | `adminata_doctrine_mongodb.yaml`, `adminata_doctrine_mongodb:` |

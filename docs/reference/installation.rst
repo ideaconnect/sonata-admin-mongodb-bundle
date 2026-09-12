@@ -8,14 +8,14 @@ depends on AdminataBundle, and will not work without it.
 .. note::
 
     These installation instructions are meant to be used only as part of AdminataBundle's
-    installation process, which is documented `here <https://docs.sonata-project.org/projects/AdminataBundle/en/3.x/getting_started/installation/>`_.
+    installation process, which is documented `here <https://github.com/ideaconnect/adminata/blob/main/docs/admin-bundle/getting_started/installation.rst>`_.
 
 Download the Bundle
 -------------------
 
 .. code-block:: bash
 
-    composer require sonata-project/doctrine-mongodb-admin-bundle
+    composer require idct/adminata-admin-mongodb-bundle
 
 Enable the Bundle
 -----------------

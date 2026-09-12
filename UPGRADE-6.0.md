@@ -34,15 +34,12 @@ nothing else here.
 - `sonata-project/exporter` and `sonata-project/form-extensions` are **gone** as direct
   requirements: adminata merged both into its admin bundle, and `conflict`s with them.
 
-Adminata is not on Packagist yet, which is what the `@dev` marker says. Add the repository it comes
-from to your application's `composer.json`:
-
-```json
-"repositories": [
-    { "type": "vcs", "url": "https://github.com/ideaconnect/adminata.git" },
-    { "type": "vcs", "url": "https://github.com/ideaconnect/adminata-admin-mongodb-bundle.git" }
-]
-```
+Adminata was not on Packagist when 6.0 was released, which is what the `@dev` marker says; the
+`6.x` line installed it from a `vcs` repository for `https://github.com/ideaconnect/adminata.git`.
+It is there now, as `dev-main` — but that branch carries adminata's own names, which the `6.x`
+line does not speak: an application staying on `6.x` pins adminata at `dev-main#d76c4818f`, the
+last commit under the Sonata names. Moving on to 7.0 ([UPGRADE-7.0.md](UPGRADE-7.0.md)) is the
+supported path.
 
 ## `config/bundles.php`
 
