@@ -1,4 +1,4 @@
-# idct/sonata-admin-mongodb-bundle
+# idct/adminata-admin-mongodb-bundle
 
 Doctrine MongoDB ODM persistence backend for **[Adminata][adminata]** — full
 CRUD, filtering, sorting, pagination, exports and ACL management for MongoDB
@@ -9,21 +9,23 @@ databases.
 [adminata]: https://github.com/ideaconnect/adminata
 [orm]: https://github.com/ideaconnect/adminata-doctrine-orm-admin-bundle
 
-> **The repository moved on 2026-09-12** to
+> **7.0: adminata's own names.** Since 2026-09-12 this package is
+> `idct/adminata-admin-mongodb-bundle` (repository
 > [ideaconnect/adminata-admin-mongodb-bundle](https://github.com/ideaconnect/adminata-admin-mongodb-bundle);
-> the old address redirects. On this `6.x` branch the Composer package keeps its name,
-> `idct/sonata-admin-mongodb-bundle`, so existing installs keep resolving from Packagist. The next
-> major, 7.0, is published as **`idct/adminata-admin-mongodb-bundle`** and carries adminata's
-> `IDCT\Adminata\` namespace ([adminata's UPGRADE.md](https://github.com/ideaconnect/adminata/blob/main/UPGRADE.md)).
+> the old address redirects) under the `IDCT\Adminata\DoctrineMongoDB\` namespace, built on
+> adminata's `IDCT\Adminata\`. The `6.x` line keeps the old package name and the Sonata-named
+> adminata; `5.x` is the last line built on `sonata-project/admin-bundle`. Upgrading:
+> [UPGRADE-7.0.md](UPGRADE-7.0.md) and
+> [adminata's UPGRADE.md](https://github.com/ideaconnect/adminata/blob/main/UPGRADE.md).
 
-[![Latest Stable Version](https://img.shields.io/packagist/v/idct/sonata-admin-mongodb-bundle.svg?label=stable)](https://packagist.org/packages/idct/sonata-admin-mongodb-bundle)
-[![License](https://img.shields.io/packagist/l/idct/sonata-admin-mongodb-bundle.svg)](LICENSE)
+[![Latest Stable Version](https://img.shields.io/packagist/v/idct/adminata-admin-mongodb-bundle.svg?label=stable)](https://packagist.org/packages/idct/adminata-admin-mongodb-bundle)
+[![License](https://img.shields.io/packagist/l/idct/adminata-admin-mongodb-bundle.svg)](LICENSE)
 [![PHP](https://img.shields.io/badge/PHP-8.4%20%7C%208.5-777BB4?logo=php&logoColor=white)](https://www.php.net/supported-versions.php)
 [![Symfony](https://img.shields.io/badge/Symfony-7.4%20%7C%208.0-000000?logo=symfony&logoColor=white)](https://symfony.com/releases)
 [![Doctrine MongoDB ODM](https://img.shields.io/badge/Doctrine%20MongoDB%20ODM-%5E2.6-orange)](https://www.doctrine-project.org/projects/mongodb-odm.html)
-[![Adminata](https://img.shields.io/badge/Adminata-%5E1.0-blue)](https://github.com/ideaconnect/adminata)
+[![adminata](https://img.shields.io/badge/adminata-dev--main-blue)](https://github.com/ideaconnect/adminata)
 
-[![codecov](https://codecov.io/gh/ideaconnect/adminata-admin-mongodb-bundle/branch/6.x/graph/badge.svg?token=yUdY2iB1AV)](https://codecov.io/gh/ideaconnect/adminata-admin-mongodb-bundle)
+[![codecov](https://codecov.io/gh/ideaconnect/adminata-admin-mongodb-bundle/branch/7.x/graph/badge.svg?token=yUdY2iB1AV)](https://codecov.io/gh/ideaconnect/adminata-admin-mongodb-bundle)
 [![Test](https://github.com/ideaconnect/adminata-admin-mongodb-bundle/actions/workflows/test.yaml/badge.svg)](https://github.com/ideaconnect/adminata-admin-mongodb-bundle/actions/workflows/test.yaml)
 [![Quality assurance](https://github.com/ideaconnect/adminata-admin-mongodb-bundle/actions/workflows/qa.yaml/badge.svg)](https://github.com/ideaconnect/adminata-admin-mongodb-bundle/actions/workflows/qa.yaml)
 [![Lint](https://github.com/ideaconnect/adminata-admin-mongodb-bundle/actions/workflows/lint.yaml/badge.svg)](https://github.com/ideaconnect/adminata-admin-mongodb-bundle/actions/workflows/lint.yaml)
@@ -32,23 +34,25 @@ databases.
 
 ---
 
-## 🚨 6.0 moves to Adminata
+## 🚨 6.0 moved to adminata, 7.0 to adminata's names
 
 **6.0 is built against [`idct/adminata`][adminata], not
-`sonata-project/admin-bundle`.** Adminata is our hard fork of the Sonata Admin
+`sonata-project/admin-bundle`.** adminata is our hard fork of the Sonata Admin
 stack with the Twig templates, CSS and JavaScript replaced by a Tailwind CSS v4
 / TailAdmin interface: **Bootstrap, AdminLTE and jQuery are gone**, and there is
 no compatibility layer for them. If your project styles admin screens with
 Bootstrap class names or scripts them with jQuery, that markup stops working
 and has to be ported once.
 
-What does *not* change: the `IDCT\Adminata\DoctrineMongoDB` namespace, the
-bundle class, the `adminata_doctrine_mongodb` configuration root and every
-service id. On the PHP side only the imports move, because adminata merged the
-block, exporter, form and Twig packages into its admin bundle —
-`IDCT\Adminata\Form\Type\` is `IDCT\Adminata\Form\Type\`, `IDCT\Adminata\Exporter\`
-is `IDCT\Adminata\Exporter\`, and `SonataBlockBundle`, `SonataFormBundle`
-and `SonataTwigBundle` are no longer registered in `config/bundles.php`.
+**7.0 takes adminata's own names.** The namespace is
+`IDCT\Adminata\DoctrineMongoDB\`, the bundle class `AdminataDoctrineMongoDBBundle`,
+the configuration root `adminata_doctrine_mongodb`, the Twig namespace
+`@AdminataDoctrineMongoDB`, and every service id starts with `adminata.`; the
+package is `idct/adminata-admin-mongodb-bundle` and it **conflicts** with
+`sonata-project/doctrine-mongodb-admin-bundle` rather than living beside it.
+The map, and the tool that applies it to an application:
+[adminata's UPGRADE.md](https://github.com/ideaconnect/adminata/blob/main/UPGRADE.md);
+this package's rows: [UPGRADE-7.0.md](UPGRADE-7.0.md).
 
 Adminata is not on Packagist yet — it is still in development and this release
 requires it at `^1.0@dev`, which is exactly what that marker says. Install it
@@ -62,13 +66,14 @@ series built against `sonata-project/admin-bundle` and it keeps working.
 
 ## 🚨 This is a HARD FORK
 
-`idct/sonata-admin-mongodb-bundle` is a **hard fork** of
+`idct/adminata-admin-mongodb-bundle` is a **hard fork** of
 [`sonata-project/doctrine-mongodb-admin-bundle`](https://github.com/sonata-project/SonataDoctrineMongoDBAdminBundle),
 not a soft fork or a temporary patch:
 
 - The vendor name and Composer package id are different
   (`idct/...` vs. `sonata-project/...`) — the two **cannot** be installed
-  side by side and `composer replace` is **not** declared.
+  side by side: 7.0 declares a `conflict` with the upstream package, and no
+  `replace`.
 - The `5.x` line already breaks BC in places upstream has not:
   `ModelManager::getDocumentManager()` is private, `ProxyQuery::__call()`
   is gone, `ProxyQuery::setOptions()` is removed, `ModelFilter::fixIdentifier()`
@@ -175,7 +180,7 @@ come from first:
 ### Install
 
 ```bash
-composer require idct/sonata-admin-mongodb-bundle
+composer require idct/adminata-admin-mongodb-bundle
 ```
 
 Symfony Flex registers the bundle automatically. If you're not using
@@ -298,15 +303,17 @@ All four must be green before a change can land — see
 
 ## Documentation
 
-For the public API and configuration shape, upstream Sonata's documentation
-applies as-is:
-[docs.sonata-project.org/projects/AdminataDoctrineMongoDBBundle](https://docs.sonata-project.org/projects/AdminataDoctrineMongoDBBundle).
+For the public API and configuration shape, the `docs/` tree in this repository
+(`make docs`); upstream Sonata's documentation for the package this one forked
+describes the same design under the old names:
+[docs.sonata-project.org/projects/SonataDoctrineMongoDBAdminBundle](https://docs.sonata-project.org/projects/SonataDoctrineMongoDBAdminBundle).
 
 Fork-specific material:
 
 - [AGENTS.md](AGENTS.md) — architectural overview, where each piece lives,
-  how it fits next to Sonata Admin, contribution rules.
-- [UPGRADE-6.0.md](UPGRADE-6.0.md) — 5.x → 6.0: the move to Adminata.
+  how it fits next to adminata, contribution rules.
+- [UPGRADE-7.0.md](UPGRADE-7.0.md) — 6.x → 7.0: adminata's own names.
+- [UPGRADE-6.0.md](UPGRADE-6.0.md) — 5.x → 6.0: the move to adminata.
 - [UPGRADE-5.0.md](UPGRADE-5.0.md) — 4.x → 5.0 break list (per-class).
 - [CHANGELOG.md](CHANGELOG.md) — per-release notes.
 
@@ -317,14 +324,5 @@ Fork-specific material:
 For bugs or feature ideas in this fork, open an issue on
 [the fork's repository](https://github.com/ideaconnect/adminata-admin-mongodb-bundle/issues).
 
-For general Sonata Admin questions, the upstream
-[StackOverflow tag](https://stackoverflow.com/questions/tagged/sonata)
-remains the best place.
-
----
-
-## License
-
-[MIT](LICENSE). Thomas Rabaix's original copyright and every upstream
-contributor's attribution are preserved; the full author roster lives in
-[composer.json](composer.json).
+For questions about the admin bundle itself, adminata's repository is the place:
+<https://github.com/ideaconnect/adminata>.

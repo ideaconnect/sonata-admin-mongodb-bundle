@@ -1,7 +1,7 @@
 # AGENTS.md
 
 Project-specific instructions for any AI coding agent (or human contributor)
-operating on `idct/sonata-admin-mongodb-bundle`. Read this end-to-end before
+operating on `idct/adminata-admin-mongodb-bundle`. Read this end-to-end before
 touching code; after reading it you should be able to navigate, understand,
 and extend the bundle without any further onboarding.
 
@@ -9,21 +9,21 @@ and extend the bundle without any further onboarding.
 
 ## 1. What this library is
 
-`idct/sonata-admin-mongodb-bundle` is the **MongoDB persistence backend for
-Sonata Admin**. It lets a Symfony application build admin UIs (CRUD listings,
+`idct/adminata-admin-mongodb-bundle` is the **MongoDB persistence backend for
+adminata** — the hard fork of Sonata Admin under the `IDCT\Adminata\` namespace. It lets a Symfony application build admin UIs (CRUD listings,
 filters, search, exports, ACL management) over Doctrine MongoDB ODM
 documents — the same way the canonical `sonata-project/doctrine-orm-admin-bundle`
-does for relational SQL via Doctrine ORM.
+does for relational SQL via Doctrine ORM (in adminata's world, `idct/adminata-doctrine-orm-admin-bundle`).
 
 Concretely, when a user installs this bundle alongside
-`sonata-project/admin-bundle` and declares an admin with
-`manager_type: doctrine_mongodb`, Sonata wires that admin to *our*
+`idct/adminata` and declares an admin with
+`manager_type: doctrine_mongodb`, adminata wires that admin to *our*
 implementations of its abstract interfaces (`ModelManager`, `Pager`,
 `DatagridBuilder`, etc.) so the resulting admin reads, writes, paginates,
 sorts and filters MongoDB documents instead of relational rows.
 
-We do **not** reimplement Sonata Admin. We implement the contracts Sonata
-Admin defines so the same UI/UX/templates work over MongoDB.
+We do **not** reimplement the admin bundle. We implement the contracts adminata
+defines — the Sonata Admin design under new names — so the same UI/UX/templates work over MongoDB.
 
 ---
 
@@ -54,17 +54,22 @@ persistence stack:
 | `IDCT\Adminata\Util\ObjectAclManipulator` | `IDCT\Adminata\DoctrineMongoDB\Util\ObjectAclManipulator` |
 | `IDCT\Adminata\Exporter\DataSourceInterface` | `IDCT\Adminata\DoctrineMongoDB\Exporter\DataSource` |
 
-Every concrete service id starts with `adminata.admin.*` (Sonata's namespace,
-because Sonata's compiler passes look them up by id) and ends in
+Every concrete service id starts with `adminata.admin.*` (adminata's namespace,
+because its compiler passes look them up by id) and ends in
 `doctrine_mongodb` (the discriminator that pairs them with admins declared
 `manager_type: doctrine_mongodb`). See
 [`src/Resources/config/doctrine_mongodb.php`](src/Resources/config/doctrine_mongodb.php),
 [`src/Resources/config/doctrine_mongodb_filter_types.php`](src/Resources/config/doctrine_mongodb_filter_types.php),
 and [`src/Resources/config/security.php`](src/Resources/config/security.php).
 
-**This bundle must always remain installable alongside the latest
-`sonata-project/admin-bundle`.** Changes that would force users to fork
-or pin Sonata Admin are off-limits unless explicitly opted into.
+**This bundle must always remain installable alongside adminata's `main`.**
+Changes that would force users to fork or pin adminata are off-limits unless
+explicitly opted into. Since 7.0 nothing in this package carries the Sonata
+name either: the namespace is `IDCT\Adminata\DoctrineMongoDB\`, the bundle
+`AdminataDoctrineMongoDBBundle`, the configuration root `adminata_doctrine_mongodb`,
+the Twig namespace `@AdminataDoctrineMongoDB`. `make check-names` (adminata's engine
+in check mode) keeps it that way; the attribution — this section, `NOTICE`, the
+upstream headers — stays.
 
 ---
 
@@ -73,7 +78,8 @@ or pin Sonata Admin are off-limits unless explicitly opted into.
 This package started life as
 [`sonata-project/doctrine-mongodb-admin-bundle`](https://github.com/sonata-project/SonataDoctrineMongoDBAdminBundle).
 The fork was created at upstream's 4.12.0 and renamed to
-`idct/sonata-admin-mongodb-bundle` on the `5.x` branch.
+`idct/sonata-admin-mongodb-bundle` on the `5.x` branch, then to
+`idct/adminata-admin-mongodb-bundle` with 7.0 (2026-09-12), when adminata took its own names.
 
 We **intentionally diverge** from upstream:
 
@@ -100,7 +106,7 @@ We **intentionally diverge** from upstream:
 | Doctrine ODM Bundle | `^5.0` |
 | Doctrine Persistence | `^4.0` (3.x dropped on the 5.x cut) |
 | Doctrine Collections | `^2.0` |
-| Sonata Admin Bundle | `^4.39` |
+| adminata | `dev-main` (7.x is built on adminata's `IDCT\Adminata\` names) |
 | PHPUnit | 11 / 12 (suite written for 12's strictness) |
 
 Quality gates currently green:

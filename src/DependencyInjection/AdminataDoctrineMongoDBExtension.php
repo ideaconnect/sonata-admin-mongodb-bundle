@@ -25,6 +25,15 @@ use Symfony\Component\DependencyInjection\Loader\PhpFileLoader;
  */
 final class AdminataDoctrineMongoDBExtension extends AbstractAdminataExtension
 {
+    /**
+     * Spelled out because the name Symfony would derive from the class,
+     * `adminata_doctrine_mongo_db`, splits the acronym (PLAN/v2 N19).
+     */
+    public function getAlias(): string
+    {
+        return 'adminata_doctrine_mongodb';
+    }
+
     public function load(array $configs, ContainerBuilder $container): void
     {
         $configs = $this->fixTemplatesConfiguration($configs, $container);
@@ -38,7 +47,7 @@ final class AdminataDoctrineMongoDBExtension extends AbstractAdminataExtension
         $processor = new Processor();
         $config = $processor->processConfiguration($configuration, $configs);
 
-        $container->setParameter('adminata_doctrine_mongodb_admin.templates', $config['templates']);
+        $container->setParameter('adminata_doctrine_mongodb.templates', $config['templates']);
 
         // define the templates
         $container->getDefinition('adminata.admin.builder.doctrine_mongodb_list')

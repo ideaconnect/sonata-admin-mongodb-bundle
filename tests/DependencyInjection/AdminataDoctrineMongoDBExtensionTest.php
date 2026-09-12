@@ -70,15 +70,15 @@ final class AdminataDoctrineMongoDBExtensionTest extends AbstractExtensionTestCa
             ],
         ]);
 
-        // adminata_doctrine_mongodb_admin.templates parameter must be exposed
+        // adminata_doctrine_mongodb.templates parameter must be exposed
         // (kills the setParameter MethodCallRemoval mutant on line 41).
-        $this->assertContainerBuilderHasParameter('adminata_doctrine_mongodb_admin.templates');
+        $this->assertContainerBuilderHasParameter('adminata_doctrine_mongodb.templates');
 
         // fixTemplatesConfiguration merges defaults under types.list / types.show
         // so we can't pre-compute the full expected map. Instead, fetch the
         // post-merge value from the parameter and assert the builder
         // definitions point at the SAME, post-merge per-type array.
-        $templates = $this->container->getParameter('adminata_doctrine_mongodb_admin.templates');
+        $templates = $this->container->getParameter('adminata_doctrine_mongodb.templates');
         \assert(\is_array($templates) && \is_array($templates['types']));
 
         // Our custom marker must survive the merge — otherwise we'd be

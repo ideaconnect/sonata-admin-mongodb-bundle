@@ -2,13 +2,33 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
-## Unreleased
+## 7.0.0 - unreleased
+
+The first release under adminata's own names, and the first published as
+`idct/adminata-admin-mongodb-bundle`. Everything up to commit `6fc2d1d` speaks the Sonata names;
+nothing after it does.
 
 ### Changed
-- The repository is `ideaconnect/adminata-admin-mongodb-bundle` (2026-09-12); the old address
-  redirects. Every link, badge and the Codecov slug follow. The package name is unchanged on
-  `6.x`; 7.0 renames it to `idct/adminata-admin-mongodb-bundle` together with adminata's move to
-  the `IDCT\Adminata\` namespace.
+- The package is `idct/adminata-admin-mongodb-bundle`, from the repository of the same name (the
+  old address redirects). The `6.x` line keeps the old package name.
+- The namespace is `IDCT\Adminata\DoctrineMongoDB\` (tests `IDCT\Adminata\DoctrineMongoDB\Tests\`),
+  the bundle class `AdminataDoctrineMongoDBBundle`, the container extension
+  `AdminataDoctrineMongoDBExtension` with the configuration root `adminata_doctrine_mongodb`
+  (spelled out, since the derived alias would split the acronym), the parameter
+  `adminata_doctrine_mongodb.templates`, the Twig namespace `@AdminataDoctrineMongoDB`; every
+  service id and tag takes `adminata.` for `sonata.`, and every reference into adminata follows
+  adminata's rename (`IDCT\Adminata\`, `@Adminata`, `adminata_type_*`, …). The map, the tool that
+  applies it to an application and the one thing that is a data migration rather than a rename:
+  adminata's `UPGRADE.md`; this package's rows: `UPGRADE-7.0.md`.
+- `composer.json` `conflict`s with `sonata-project/doctrine-mongodb-admin-bundle`; the `sonata`
+  and `bootstrap` keywords are gone.
+- Requires `idct/adminata` at the commit that carries the same rename.
+- `make check-names` runs adminata's engine in check mode; the Lint workflow runs it.
+
+### Kept
+- The upstream copyright headers on every inherited file, `LICENSE`, `NOTICE` and this
+  changelog's history.
+
 
 ## [6.0.0](https://github.com/ideaconnect/sonata-admin-mongodb-bundle/releases/tag/v6.0.0) - 2026-09-07
 

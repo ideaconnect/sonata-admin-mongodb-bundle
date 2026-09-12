@@ -22,9 +22,9 @@ You can also configure the templates used by the Form Framework while rendering 
 
 .. code-block:: yaml
 
-    # config/packages/adminata_doctrine_mongodb_admin.yaml
+    # config/packages/adminata_doctrine_mongodb.yaml
 
-    adminata_doctrine_mongodb_admin:
+    adminata_doctrine_mongodb:
         templates:
             form: ['@AdminataDoctrineMongoDB/Form/form_admin_fields.html.twig']
             filter: ['@AdminataDoctrineMongoDB/Form/filter_admin_fields.html.twig']
@@ -33,9 +33,9 @@ You can also customize field types
 
 .. code-block:: yaml
 
-    # config/packages/adminata_doctrine_mongodb_admin.yaml
+    # config/packages/adminata_doctrine_mongodb.yaml
 
-    adminata_doctrine_mongodb_admin:
+    adminata_doctrine_mongodb:
         templates:
         types:
             list:
@@ -47,13 +47,13 @@ You can also customize field types
     By default, if the ``SonataIntlBundle`` classes are availables, then the numeric and date fields will be
     localized with the current user locale (only for list, work in progress).
 
-You can also customize field types by adding types in the ``adminata_doctrine_mongodb_admin.yaml`` file. The default values are :
+You can also customize field types by adding types in the ``adminata_doctrine_mongodb.yaml`` file. The default values are :
 
 .. code-block:: yaml
 
-    # config/packages/adminata_doctrine_mongodb_admin.yaml
+    # config/packages/adminata_doctrine_mongodb.yaml
 
-    adminata_doctrine_mongodb_admin:
+    adminata_doctrine_mongodb:
         templates:
             types:
                 list:

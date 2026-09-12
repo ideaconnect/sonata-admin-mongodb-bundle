@@ -33,10 +33,9 @@ interpreted as described in [RFC 2119](https://www.ietf.org/rfc/rfc2119.txt).
 First, check if you are up to date: is your version still supported, and are
 you using the latest patch version?
 
-GitHub Issues is for **issues**, as opposed to question on how to use Sonata.
-If you are not sure this is a bug, or simply want to ask such a question,
-please post your question on [Stack Overflow](https://stackoverflow.com/questions/tagged/sonata),
-using the `sonata` tags.
+GitHub Issues is for **issues**, as opposed to questions on how to use the
+bundle. If you are not sure this is a bug, or simply want to ask such a
+question, open a discussion on the repository instead.
 
 If you happen to find a bug, we kindly request you report it. However,
 before submitting it, please check the [project documentation available
@@ -71,7 +70,7 @@ just create a repository to show the issue.
 
 ## Pull Requests
 
-All the sonata team will be glad to review your code changes propositions! :smile:
+We will be glad to review your code change propositions! :smile:
 
 But please, read the following before.
 

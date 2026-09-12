@@ -1,23 +1,24 @@
 {
-    "name": "idct/sonata-admin-mongodb-bundle",
-    "description": "Doctrine MongoDB ODM persistence backend for Adminata, the Tailwind CSS fork of Sonata Admin. A hard fork of sonata-project/doctrine-mongodb-admin-bundle.",
+    "name": "idct/adminata-admin-mongodb-bundle",
+    "description": "Doctrine MongoDB ODM storage layer for adminata, under the IDCT\\Adminata\\DoctrineMongoDB namespace. A hard fork of sonata-project/doctrine-mongodb-admin-bundle, which it conflicts with.",
     "license": "MIT",
     "type": "symfony-bundle",
     "keywords": [
-        "Admin Generator",
+        "adminata",
         "admin",
-        "sonata",
-        "bootstrap",
-        "generator",
-        "Mongo",
-        "MongoDB"
+        "admin-generator",
+        "bundle",
+        "doctrine",
+        "mongodb",
+        "odm",
+        "symfony"
     ],
     "authors": [
         {
             "name": "IDCT Bartosz Pachołek",
             "email": "bartosz+github@idct.tech",
             "homepage": "https://idct.tech",
-            "role": "Maintainer (idct/sonata-admin-mongodb-bundle fork)"
+            "role": "Maintainer (idct/adminata-admin-mongodb-bundle fork)"
         },
         {
             "name": "Thomas Rabaix",
@@ -321,7 +322,7 @@
         "doctrine/mongodb-odm": "^2.6",
         "doctrine/mongodb-odm-bundle": "^5.0",
         "doctrine/persistence": "^4.0",
-        "idct/adminata": "dev-main",
+        "idct/adminata": "dev-main || dev-rename/idct",
         "symfony/config": "^7.4 || ^8.0",
         "symfony/dependency-injection": "^7.4 || ^8.0",
         "symfony/doctrine-bridge": "^7.4 || ^8.0",
@@ -350,6 +351,9 @@
         "symfony/panther": "^2.4",
         "symfony/security-acl": "^3.3.4",
         "symfony/twig-bridge": "^7.4 || ^8.0"
+    },
+    "conflict": {
+        "sonata-project/doctrine-mongodb-admin-bundle": "*"
     },
     "repositories": [
         {
@@ -386,7 +390,7 @@
     },
     "extra": {
         "branch-alias": {
-            "dev-6.x": "6.x-dev"
+            "dev-7.x": "7.x-dev"
         }
     },
     "scripts": {

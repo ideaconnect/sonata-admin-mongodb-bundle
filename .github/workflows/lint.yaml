@@ -5,6 +5,7 @@ on:
         - cron: '30 0 * * *'
     push:
         branches:
+            - 7.x
             - 6.x
             - 5.x
     pull_request:
@@ -65,6 +66,9 @@ jobs:
 
             - name: Lint Composer
               run: make lint-composer
+
+            - name: Check that nothing carries a Sonata name
+              run: make check-names
 
     yaml-files:
         name: YAML files

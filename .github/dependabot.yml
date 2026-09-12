@@ -27,7 +27,7 @@ updates:
           doctrine:
               patterns:
                   - "doctrine/*"
-          sonata:
+          upstream:
               patterns:
                   - "sonata-project/*"
           dev-dependencies:

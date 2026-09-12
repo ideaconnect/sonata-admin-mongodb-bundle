@@ -6,7 +6,7 @@ all:
 	@echo "Please choose a task."
 .PHONY: all
 
-lint: lint-composer lint-yaml lint-xml lint-xliff lint-php
+lint: lint-composer lint-yaml lint-xml lint-xliff lint-php check-names
 .PHONY: lint
 
 lint-composer:
@@ -46,6 +46,10 @@ lint-xliff:
 lint-php:
 	vendor/bin/php-cs-fixer fix --ansi --verbose --diff --dry-run
 .PHONY: lint-php
+
+check-names: ## Nothing in this tree may still carry a Sonata name (adminata's engine, PLAN/v2 N20)
+	php vendor/idct/adminata/upstream/rename/apply.php --check .
+.PHONY: check-names
 
 lint-symfony: lint-symfony-container lint-symfony-twig lint-symfony-xliff lint-symfony-yaml
 .PHONY: lint-symfony
